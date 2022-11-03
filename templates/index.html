@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+{% block css %}
+    <link href="{% static 'css/customStyles/stylesIndex.css'%}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <div class="menu-hide" id="menu-hide">
+        <div class="row">
+            <div class="col-lg-12">
+                <img id="titleIndex" src="{% static 'images/titleBig.png'%}"> 
+                 <!--<center><h1 style="font-size:100px; color:#3B2030;"> NormSeq </h1></center>-->
+                <div class="card bg-light mb-3">
+                        <div class="card-body" id='cardInicio'>
+                            <font size="3">
+                                <p>
+                                    NormSEQ
+                                </p>
+                                <p>
+                                    Description
+                                </p>
+                            </font>
+                        </div>
+                </div>
+            </div>
+        </div>
+        <div class = "row">
+            <div class= "col-6">
+                <div class="buttonIndex">
+                    <a href="{% url 'query' %}" ><button id="buttonQuery" class="btn btn-success btn-lg" onclick="ShowLoading()">Start a query</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}  
+
+{% endblock %}

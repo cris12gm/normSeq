@@ -1,0 +1,11 @@
+*.pyc
+*~
+__pycache__
+db.sqlite3
+/static
+.DS_Store
+config.py
+.vscode
+normSeq/settings.py
+migrations/
+uploads/

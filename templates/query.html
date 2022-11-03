@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block css %}
+<link href="{% static 'css/customStyles/stylesQuery.css'%}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+<div class="menu-hide" id="menu-hide">
+    <h1 class="titlePag">INPUT</h1>
+    <hr>
+    <div class="row">
+        <div class="col-9">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">SEQUENCING PROTOCOL</h5>
+                    <form>
+                        <div class='form-group'">
+                            <input type="radio" name="RNAtypeS" value="miRNA" checked="checked" onclick="changeDropdown()">miRNA</input>
+                            <input type="radio" name="RNAtypeS" value="mRNA" onclick="changeDropdown()">mRNA</input>
+                            <input type="radio" name="RNAtypeS" value="tRNA" onclick="changeDropdown()">tRNA</input>
+                            <input type="radio" name="RNAtypeS" value="otherRNA" onclick="changeDropdown()">Other RNAs</input>
+                        </div>
+                    </form>  
+                </div>
+            </div>
+            <br>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title" id="RNAtypeTitle">miRNA</h5>
+                    <div id="form_miRNA" style="display:block;">
+                        <div class="card">
+                            <div class="card-header">
+                                RC matrix
+                            </div>
+                            <div class="card-body">
+                                <form action="{% url 'status' %}" method="POST" enctype="multipart/form-data" id="formMirna" class="formQuery">
+                                    {% csrf_token %}
+                                    {% for field in formMirna %}
+                                    <div class='form-group'>
+                                        {{ field }}
+                                    </div>
+                                    {% endfor %}
+                                    <button type="submit" id='submitForm' class="btn btn-success btn-sm" >Submit</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="form_mRNA" style="display:none;">
+                        mRNA form
+                    </div>
+                    <div id="form_tRNA" style="display:none;">
+                        tRNA form
+                    </div>
+                    <div id="form_otherRNA" style="display:none;">
+                        other RNAs form
+                    </div>
+                </div>
+            </div>
+            <div class='form-group'">
+            </div>  
+        </div>
+        <div class="col-3">
+            <div class="card">
+                <h5 class="card-header" id="info">INFO</h5>
+                <div class="card-body">
+                    <b>Job ID:</b> {{ jobID }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+
+<script>
+    function changeDropdown(number) {
+        var radios = document.getElementsByName('RNAtypeS');
+        for (var i = 0, length = radios.length; i < length; i++) {
+            if (radios[i].checked) {
+                var newTitle = radios[i].value;
+                document.getElementById("RNAtypeTitle").innerHTML = newTitle;
+                var divNew = document.getElementById("form_".concat(newTitle));
+                var allDivs = document.querySelectorAll('*[id^="form_"]');
+                for (var i = 0, length = allDivs.length; i < length; i++) {
+                    allDivs[i].style.display = "none";
+                }
+                divNew.style.display = "block";
+                break;
+            }
+        }
+    }
+
+</script>
+
+
+<script>
+    $(document).ready(
+        function() {
+            var jobIDValue = document.getElementById("id_jobID");
+            jobIDValue.value = "{{ jobID }}"
+        });
+
+</script>
+
+{% endblock %}

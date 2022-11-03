@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block css %}
+<link href="{% static 'css/customStyles/stylesResults.css'%}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+    <div id="page-wrapper" class="resultsPage">
+        {% if error %}
+            {% include "querySNP/error.html" %}
+        {% endif %}
+
+        <div class="row">
+            <div class="col-9">
+                Results
+                {{ file }}
+            </div>
+            <div class="col-3">
+                <div class="card">
+                    <h5 class="card-header" id="info">INFO</h5>
+                    <div class="card-body">
+                        <b>Job ID:</b> {{ jobID }}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+{% endblock %}
+{% block js %}
+
+  <!-- Demo scripts for this page-->
+
+
+{% endblock %}
+

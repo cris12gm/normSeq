@@ -1,0 +1,72 @@
+/* GENERAL */
+
+.resultsPage{
+    margin-top:20px;
+}
+.resultsTable{
+    margin-top:20px;
+}
+
+.titleTable{
+    text-align:center;
+}
+
+.rowTable{
+    text-align:center;
+}
+
+.tabResult{
+    margin-top:20px;
+}
+
+/* SUMMARY */
+
+#topResults{
+    margin-top:20px;
+}
+
+/* QUERY GENE */
+#barPlotPromotersGene{
+    overflow-x: auto;
+    width: 100%;
+}
+#titleBarPlotPromotersGene{
+    text-align:center;
+}
+#barPlotEnhancersGene{
+    overflow-x: auto;
+    width: 100%;
+}
+#titleBarPlotEnhancersGene{
+    text-align:center;
+}
+.plotsOverflow{
+    overflow-x: auto;
+    width: 100%;
+}
+#titleBarPlotTLightsGene{
+    text-align:center;
+}
+
+.buttonGTEX{
+    font-weight: bolder;
+}
+
+#titleTopResultsGene{
+    font-weight: bold;
+    color: #694806;
+}
+
+.iconoTR{
+    color:#694806;
+}
+
+.modal-xl {
+    width: 90%;
+    height: 300%;
+    max-width:1200px;
+}
+
+.iconTables{
+    color:#694806;
+}

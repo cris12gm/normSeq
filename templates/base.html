@@ -1,0 +1,161 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="author" content="Cristina Gomez-Martin">
+        <meta name="google-site-verification" content="_gSo6kOKaI0cxmom6Ms2b6mpLiNspPhuASuzBJUfwnk" />
+        <link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.png'%}">
+        <title>normSeq</title>
+
+        <!-- Bootstrap core CSS -->
+        <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+        <!-- Custom fonts for this template-->
+        <link href="{% static 'vendor/fontawesome-free/css/all.min.css'%}" rel="stylesheet" type="text/css">
+
+        <!-- Page level plugin CSS-->
+        <link href="{% static 'vendor/datatables/dataTables.bootstrap4.css'%}" rel="stylesheet">
+
+        <!-- Custom styles for this template -->
+        <link href="{% static 'css/customStyles/stylesBase.css' %}" rel="stylesheet">
+        <link href="{% static 'css/customStyles/myStyles.css' %}" rel="stylesheet">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-130797336-2"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'UA-130797336-2');
+        </script>
+
+    {% block css %}{% endblock %}
+
+
+    </head>
+
+    <body onload="showHidenMenu();">
+
+        <div class="d-flex" id="wrapper">
+            <!-- Sidebar -->
+            <div class="bg-dark" id="sidebar-wrapper">
+            <div id="tittleBar">
+                <a class="navbar-brand mr-1" href="{% url 'home' %}"><img src="{% static 'images/title_white.png'%}" width="180"></a>
+            </div>
+            <div class="list-group list-group-flush">
+                <a href="{% url 'query' %}" class="list-group-item list-group-item-action bg-light">
+                    <i class="fas fa-fw fa-cogs"></i>
+                    <span>Query</span>
+                </a>
+                <a href="" class="list-group-item list-group-item-action bg-light" data-toggle="modal" data-target="#modalAbout">
+                    <i class="fas fa-fw fa-question"></i>
+                    <span>About</span>
+                </a>
+                <div class="modal fade" id="modalAbout" role="dialog">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                        <div class="modal-header">
+                          <h4 class="modal-title">
+                            About
+                          </h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>normSeq</p>
+                            <p>Developed by the <a href="exosomes.nl">Exosomes Research Group</a> at Cancer Center Amsterdam</p>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            
+            </div>
+            </div>
+            <!-- /#sidebar-wrapper -->
+    
+            <!-- Page Content -->
+            <div id="page-content-wrapper">
+        
+                <nav id="topNav" class="navbar navbar-expand navbar-dark bg-dark">
+                    <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="menu-toggle" href="#">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </nav>  
+
+                <div class="container-fluid">
+
+                    <!-- Page Content -->
+        
+                    {% block content %}{% endblock %}
+                    {% block modals %}{% endblock %}
+                </div>
+
+
+            </div>
+        </div>
+
+        <!-- Bootstrap core JavaScript -->
+
+        <script src="{% static 'js/popper.min.js' %}"></script>
+        <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+        <!-- Menu Toggle Script -->
+        <script>
+        $("#menu-toggle").click(function(e) {
+            e.preventDefault();
+            $("#wrapper").toggleClass("toggled");
+        });
+        </script>
+
+        <!-- Datatables -->
+        <script src="{% static 'js/demo/datatables-demo.js'%}"></script>
+        <script src="{% static 'vendor/datatables/jquery.dataTables.js'%}"></script>
+        <script src="{% static 'vendor/datatables/dataTables.bootstrap4.js'%}"></script>
+
+        <script>
+            function showHidenMenu(){
+                document.getElementById("menu-hide").style.display= "block" ;
+            }
+        </script>
+        <script type="text/javascript">
+            function ShowLoading(e) {
+                $("div.resultsPage").hide();
+                $("div.menuHide").hide();
+                var div = document.createElement('div');
+                var img = document.createElement('img');
+                img.src = "{% static 'images/wait.svg'%}";
+                div.innerHTML = "<b><font color='#194a90' size='4'>Loading results, please wait</font></b>";
+                div.style.cssText = 'position: fixed; top: 20%; left: 40%; z-index: 5000; width: 422px; text-align: center; background: #FFFFFF;';
+
+                div.appendChild(img);
+                document.body.appendChild(div);
+                return true;
+            }
+        
+        </script>
+
+        <script type="text/javascript">
+            function ShowLoadingTour(e) {
+                var div = document.createElement('div');
+                var img = document.createElement('img');
+                img.src = "{% static 'images/wait.svg'%}";
+                div.style.cssText = 'position: fixed; top: 20%; left: 40%; z-index: 5000; width: 422px; text-align: center; background: #FFFFFF;';
+                div.appendChild(img);
+                document.body.appendChild(div);
+                return true;
+            }
+
+        </script>
+        <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js'%}"></script>
+        <script src="{% static 'tour/intro.js' %}"></script>
+        {% block js %}{% endblock %}
+    </body> 
+  </html>

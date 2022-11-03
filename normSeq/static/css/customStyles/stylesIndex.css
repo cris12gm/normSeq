@@ -1,0 +1,32 @@
+#cardIndex {
+  width: 40%;
+  align-self: center;
+  background-color: #e2edfd !important;
+  }
+
+#titleIndex {
+  width:40%;
+  display:block;
+  margin-right:auto;
+  margin-left:auto;
+  margin-top:50px;
+  margin-bottom:40px;
+}
+
+.buttonIndex{
+  text-align: center;
+}
+
+#buttonTour{
+  font-weight: bold;
+}
+
+#buttonQuery{
+  font-weight: bold;
+}
+
+/* Color de los h1 */
+
+.h1{
+  color:#3B2030;
+}
