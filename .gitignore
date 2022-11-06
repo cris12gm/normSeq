@@ -7,6 +7,5 @@ db.sqlite3
 config.py
 .vscode
 normSeq/settings.py
-migrations/
 uploads/
 envNormSeq/
