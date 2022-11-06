@@ -18,17 +18,43 @@ class Errors(Enum):
 class statusJob(TemplateView):
     template = 'status.html'
 
-    jobID = ""
     def get(self, request):  
 
-        return redirect(settings.SUB_SITE+"/query/")
-
-    def post(self, request):
-        jobID = request.POST['jobID']
+        try:
+            jobID = request.GET['jobID']
+        except:
+            return redirect(settings.SUB_SITE+"/query/")
 
         jobDB = Job.objects.get(JobID=jobID)
         status = jobDB.getStatus()
+        typeJob = jobDB.getType()
 
-        return render(request, self.template, {"jobID":jobID,"status":status})
+        if status=="Created":
+            return render(request, self.template, {"jobID":jobID,"status":status,"typeJob":typeJob})
+        elif status=="Finished":
+            if typeJob=="miRNA":
+ #               return render(request, self.template, {"jobID":jobID,"status":status,"typeJob":typeJob})
+                return redirect(settings.SUB_SITE+"/mirna/?jobID="+jobID)
+            
+
+    def post(self, request):
+        jobID = request.POST['jobID']
+        typeJobForm = request.POST['typeJob']
+
+        #Get object from models
+        jobDB = Job.objects.get(JobID=jobID)
+        typeJob = jobDB.getType()
+
+        # Alter type to match form selected
+        if typeJob=="Created":
+            jobDB.alterType(typeJobForm)
+
+            #Save file
+            matrixFile = request.FILES['matrix']    
+            fs = FileSystemStorage()
+            filename = fs.save(jobID+"/"+"matrix.txt", matrixFile)
+            uploaded_file_url = fs.url(filename)
+        return redirect(settings.SUB_SITE+"/status?jobID="+jobID)
     
+
     

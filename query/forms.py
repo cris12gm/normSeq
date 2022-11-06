@@ -7,3 +7,4 @@ class QueryMirna(forms.Form):
 
     matrix = forms.FileField()
     jobID = forms.CharField(widget = forms.HiddenInput())
+    typeJob = forms.CharField(widget = forms.HiddenInput(), initial = "miRNA")

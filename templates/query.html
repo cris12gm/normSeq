@@ -80,7 +80,7 @@
         var radios = document.getElementsByName('RNAtypeS');
         for (var i = 0, length = radios.length; i < length; i++) {
             if (radios[i].checked) {
-                var newTitle = radios[i].value;
+                var newTitle = radios[i].value;    
                 document.getElementById("RNAtypeTitle").innerHTML = newTitle;
                 var divNew = document.getElementById("form_".concat(newTitle));
                 var allDivs = document.querySelectorAll('*[id^="form_"]');

@@ -6,6 +6,7 @@ from django.utils import timezone
 class Job(models.Model):
     JobID = models.CharField(max_length=15)
     status = models.CharField(max_length=200)
+    typeJob = models.CharField(max_length=25)
     created_date = models.DateTimeField(
             default=timezone.now)
 
@@ -15,3 +16,10 @@ class Job(models.Model):
 
     def getStatus(self):
         return self.status
+
+    def getType(self):
+        return self.typeJob
+    
+    def alterType(self,typeJobForm):
+        self.typeJob = typeJobForm
+        self.save()

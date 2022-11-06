@@ -34,9 +34,10 @@ class Query(TemplateView):
 
         jobID = generate_id()
         if jobID:
-            Job.objects.create(JobID= jobID, status="Created")
+            Job.objects.create(JobID= jobID, status="Created", typeJob="Created")
         formMirna = QueryMirna()
 
         return render(request, self.template, {"jobID":jobID,"formMirna":formMirna,
         })
+
     

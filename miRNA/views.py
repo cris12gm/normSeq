@@ -18,24 +18,11 @@ class Errors(Enum):
 
 class miRNAResults(TemplateView):
     template = 'mirna.html'
-
     jobID = ""
-    def get(self, request):  
-        return redirect(settings.SUB_SITE+"/query/")
-    def post(self, request):
-        jobID = request.POST['jobID']
-        matrixFile = request.FILES['matrix']
-        fs = FileSystemStorage()
-        filename = fs.save(jobID+"/"+matrixFile.name, matrixFile)
-        uploaded_file_url = fs.url(filename)
-
-    ## Check JOB ID
-        me = Job.objects.get(JobID=jobID)
-        print("testing")
-        print (me.getStatus())
-        print ("testdone")
-
-
+    def get(self, request):
+        print(request.GET)
+        try:
+            jobID = request.GET['jobID']
+        except:
+            jobID = ""
         return render(request, self.template, {"jobID":jobID})
-    
-    
