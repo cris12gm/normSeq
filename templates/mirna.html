@@ -14,7 +14,43 @@
 
         <div class="row">
             <div class="col-9">
-                Results
+                <h2>Results for Job ID <a href="{% url 'status' %}/?jobID={{ jobID }}">{{ jobID }}</a></h2>
+
+                <div class="menu-hide" id="menu-hide">
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="summary-tab" data-toggle="tab" href="#summary" role="tab" aria-controls="summary" aria-selected="true"><h5>Summary</h5></a>
+                        </li>
+                        {% if visualization %}
+                        <li class="nav-item">
+                            <a class="nav-link" id="visualization-tab" data-toggle="tab" href="#visualization" role="tab" aria-controls="visualization" aria-selected="false"><h5>Visualization</h5></a>
+                        </li>
+                        {% endif %}
+                        {% if normalization %}
+                        <li class="nav-item">
+                            <a class="nav-link" id="normalization-tab" data-toggle="tab" href="#normalization" role="tab" aria-controls="normalization" aria-selected="false"><h5>Normalized data</h5></a>
+                        </li>
+                        {% endif %}
+                    </ul>
+            
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active tabResult" id="summary" role="tabpanel" aria-labelledby="summary-tab">
+                            {% include "mirna/summary.html" %}
+                        </div>
+                        {% if visualization %}
+                        <div class="tab-pane fade tabResult" id="visualization" role="tabpanel" aria-labelledby="visualization-tab">
+                            {% include "mirna/visualization.html" %}
+                        </div>
+                        {% endif %}
+                        {% if normalization %}
+                        <div class="tab-pane fade tabResult" id="normalization" role="tabpanel" aria-labelledby="normalization-tab">
+                            {% include "mirna/normalization.html" %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+
             </div>
             <div class="col-3">
                 <div class="card">
@@ -32,8 +68,27 @@
 {% endblock %}
 {% block js %}
 
-  <!-- Demo scripts for this page-->
+<!-- This script enables link to tabs-->
+<script>
 
+    // Javascript to enable link to tab
+    var url = document.location.toString();
+    if (url.match('#')) {
+        $('.nav-tabs a[href="#' + url.split('#')[1] + '"]').tab('show');
+    }
+    
+    // Change hash for page-reload
+    $('.nav-tabs a').on('shown.bs.tab', function (e) {
+        window.location.hash = e.target.hash;
+    })
+
+    $(document).ready(function()
+    {
+        $("#loadpage").hide();
+        $('#divPageContent').css("visibility", "visible");
+    });
+  
+</script>
 
 {% endblock %}
 

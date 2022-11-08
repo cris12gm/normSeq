@@ -33,7 +33,6 @@ class statusJob(TemplateView):
             return render(request, self.template, {"jobID":jobID,"status":status,"typeJob":typeJob})
         elif status=="Finished":
             if typeJob=="miRNA":
- #               return render(request, self.template, {"jobID":jobID,"status":status,"typeJob":typeJob})
                 return redirect(settings.SUB_SITE+"/mirna/?jobID="+jobID)
             
 

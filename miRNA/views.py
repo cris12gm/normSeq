@@ -11,6 +11,9 @@ from django.core.files.storage import FileSystemStorage
 from .forms import Query
 from query.models import Job
 
+import os
+import pandas as pd
+
 class Errors(Enum):
     NO_ERROR = 0
     NOT_VALID = 1
@@ -18,11 +21,26 @@ class Errors(Enum):
 
 class miRNAResults(TemplateView):
     template = 'mirna.html'
-    jobID = ""
+
     def get(self, request):
-        print(request.GET)
-        try:
-            jobID = request.GET['jobID']
-        except:
-            jobID = ""
-        return render(request, self.template, {"jobID":jobID})
+
+            ##All visualizations
+        visualization = True
+        heatmapPlot = False
+
+        if not request.GET['jobID']:
+            return redirect(settings.SUB_SITE+"/query/")
+
+        jobID = request.GET['jobID']
+        
+        rpmTable = pd.read_table(settings.MEDIA_ROOT+jobID+"/matrix_RPM.txt",sep="\t",index_col="name")
+        
+        #Visualizations
+            #Heatmap
+        fileHeatmap = settings.MEDIA_ROOT+jobID+"/heatmap.html"
+        if os.path.exists(fileHeatmap):
+            with open(fileHeatmap,'r') as file:
+                heatmapPlot = file.read().rstrip()
+                visualization = "True"
+
+        return render(request, self.template, {"jobID":jobID,"rpmTable":rpmTable,"visualization":visualization,"heatmapPlot":heatmapPlot})
