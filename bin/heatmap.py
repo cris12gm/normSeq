@@ -22,7 +22,7 @@ mirnas = df.index.tolist()
 
 
 fig = go.Figure(data=go.Heatmap(
-    z = original,
+    z = normalized,
     x = samples,
     y = mirnas,
     text = original,
