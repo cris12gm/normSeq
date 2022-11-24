@@ -11,8 +11,11 @@ from django.core.files.storage import FileSystemStorage
 from .forms import Query
 from query.models import Job
 
+
 import os
 import pandas as pd
+
+import time
 
 class Errors(Enum):
     NO_ERROR = 0
@@ -37,7 +40,11 @@ class miRNAResults(TemplateView):
         
         #Visualizations
             #Heatmap
+
+        
+        
         fileHeatmap = settings.MEDIA_ROOT+jobID+"/heatmap.html"
+
         if os.path.exists(fileHeatmap):
             with open(fileHeatmap,'r') as file:
                 heatmapPlot = file.read().rstrip()

@@ -10,6 +10,10 @@ from django.urls import reverse_lazy
 from django.core.files.storage import FileSystemStorage
 from query.models import Job
 
+import os
+import subprocess
+import psutil
+
 class Errors(Enum):
     NO_ERROR = 0
     NOT_VALID = 1
@@ -29,11 +33,26 @@ class statusJob(TemplateView):
         status = jobDB.getStatus()
         typeJob = jobDB.getType()
 
+        #Check if the job has finished
+        pid = jobDB.getPid()
+        resultsFile = infile = os.path.join(settings.BASE_DIR,settings.MEDIA_ROOT+jobID,"results.txt")
+
+        if not psutil.pid_exists(pid) and os.path.exists(resultsFile):
+            jobDB.alterStatus("Finished")
+        elif not psutil.pid_exists(pid) and not os.path.exists(resultsFile):
+            jobDB.alterStatus("Error")
+
+
+
         if status=="Created":
             return render(request, self.template, {"jobID":jobID,"status":status,"typeJob":typeJob})
         elif status=="Finished":
             if typeJob=="miRNA":
                 return redirect(settings.SUB_SITE+"/mirna/?jobID="+jobID)
+        elif status=="Running":
+            return render(request, self.template, {"jobID":jobID,"status":status,"typeJob":typeJob})
+        else:
+            return render(request, self.template, {"jobID":jobID,"status":status,"typeJob":typeJob}) ##Poner error aqui
             
 
     def post(self, request):
@@ -53,6 +72,22 @@ class statusJob(TemplateView):
             fs = FileSystemStorage()
             filename = fs.save(jobID+"/"+"matrix.txt", matrixFile)
             uploaded_file_url = fs.url(filename)
+
+            typeJob = jobDB.getType()
+            #Launch
+            if typeJob =="miRNA":
+                script = os.path.join(settings.BASE_DIR,"bin","miRNA_bench.py")
+                
+                jobDir = os.path.join(settings.BASE_DIR,settings.MEDIA_ROOT+jobID)
+                scriptCm = ["python",script,jobDir]
+                response = subprocess.Popen(' '.join(scriptCm)).pid
+
+                if psutil.pid_exists(response):
+                    jobDB.alterPid(response)
+                    jobDB.alterStatus("Running")
+                else:
+                    jobDB.alterStatus("Error")
+        
         return redirect(settings.SUB_SITE+"/status?jobID="+jobID)
     
 

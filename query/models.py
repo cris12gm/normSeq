@@ -7,6 +7,7 @@ class Job(models.Model):
     JobID = models.CharField(max_length=15)
     status = models.CharField(max_length=200)
     typeJob = models.CharField(max_length=25)
+    pid = models.IntegerField(default=0)
     created_date = models.DateTimeField(
             default=timezone.now)
 
@@ -20,6 +21,18 @@ class Job(models.Model):
     def getType(self):
         return self.typeJob
     
+    def getPid(self):
+        return self.pid
+
     def alterType(self,typeJobForm):
         self.typeJob = typeJobForm
         self.save()
+
+    def alterStatus(self,newStatus):
+        self.status = newStatus
+        self.save()
+
+    def alterPid(self,newPID):
+        self.pid = newPID
+        self.save()
+
