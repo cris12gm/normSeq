@@ -35,7 +35,7 @@ class statusJob(TemplateView):
 
         #Check if the job has finished
         pid = jobDB.getPid()
-        resultsFile = infile = os.path.join(settings.BASE_DIR,settings.MEDIA_ROOT+jobID,"results.txt")
+        resultsFile = os.path.join(settings.BASE_DIR,settings.MEDIA_ROOT+jobID,"results.txt")
 
         if not psutil.pid_exists(pid) and os.path.exists(resultsFile):
             jobDB.alterStatus("Finished")
