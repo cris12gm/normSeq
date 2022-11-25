@@ -25,6 +25,9 @@
         <link href="{% static 'css/customStyles/stylesBase.css' %}" rel="stylesheet">
         <link href="{% static 'css/customStyles/myStyles.css' %}" rel="stylesheet">
 
+         <!-- To multiselect -->
+        <link rel="stylesheet" href="{% static 'css/bootstrap-multiselect.css' %}" type="text/css"/>
+
     <!-- Global site tag (gtag.js) - Google Analytics -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=UA-130797336-2"></script>
         <script>
@@ -107,6 +110,9 @@
         <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
         <script src="{% static 'js/bootstrap.min.js' %}"></script>
 
+        <!-- Include the plugin's CSS and JS: -->
+        <script type="text/javascript" src="{% static 'js/bootstrap-multiselect.js' %}"></script>
+
         <!-- Menu Toggle Script -->
         <script>
         $("#menu-toggle").click(function(e) {
@@ -125,35 +131,7 @@
                 document.getElementById("menu-hide").style.display= "block" ;
             }
         </script>
-        <script type="text/javascript">
-            function ShowLoading(e) {
-                $("div.resultsPage").hide();
-                $("div.menuHide").hide();
-                var div = document.createElement('div');
-                var img = document.createElement('img');
-                img.src = "{% static 'images/wait.svg'%}";
-                div.innerHTML = "<b><font color='#194a90' size='4'>Loading results, please wait</font></b>";
-                div.style.cssText = 'position: fixed; top: 20%; left: 40%; z-index: 5000; width: 422px; text-align: center; background: #FFFFFF;';
 
-                div.appendChild(img);
-                document.body.appendChild(div);
-                return true;
-            }
-        
-        </script>
-
-        <script type="text/javascript">
-            function ShowLoadingTour(e) {
-                var div = document.createElement('div');
-                var img = document.createElement('img');
-                img.src = "{% static 'images/wait.svg'%}";
-                div.style.cssText = 'position: fixed; top: 20%; left: 40%; z-index: 5000; width: 422px; text-align: center; background: #FFFFFF;';
-                div.appendChild(img);
-                document.body.appendChild(div);
-                return true;
-            }
-
-        </script>
         <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js'%}"></script>
         <script src="{% static 'tour/intro.js' %}"></script>
         {% block js %}{% endblock %}

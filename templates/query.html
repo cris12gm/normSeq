@@ -5,6 +5,10 @@
 <link href="{% static 'css/customStyles/stylesQuery.css'%}" rel="stylesheet">
 {% endblock %}
 
+{% block modals %}
+    {% include "modals/query/chooseInput.html" %}
+{% endblock %}
+
 {% block content %}
 
 <div class="menu-hide" id="menu-hide">
@@ -30,25 +34,13 @@
                 <div class="card-body">
                     <h5 class="card-title" id="RNAtypeTitle">miRNA</h5>
                     <div id="form_miRNA" style="display:block;">
-                        <div class="card">
-                            <div class="card-header">
-                                RC matrix
-                            </div>
-                            <div class="card-body">
-                                <form action="{% url 'status' %}" method="POST" enctype="multipart/form-data" id="formMirna" class="formQuery">
-                                    {% csrf_token %}
-                                    {% for field in formMirna %}
-                                    <div class='form-group'>
-                                        {{ field }}
-                                    </div>
-                                    {% endfor %}
-                                    <button type="submit" id='submitForm' class="btn btn-success btn-sm" >Submit</button>
-                                </form>
-                            </div>
-                        </div>
+                        <form action="{% url 'status' %}" method="POST" enctype="multipart/form-data" id="formMirna" class="formQuery">
+                            {% load crispy_forms_tags %}    
+                            {% crispy formMirna %}
+                        </form>
                     </div>
                     <div id="form_mRNA" style="display:none;">
-                        mRNA form
+                        
                     </div>
                     <div id="form_tRNA" style="display:none;">
                         tRNA form
@@ -103,6 +95,19 @@
             jobIDValue.value = "{{ jobID }}"
         });
 
+</script>
+
+<!-- Initialize the plugin: -->
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#id_methods').multiselect({
+            includeSelectAllOption: true,
+            maxHeight: 200,
+            buttonWidth: '300px',
+            enableCaseInsensitiveFiltering: true
+        });
+
+    });
 </script>
 
 {% endblock %}

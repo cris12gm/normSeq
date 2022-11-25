@@ -38,6 +38,7 @@ class Query(TemplateView):
         formMirna = QueryMirna()
 
         return render(request, self.template, {"jobID":jobID,"formMirna":formMirna,
+        
         })
 
     

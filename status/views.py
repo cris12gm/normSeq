@@ -13,6 +13,7 @@ from query.models import Job
 import os
 import subprocess
 import psutil
+import json
 
 class Errors(Enum):
     NO_ERROR = 0
@@ -58,6 +59,7 @@ class statusJob(TemplateView):
     def post(self, request):
         jobID = request.POST['jobID']
         typeJobForm = request.POST['typeJob']
+        methodsForm = request.POST.getlist('methods')
 
         #Get object from models
         jobDB = Job.objects.get(JobID=jobID)
@@ -74,13 +76,28 @@ class statusJob(TemplateView):
             uploaded_file_url = fs.url(filename)
 
             typeJob = jobDB.getType()
+
+            #Parameters contain the info for config.json
+            parameters = {}
+            parameters["jobID"]=jobID
+            parameters["typeJob"]=typeJob
+            parameters["methods"]=methodsForm
+
             #Launch
             if typeJob =="miRNA":
+                
+                #Save the rest of parameters and launch
+
+                with open(settings.MEDIA_ROOT+jobID+'/config.json', 'w') as fp:
+                    json.dump(parameters, fp)
+
                 script = os.path.join(settings.BASE_DIR,"bin","miRNA_bench.py")
                 
                 jobDir = os.path.join(settings.BASE_DIR,settings.MEDIA_ROOT+jobID)
-                scriptCm = ["python3",script,jobDir]
-                response = subprocess.Popen(' '.join(scriptCm),shell=True).pid
+                scriptCm = ["python",script,jobDir]
+                #scriptCm = ["python3",script,jobDir]
+                #response = subprocess.Popen(' '.join(scriptCm),shell=True).pid
+                response = subprocess.Popen(' '.join(scriptCm)).pid
                 if psutil.pid_exists(response):
                     jobDB.alterPid(response)
                     jobDB.alterStatus("Running")

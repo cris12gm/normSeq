@@ -1,0 +1,16 @@
+<div class="card">
+    <div class="card-header">
+        RC matrix
+    </div>
+    <div class="card-body">
+        <form action="{% url 'status' %}" method="POST" enctype="multipart/form-data" id="formMirna" class="formQuery">
+            {% csrf_token %}
+            {% for field in formMirna %}
+            <div class='form-group'>
+                {{ field }}
+            </div>
+            {% endfor %}
+            <button type="submit" id='submitForm' class="btn btn-success btn-sm" >Submit</button>
+        </form>
+    </div>
+</div>
