@@ -19,7 +19,7 @@ class QueryMirna(forms.Form):
     )
     
     matrix = forms.FileField()
-#    url = forms.CharField()
+    url = forms.CharField()
     jobID = forms.CharField(widget = forms.HiddenInput())
     typeJob = forms.CharField(widget = forms.HiddenInput(), initial = "miRNA")
     methods = forms.MultipleChoiceField(choices=METHODS,label="Choose one or more normalization methods:",required=True)
@@ -32,19 +32,19 @@ class QueryMirna(forms.Form):
                 TabHolder(
                     Tab(' Upload ',
                         HTML("""<br>"""),
-                        Field('matrix', css_class='form-control'),
-                        ),
+                        Field('matrix', css_class='form-control'),css_class="tab-pane",
+                    ),
                     #Tab(' URL/link ',
                     #    HTML("""<br>"""),
                     #    Field('url', css_class='form-control'),
-                    #    )
-                ),
+                    #    ),
+                css_class="nav nav-tabs"),
                 title="Input"+render_modal("Choose_Input")
             ),
             HTML("""<br>"""),
             Div(
                 create_card(
-                    Div(Field('methods')),title="Methods")
+                    Div(Field('methods')),title="Methods"+render_modal("Choose_Method"))
             ),
             'jobID',
             'typeJob',

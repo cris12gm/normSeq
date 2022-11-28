@@ -53,6 +53,8 @@
 </script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+    <!-- To save bookmarks -->
 <script>
     $("#bookmarkt").click(function () {
     var url = 'https://' + location.host; // i'm in a sub-page and bookmarking the home page
@@ -70,9 +72,6 @@
         $(this).attr('href', url);
         $(this).attr('title', name);
 
-        //add bookmark:
-        //  window.sidebar.addPanel(name, url, '');
-        //  window.sidebar.addPanel(url, name, '');
         window.sidebar.addPanel('', '', '');
     } 
     else if (window.external) { // IE Favorite

@@ -13,6 +13,5 @@ def create_card(*fields, **kwargs):
     panel = Div(card, panel_title,card_body,body,end)
     return panel
 
-
 def render_modal(modal):
     return '<a  data-toggle="modal" data-target="#'+modal+'" class="btn btn-link"><i class="fa fa-question-circle"> </i></a>'
