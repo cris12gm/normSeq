@@ -95,9 +95,7 @@ class statusJob(TemplateView):
                 
                 jobDir = os.path.join(settings.BASE_DIR,settings.MEDIA_ROOT+jobID)
                 scriptCm = ["python3",script,jobDir]
-                #scriptCm = ["python3",script,jobDir]
-                #response = subprocess.Popen(' '.join(scriptCm),shell=True).pid
-                response = subprocess.Popen(' '.join(scriptCm)).pid
+                response = subprocess.Popen(' '.join(scriptCm),shell=True).pid
                 if psutil.pid_exists(response):
                     jobDB.alterPid(response)
                     jobDB.alterStatus("Running")
