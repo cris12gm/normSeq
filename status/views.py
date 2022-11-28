@@ -38,13 +38,7 @@ class statusJob(TemplateView):
         pid = jobDB.getPid()
         resultsFile = os.path.join(settings.BASE_DIR,settings.MEDIA_ROOT+jobID,"results.txt")
 
-        p = psutil.Process(pid)
-
-        print(p)
-
-        print(p.status)
-        if not psutil.pid_exists(pid) or p.status == psutil.STATUS_ZOMBIE:
-            if os.path.exists(resultsFile):
+        if not psutil.pid_exists(pid) and os.path.exists(resultsFile):
                 jobDB.alterStatus("Finished")
         elif not psutil.pid_exists(pid) and not os.path.exists(resultsFile):
             jobDB.alterStatus("Error")

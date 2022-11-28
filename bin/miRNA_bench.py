@@ -26,3 +26,5 @@ heatmap(infile,outfile)
 
 resultsFile = os.path.join(jobDir,"results.txt")
 os.system("touch "+resultsFile)
+
+sys.exit(0)
