@@ -38,12 +38,19 @@ class statusJob(TemplateView):
         pid = jobDB.getPid()
         resultsFile = os.path.join(settings.BASE_DIR,settings.MEDIA_ROOT+jobID,"results.txt")
 
-        if not psutil.pid_exists(pid) and os.path.exists(resultsFile):
-                jobDB.alterStatus("Finished")
-        elif not psutil.pid_exists(pid) and not os.path.exists(resultsFile):
-            jobDB.alterStatus("Error")
-
-
+        p = psutil.Process(pid)
+        status = (p.status() if hasattr(p.status, '__call__'
+                                        ) else p.status)
+        print (status)
+        try:
+            p = psutil.Process(pid)
+        except:
+            if os.path.exists(resultsFile):
+                pass
+                # jobDB.alterStatus("Finished")
+            else:
+                pass
+                #jobDB.alterStatus("Error")
 
         if status=="Created":
             return render(request, self.template, {"jobID":jobID,"status":status,"typeJob":typeJob})
