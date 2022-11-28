@@ -1,10 +1,7 @@
-import plotly.express as px
+import numpy as np
+import pandas as pd
 from plotly.offline import plot
 import plotly.graph_objects as go
-
-import pandas as pd
-import numpy as np
-import sys
 
 def heatmap(infile,outfile):
     pd.options.plotting.backend = "plotly"

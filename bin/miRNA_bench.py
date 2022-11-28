@@ -1,8 +1,9 @@
-#C:/Users/Cris/Dropbox/TRABAJO/NL/normSeq/Website/myvenv/
+#C:\Users\Cris\Dropbox\TRABAJO\NL\normSeq\Website\myvenv\ python
 
 import os,sys
 from plots import heatmap
 from miRNAnorm import readTxt
+
 
 jobDir = sys.argv[1]
 

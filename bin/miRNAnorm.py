@@ -1,6 +1,5 @@
-import sys,os
-import numpy as np
 import pandas as pd
+import numpy as np
 
 def readTxt(infile,outfile):
     cabecera = open(infile).readline().split("\t")[0]
