@@ -40,6 +40,9 @@ class statusJob(TemplateView):
 
         p = psutil.Process(pid)
 
+        print(p)
+
+        print(p.status)
         if not psutil.pid_exists(pid) or p.status == psutil.STATUS_ZOMBIE:
             if os.path.exists(resultsFile):
                 jobDB.alterStatus("Finished")
