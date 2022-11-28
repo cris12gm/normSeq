@@ -1,15 +1,17 @@
+#C:/Users/Cris/Dropbox/TRABAJO/NL/normSeq/Website/myvenv/
+
 import os,sys
 from plots import heatmap
 from miRNAnorm import readTxt
 
 jobDir = sys.argv[1]
+
 # Make normalization
 
-#infile = os.path.join(jobDir,"matrix.txt")
-#outfile = os.path.join(jobDir,"matrix_RPM.txt")
+infile = os.path.join(jobDir,"matrix.txt")
+outfile = os.path.join(jobDir,"matrix_RPM.txt")
 
-#print(infile)
-#readTxt(infile,outfile)
+readTxt(infile,outfile)
 
 # Create heatmap
 
