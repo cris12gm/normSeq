@@ -94,7 +94,7 @@ class statusJob(TemplateView):
                 script = os.path.join(settings.BASE_DIR,"bin","miRNA_bench.py")
                 
                 jobDir = os.path.join(settings.BASE_DIR,settings.MEDIA_ROOT+jobID)
-                scriptCm = ["python",script,jobDir]
+                scriptCm = ["python3",script,jobDir]
                 #scriptCm = ["python3",script,jobDir]
                 #response = subprocess.Popen(' '.join(scriptCm),shell=True).pid
                 response = subprocess.Popen(' '.join(scriptCm)).pid
