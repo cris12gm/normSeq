@@ -38,19 +38,18 @@ class statusJob(TemplateView):
         pid = jobDB.getPid()
         resultsFile = os.path.join(settings.BASE_DIR,settings.MEDIA_ROOT+jobID,"results.txt")
 
-        p = psutil.Process(pid)
-        status = (p.status() if hasattr(p.status, '__call__'
-                                        ) else p.status)
-        print (status)
         try:
             p = psutil.Process(pid)
+            status = (p.status() if hasattr(p.status, '__call__'
+                                        ) else p.status)
+            if status=="zombie" and os.path.exists(resultsFile):
+                jobDB.alterStatus("Finished")
+
         except:
             if os.path.exists(resultsFile):
-                pass
-                # jobDB.alterStatus("Finished")
+                jobDB.alterStatus("Finished")
             else:
-                pass
-                #jobDB.alterStatus("Error")
+                jobDB.alterStatus("Error")
 
         if status=="Created":
             return render(request, self.template, {"jobID":jobID,"status":status,"typeJob":typeJob})
