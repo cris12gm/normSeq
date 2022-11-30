@@ -32,13 +32,13 @@ class QueryMirna(forms.Form):
                 TabHolder(
                     Tab(' Upload ',
                         HTML("""<br>"""),
-                        Field('matrix', css_class='form-control'),css_class="tab-pane",
+                        Field('matrix', css_class='form-control'),
                     ),
                     #Tab(' URL/link ',
                     #    HTML("""<br>"""),
                     #    Field('url', css_class='form-control'),
-                    #    ),
-                css_class="nav nav-tabs"),
+                    #)
+                ),
                 title="Input"+render_modal("Choose_Input")
             ),
             HTML("""<br>"""),

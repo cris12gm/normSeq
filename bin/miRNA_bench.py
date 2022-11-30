@@ -1,26 +1,29 @@
 #C:\Users\Cris\Dropbox\TRABAJO\NL\normSeq\Website\myvenv\ python
 
 import os,sys
-from plots import heatmap
-from miRNAnorm import readTxt
+import json
+from plots import createplots
+from miRNAnorm import processInput,norm
 
 
-jobDir = sys.argv[1]
+#Error = False
 
-# Make normalization
+configFile = open(sys.argv[1])
+config = json.load(configFile)
 
-infile = os.path.join(jobDir,"matrix.txt")
-outfile = os.path.join(jobDir,"matrix_RPM.txt")
+jobDir = config['jobDir']
 
-readTxt(infile,outfile)
+#Get df
+df = processInput(os.path.join(jobDir,"matrix.txt"))
 
-# Create heatmap
+# Make normalization and plots
 
-infile = os.path.join(jobDir,"matrix.txt")
-outfile = os.path.join(jobDir,"heatmap.html")
+methods = config['methods']
 
-heatmap(infile,outfile)
-
+for method in methods:
+    norm(df,method,jobDir)
+    createplots(df,method,jobDir)
+    
 
 #Check and create results.txt
 

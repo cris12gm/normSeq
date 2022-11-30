@@ -88,6 +88,7 @@ class statusJob(TemplateView):
             parameters["jobID"]=jobID
             parameters["typeJob"]=typeJob
             parameters["methods"]=methodsForm
+            parameters["jobDir"]= os.path.join(settings.BASE_DIR,settings.MEDIA_ROOT+jobID)
 
             #Launch
             if typeJob =="miRNA":
@@ -99,8 +100,8 @@ class statusJob(TemplateView):
 
                 script = os.path.join(settings.BASE_DIR,"bin","miRNA_bench.py")
                 
-                jobDir = os.path.join(settings.BASE_DIR,settings.MEDIA_ROOT+jobID)
-                scriptCm = ["python",script,jobDir]
+                configFile = settings.MEDIA_ROOT+jobID+'/config.json'
+                scriptCm = ["python",script,configFile]
                 response = subprocess.Popen(' '.join(scriptCm),shell=True).pid
                 if psutil.pid_exists(response):
                     jobDB.alterPid(response)

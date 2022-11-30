@@ -70,3 +70,11 @@
 .iconTables{
     color:#694806;
 }
+
+.cardHeatmap:hover {
+    border:1px solid #694806;
+}
+
+.pointer-link {
+    cursor: pointer;
+}

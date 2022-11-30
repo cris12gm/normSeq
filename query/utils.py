@@ -15,3 +15,23 @@ def create_card(*fields, **kwargs):
 
 def render_modal(modal):
     return '<a  data-toggle="modal" data-target="#'+modal+'" class="btn btn-link"><i class="fa fa-question-circle"> </i></a>'
+
+def create_tabs(*fields,**kwargs):
+    tabs = kwargs['tabs']
+
+    form_group = Div(*fields, css_class='form-group')
+    header = HTML('<ul class="nav nav-tabs" id="myTab" role="tablist">')
+    endHeader = HTML('</ul>')
+    headerTabContent = HTML('<div class="tab-content" id="myTabContent">')
+    endHeaderTabContent = HTML('</div>')
+    nTabs = 0
+    for tab in tabs:
+        if nTabs==0:
+            contentHeader = HTML('<li class="nav-item"><a class="nav-link active" id="'+tab+'-tab" data-toggle="tab" href="#'+tab+'" role="tab" aria-controls="'+tab+'" aria-selected="true">'+tab+'</a></li>')
+            contentTab = HTML('<div class="tab-pane fade show active" id="'+tab+'" role="tabpanel" aria-labelledby="'+tab+'-tab">...</div>')
+        else:
+            contentHeader = contentHeader + HTML('<li class="nav-item"><a class="nav-link active" id="'+tab+'-tab" data-toggle="tab" href="#'+tab+'" role="tab" aria-controls="'+tab+'" aria-selected="false">'+tab+'</a></li>')
+            contentTab = contentTab + HTML('<div class="tab-pane fade show active" id="'+tab+'" role="tabpanel" aria-labelledby="'+tab+'-tab">...</div>')
+
+    panel = Div(header,contentHeader,endHeader,headerTabContent,contentTab,endHeaderTabContent)
+    return panel

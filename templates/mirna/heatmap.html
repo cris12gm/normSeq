@@ -1,5 +1,27 @@
-<div class="row justify-content-center">
-    <div class="plotElement">
-        {{ heatmapPlot | safe}}
-    </div>
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; grid-column-gap: 10px;">
+    {% for heatmap in heatmapPlots %}
+        <div class="card cardHeatmap" style="width: 100%; ">
+            <a data-toggle="modal" data-target="#modal{{ heatmap.2 }}" onmouseover="this.style.cursor='pointer'">
+                <img class="img-fluid" src="{{ heatmap.0 }}">
+            </a>
+            <div class="modal fade" id="modal{{ heatmap.2 }}" role="dialog">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                    <h4 class="modal-title">
+                        {{ heatmap.3 }}
+                    </h4>
+                    </div>
+                    <div class="modal-body">
+                        {{ heatmap.1 | safe }}
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+        
+    {% endfor %}
 </div>

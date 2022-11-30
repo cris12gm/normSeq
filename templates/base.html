@@ -109,9 +109,7 @@
         <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
         <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
         <script src="{% static 'js/bootstrap.min.js' %}"></script>
-
-        <!-- Include the plugin's CSS and JS: -->
-        <script type="text/javascript" src="{% static 'js/bootstrap-multiselect.js' %}"></script>
+        <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
 
         <!-- Menu Toggle Script -->
         <script>
@@ -134,6 +132,9 @@
 
         <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js'%}"></script>
         <script src="{% static 'tour/intro.js' %}"></script>
+
+        <!-- To multiselect -->
+        <script type="text/javascript" src="{% static 'js/bootstrap-multiselect.js' %}"></script>
         {% block js %}{% endblock %}
     </body> 
   </html>
