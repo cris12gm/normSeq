@@ -7,15 +7,15 @@ from query.utils import create_card,render_modal
 
 class QueryMirna(forms.Form):
     METHODS = (
+        ('NN', ' No normalization, just visualization'),
         ('CPM', ' Counts per Million'),
         ('TC', ' Total Count'),
         ('UQ', ' Upper Quartile'),
         ('Med',' Median'),
-        ('DESEQ',' DEseq'),
-        ('TMM',' TMM (edgeR)'),
+        ('TMM',' TMM'),
         ('QN',' Quantile'),
-        ('RUV',' Remove Unwanted Variation'),
-        ('NN', ' No normalization')
+#        ('RUV',' Remove Unwanted Variation'),
+        ('RLE','Relative Log Expression')
     )
     
     matrix = forms.FileField()
@@ -49,5 +49,5 @@ class QueryMirna(forms.Form):
             'jobID',
             'typeJob',
             HTML("""<br>"""),
-            Submit('submit', 'Submit', css_class='btn btn-success btn-sm')
+            Submit('submit', 'Submit', css_class='btn btn-success')
         )

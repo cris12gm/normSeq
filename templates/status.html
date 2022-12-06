@@ -11,7 +11,7 @@
         {% if error %}
             {% include "querySNP/error.html" %}
         {% endif %}
-
+        <br>
         <div class="row">
             <div class="col-9">
                 <h2>Status of Job ID <a href="{% url 'status' %}/?jobID={{ jobID }}">{{ jobID }}</a></h2>

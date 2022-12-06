@@ -5,6 +5,11 @@
 <link href="{% static 'css/customStyles/stylesMirna.css'%}" rel="stylesheet">
 {% endblock %}
 
+{% block modals %}
+    {% include "modals/mirna/modal_plots.html" %}
+    {% include "modals/mirna/modal_pca.html" %}
+{% endblock %}
+
 {% block content %}
 
     <div id="page-wrapper" class="resultsPage">
@@ -51,6 +56,7 @@
                 </div>
 
 
+
             </div>
             <div class="col-3">
                 <div class="card">
@@ -90,5 +96,94 @@
   
 </script>
 
+<!-- Modal plot -->
+<script>
+    $('.modalPlot').on('click', function (e) {
+        title = this.title;
+        url = this.name;
+
+        $.ajax({
+             url: '{% url "ajax_plot" %}',
+             data: {
+                 "url" : url
+             },
+             dataType: 'json',
+            success: function (dataE) {
+                $("#modalContent").html(dataE.plot);
+                $("#modalTitle").html(title);
+            }
+        });
+    });
+  
+</script>
+
+<!-- Modal plot PCA -->
+<script>
+    $('.modalPlotPCA').on('click', function (e) {
+        title = this.title;
+        url = this.name;
+        
+        $.ajax({
+             url: '{% url "ajax_plot" %}',
+             data: {
+                 "url" : url
+             },
+             dataType: 'json',
+            success: function (dataE) {
+                $("#modalContentPCA").html(dataE.plot);
+                $("#modalTitlePCA").html(title);
+            }
+        });
+    });
+  
+</script>
+
+<!-- On change of number of dimensions, change plot -->
+<script>
+    $('#selectDimensions').change(function(){ 
+        valor = this.value;
+        url = this.name;
+        if (valor == "3"){
+            url = url.replace('.html', '_3D.html');
+        }
+        if (valor == "2"){
+            url = url.replace('_3D.html', '_3D.html');
+        }
+
+        $.ajax({
+            url: '{% url "ajax_plot" %}',
+            data: {
+                "url" : url
+            },
+            dataType: 'json',
+            success: function (dataE) {
+                $("#modalContentPCA").html(dataE.plot);
+            }
+        });
+    });
+
+
+
+    $('.modalPlotPCA').on('click', function (e) {
+        title = this.title;
+        url = this.name;
+        const $select = document.querySelector('#selectDimensions');
+        $select.value = '2';
+
+        $.ajax({
+             url: '{% url "ajax_plot" %}',
+             data: {
+                 "url" : url
+             },
+             dataType: 'json',
+            success: function (dataE) {
+                $("#modalContentPCA").html(dataE.plot);
+                $("#modalTitlePCA").html(title);
+                document.getElementById("selectDimensions").setAttribute("name",url);
+            }
+        });
+    });
+  
+</script>
 {% endblock %}
 

@@ -100,6 +100,7 @@ class statusJob(TemplateView):
 
                 script = os.path.join(settings.BASE_DIR,"bin","miRNA_bench.py")
                 
+                
                 configFile = settings.MEDIA_ROOT+jobID+'/config.json'
                 scriptCm = ["python",script,configFile]
                 response = subprocess.Popen(' '.join(scriptCm),shell=True).pid

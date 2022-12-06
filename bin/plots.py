@@ -1,7 +1,12 @@
-import os
+import os,sys
 import pandas as pd
 from plotly.offline import plot
 import plotly.graph_objects as go
+import plotly.express as px
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import MinMaxScaler
+
+from config import METHODS
 
 def createplots(df,method,jobDir):
     outDir = os.path.join(jobDir,"graphs")
@@ -9,10 +14,17 @@ def createplots(df,method,jobDir):
     if not os.path.exists(outDir):
         os.mkdir(outDir)
 
+    # PCA
+    outfile = os.path.join(outDir,"pca_"+method+".html")
+    outfileImage = os.path.join(outDir,"pca_"+method+".png")
+    pca(df,outfile,outfileImage)
+
     # Heatmap
     outfile = os.path.join(outDir,"heatmap_"+method+".html")
     outfileImage = os.path.join(outDir,"heatmap_"+method+".png")
-    heatmap(df,outfile,outfileImage,method)
+    title = METHODS[method]
+    heatmap(df,outfile,outfileImage,title)
+
 
 def heatmap(df,outfile,outfileImage,title):
     pd.options.plotting.backend = "plotly"
@@ -44,3 +56,43 @@ def heatmap(df,outfile,outfileImage,title):
     outfile_W.close()
 
     fig.write_image(outfileImage)
+
+
+def pca(df,outfile,outfileImage):
+
+    dfT = df.T
+    norm_X = MinMaxScaler().fit_transform(dfT)
+    pca = PCA(n_components=2)
+    components = pca.fit_transform(norm_X)
+    variance = pca.explained_variance_ratio_*100
+
+    fig = px.scatter(components, x=0, y=1, color=list(dfT.index))
+    fig.update_layout(
+    xaxis_title="PC1 ("+str(round(variance[0],2))+"%)",
+    yaxis_title="PC2 ("+str(round(variance[1],2))+"%)",
+    legend_title="Group"
+    )
+    fig.write_image(outfileImage)
+
+    plotCode = plot(fig, show_link=False, auto_open=False, output_type = 'div')
+    outfile_W = open(outfile,'a')
+    outfile_W.write(plotCode)
+    outfile_W.close()
+
+
+    df = px.data.iris()
+
+    pca = PCA(n_components=3)
+    components = pca.fit_transform(norm_X)
+
+    total_var = pca.explained_variance_ratio_.sum() * 100
+
+    fig3D = px.scatter_3d(
+        components, x=0, y=1, z=2, color=list(dfT.index),
+        title=f'Total Explained Variance: {total_var:.2f}%',
+        labels={'0': 'PC 1', '1': 'PC 2', '2': 'PC 3'}
+    )
+    plotCode = plot(fig3D, show_link=False, auto_open=False, output_type = 'div')
+    outfile_W = open(outfile.replace(".html","_3D.html"),'a')
+    outfile_W.write(plotCode)
+    outfile_W.close()

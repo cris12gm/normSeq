@@ -15,14 +15,17 @@ jobDir = config['jobDir']
 
 #Get df
 df = processInput(os.path.join(jobDir,"matrix.txt"))
+infile = os.path.join(jobDir,"matrix.txt")
+
 
 # Make normalization and plots
 
 methods = config['methods']
 
 for method in methods:
-    norm(df,method,jobDir)
-    createplots(df,method,jobDir)
+
+    outdf = norm(infile,df,method,jobDir)
+    createplots(outdf,method,jobDir)
     
 
 #Check and create results.txt

@@ -77,7 +77,18 @@
                       </div>
                     </div>
                 </div>
-            
+                <hr>
+                <div class="card ml-2 mr-2">
+                    <div class="card-body">
+                        <form action="{% url 'status' %}">
+                            <label for="jobID">Search a Job ID:</label><br>
+                            <input type="text" id="jobID" name="jobID"><br>
+                            <br>
+                            <input class="btn btn-success btn-sm" type="submit" value="Search">
+                        </form> 
+                    </div>
+                </div>
+                
             </div>
             </div>
             <!-- /#sidebar-wrapper -->

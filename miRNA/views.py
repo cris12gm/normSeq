@@ -5,13 +5,8 @@ from functools import reduce
 from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView
 from django.views.generic import FormView, DetailView, TemplateView
-from django.http import JsonResponse
-from django.urls import reverse_lazy
-from django.core.files.storage import FileSystemStorage
-from .forms import Query
-from query.models import Job
-from .utils import createGridPlot
 
+from django.http import JsonResponse
 
 import os
 import pandas as pd
@@ -20,6 +15,19 @@ import math
 
 import time
 
+
+METHODS = {
+        'NN' :' No normalization',
+        'CPM' : ' Counts per Million',
+        'TC' : ' Total Count',
+        'UQ' :'Upper Quartile',
+        'Med' :' Median',
+        'DESEQ' : 'DEseq',
+        'TMM' : ' TMM',
+        'QN' : ' Quantile',
+        'RUV' : ' Remove Unwanted Variation',
+        'RLE' : 'Relative Log Expression'
+    }
 class Errors(Enum):
     NO_ERROR = 0
     NOT_VALID = 1
@@ -47,16 +55,39 @@ class miRNAResults(TemplateView):
         visualization = False
 
         heatmap = []
+        pca = []
 
         for method in methods:
-            fileHeatmap = os.path.join(jobDir,"graphs","heatmap_"+method+".html")
-            with open(fileHeatmap,'r') as file:
-                heatmapHTML = file.read().rstrip()
             pngHeatmap = os.path.join(settings.MEDIA_URL,jobID,"graphs","heatmap_"+method+".png")
             id_modal = "heatmap_"+method
-            heatmap.append([pngHeatmap,heatmapHTML,id_modal,method])
-        
+            title_modal = METHODS[method]
+            heatmapHTML = os.path.join(settings.MEDIA_URL,jobID,"graphs","heatmap_"+method+".html")
+
+            heatmap.append([pngHeatmap,heatmapHTML,id_modal,title_modal])
+
+            pngPCA = os.path.join(settings.MEDIA_URL,jobID,"graphs","pca_"+method+".png")
+            id_modal = "pca_"+method
+            title_modal = METHODS[method]
+            pcaHTML = os.path.join(settings.MEDIA_URL,jobID,"graphs","pca_"+method+".html")
+
+            pca.append([pngPCA,pcaHTML,id_modal,title_modal])
+
         visualization=True
 
-        return render(request, self.template, {"jobID":jobID,"visualization":visualization,"heatmapPlots":heatmap})
+        return render(request, self.template, {"jobID":jobID,"visualization":visualization,"heatmapPlots":heatmap,
+        "pcaPlots":pca})
 
+
+def queryPlotHTML(request):
+#    templateError = "error.html"
+    # try:
+    url = request.GET.get('url', None).replace(settings.MEDIA_URL,settings.MEDIA_ROOT)
+    with open(url,'r') as file:
+        plot = file.read().rstrip()
+
+    data = {}
+    data["plot"]=plot
+
+    return JsonResponse(data)
+    # except:
+    #     return render(request, templateError)
