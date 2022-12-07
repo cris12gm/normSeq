@@ -1,4 +1,5 @@
 from django.conf import settings
+import os
 import random,string
 from enum import Enum
 from functools import reduce
@@ -9,7 +10,6 @@ from django.http import JsonResponse
 from django.urls import reverse_lazy
 from .forms import QueryMirna
 from .models import Job
-
 
 def generate_uniq_id(size=15, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
@@ -40,5 +40,3 @@ class Query(TemplateView):
         return render(request, self.template, {"jobID":jobID,"formMirna":formMirna,
         
         })
-
-    

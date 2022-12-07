@@ -14,4 +14,25 @@ input[name="RNAtypeS"] {
     font-weight: bold;
   }
   
+.btn-link{
+    color:#3B2030;
+}
 
+/* mouse over link */
+.btn-link:hover {
+    color: #3B2030;
+  }
+
+.card-header{
+    background-color: #d0d0d0;
+}
+
+linkTab{
+    color: #391b61;
+  }
+  
+  /* mouse over link */
+a:hover {
+    color: #805809;
+}
+  
