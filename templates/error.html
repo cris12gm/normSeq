@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+{% block css %}
+    <link href="{% static 'css/customStyles/stylesError.css'%}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="pageError" >
+    <div class="title404">404</div>
+    <div class="content404">
+        <h2>Oops! This Page Could Not Be Found</h2>
+
+        <button onclick="goBack()" class="btn btn-success btn-sm">GO BACK</button>
+    </div>
+</div>        
+{% endblock %}
+{% block js %}
+<script>
+    function goBack() {
+      window.history.back();
+    }
+</script>
+{% endblock %}

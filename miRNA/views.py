@@ -72,7 +72,8 @@ class miRNAResults(TemplateView):
 
             pca.append([pngPCA,pcaHTML,id_modal,title_modal])
 
-        visualization=True
+        if heatmap or pca:
+            visualization=True
 
         return render(request, self.template, {"jobID":jobID,"visualization":visualization,"heatmapPlots":heatmap,
         "pcaPlots":pca})
