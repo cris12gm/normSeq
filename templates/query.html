@@ -40,10 +40,8 @@
                 <div class="card-body">
                     <h5 class="card-title" id="RNAtypeTitle">miRNA</h5>
                     <div id="form_miRNA" style="display:block;">
-                        <form action="{% url 'status' %}" method="POST" enctype="multipart/form-data" id="formMirna" class="formQuery">
-                            {% load crispy_forms_tags %}    
-                            {% crispy formMirna %}
-                        </form>
+                        {% load crispy_forms_tags %}    
+                        {% crispy formMirna %}
                     </div>
                     <div id="form_mRNA" style="display:none;">
                         Test

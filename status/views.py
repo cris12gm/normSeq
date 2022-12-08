@@ -1,19 +1,12 @@
 from django.conf import settings
-import random,string
 from enum import Enum
 from functools import reduce
 from django.shortcuts import render, redirect
-from django.views.generic.edit import CreateView
-from django.views.generic import FormView, DetailView, TemplateView
-from django.http import JsonResponse
-from django.urls import reverse_lazy
-from django.core.files.storage import FileSystemStorage
+from django.views.generic import TemplateView
 from query.models import Job
 
 import os
-import subprocess
 import psutil
-import json
 
 class Errors(Enum):
     NO_ERROR = 0
@@ -64,52 +57,7 @@ class statusJob(TemplateView):
 
     def post(self, request):
         jobID = request.POST['jobID']
-        typeJobForm = request.POST['typeJob']
-        methodsForm = request.POST.getlist('methods')
 
-        #Get object from models
-        jobDB = Job.objects.get(JobID=jobID)
-        typeJob = jobDB.getType()
-
-        # Alter type to match form selected
-        if typeJob=="Created":
-            jobDB.alterType(typeJobForm)
-
-            #Save file
-            matrixFile = request.FILES['matrix']    
-            fs = FileSystemStorage()
-            filename = fs.save(jobID+"/"+"matrix.txt", matrixFile)
-            uploaded_file_url = fs.url(filename)
-
-            typeJob = jobDB.getType()
-
-            #Parameters contain the info for config.json
-            parameters = {}
-            parameters["jobID"]=jobID
-            parameters["typeJob"]=typeJob
-            parameters["methods"]=methodsForm
-            parameters["jobDir"]= os.path.join(settings.BASE_DIR,settings.MEDIA_ROOT+jobID)
-
-            #Launch
-            if typeJob =="miRNA":
-                
-                #Save the rest of parameters and launch
-
-                with open(settings.MEDIA_ROOT+jobID+'/config.json', 'w') as fp:
-                    json.dump(parameters, fp)
-
-                script = os.path.join(settings.BASE_DIR,"bin","miRNA_bench.py")
-                
-                
-                configFile = settings.MEDIA_ROOT+jobID+'/config.json'
-                scriptCm = ["python",script,configFile]
-                response = subprocess.Popen(' '.join(scriptCm),shell=True).pid
-                if psutil.pid_exists(response):
-                    jobDB.alterPid(response)
-                    jobDB.alterStatus("Running")
-                else:
-                    jobDB.alterStatus("Error")
-        
         return redirect(settings.SUB_SITE+"/status?jobID="+jobID)
     
 
