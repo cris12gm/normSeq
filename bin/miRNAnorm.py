@@ -36,6 +36,7 @@ def uq(infile,outfile):
     #Execute in R
     subprocess.call (R_PATH+" --vanilla bin/R/edgeR_normalization.R "+infile+" UQ "+outfile, shell=True)
     outdf = processInput(outfile)
+    print (outdf)
     return outdf
 
 def tmm(infile,outfile):
@@ -92,7 +93,9 @@ def norm(infile,df,method,jobDir):
         outdf = tc(df,outfile)
     elif method == "UQ":
         outfile = os.path.join(outDir,"matrix_UQ.txt")
+        print (outfile)
         outdf = uq(infile,outfile)
+        
     elif method == "TMM":
         outfile = os.path.join(outDir,"matrix_TMM.txt")
         outdf = tmm(infile,outfile)
