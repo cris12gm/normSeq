@@ -61,7 +61,11 @@ def heatmap_old(df,outfile,outfileImage,title):
 def heatmap(infile,outfile,annotation):
 
     #Execute in R
-    test = subprocess.call ([R_PATH," --vanilla","bin/R/heatmap.R",infile,annotation,outfile],shell=True)
+    print (infile)
+    print (outfile)
+    print (annotation)
+    test = subprocess.call (R_PATH+" --vanilla bin/R/heatmap.R"+infile+" "+annotation+" "+outfile,shell=True)
+    print (test)
 
 def pca(df,outfile,outfileImage):
 
