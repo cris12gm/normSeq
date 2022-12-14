@@ -104,7 +104,6 @@ class Query(TemplateView):
                 samples = open(os.path.join(settings.MEDIA_ROOT,jobID,"matrix.txt")).readline()
                 samples = samples.strip().split("\t")
                 samples.pop(0)
-                print(samples)
                 annotationFile = open(os.path.join(settings.MEDIA_ROOT,jobID,"annotation.txt"),'a')
                 annotationFile.write("sample\tgroup\n")
                 for sample in samples:
