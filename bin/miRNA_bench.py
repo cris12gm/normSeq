@@ -16,7 +16,7 @@ jobDir = config['jobDir']
 #Get df
 df = processInput(os.path.join(jobDir,"matrix.txt"))
 infile = os.path.join(jobDir,"matrix.txt")
-
+annotation = os.path.join(jobDir,"annotation.txt")
 
 # Make normalization and plots
 
@@ -24,8 +24,8 @@ methods = config['methods']
 
 for method in methods:
 
-    outdf = norm(infile,df,method,jobDir)
-    createplots(outdf,method,jobDir)
+    outdf,normfile = norm(infile,df,method,jobDir)
+    createplots(normfile,outdf,method,jobDir,annotation)
     
 
 #Check and create results.txt

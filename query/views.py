@@ -9,9 +9,12 @@ from .models import Job
 from django.core.files.storage import FileSystemStorage
 
 import os,sys
+import pandas as pd
 import subprocess
 import psutil
 import json
+
+ALLOWED_FORMATS = ["txt","xlsx","tsv","csv"]
 
 def generate_uniq_id(size=15, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
@@ -63,13 +66,23 @@ class Query(TemplateView):
                 jobDB.alterType(typeJobForm)
                 typeJob = jobDB.getType()
             
-            #Save file
             try:
                 matrixFile = request.FILES['matrix']
-                extension = matrixFile.name.split(".")[1]  
+                extension = matrixFile.name.split(".")[1]
+
                 fs = FileSystemStorage()
                 filename = fs.save(jobID+"/"+"matrix."+extension, matrixFile)
-                uploaded_file_url = fs.url(filename)
+
+                if extension == "csv":
+                    df = pd.read_csv(os.path.join(settings.MEDIA_ROOT,jobID,"matrix.csv"),sep=";")
+                    df2=df.dropna(how='all')
+                    df2.to_csv(os.path.join(settings.MEDIA_ROOT,jobID,"matrix.txt"),sep="\t",index=None)
+                elif extension == "tsv":
+                    filename = fs.save(jobID+"/"+"matrix.txt", matrixFile)
+                elif extension == "xlsx":
+                    df = pd.read_excel(os.path.join(settings.MEDIA_ROOT,jobID,"matrix.xlsx"))
+                    df2=df.dropna(how='all')
+                    df2.to_csv(os.path.join(settings.MEDIA_ROOT,jobID,"matrix.txt"),sep="\t",index=None)
             except:
                 try:
                     url = request.FILES['url']
@@ -85,8 +98,19 @@ class Query(TemplateView):
                 annotationFile = request.FILES['annotation']
                 annotation = annotationFile.name
                 fs = FileSystemStorage()
-                filename = fs.save(jobID+"/"+annotation, annotationFile)
+                filename = fs.save(jobID+"/"+"annotation.txt", annotationFile)
             except:
+                #Read annotation from matrix
+                samples = open(os.path.join(settings.MEDIA_ROOT,jobID,"matrix.txt")).readline()
+                samples = samples.strip().split("\t")
+                samples.pop(0)
+                print(samples)
+                annotationFile = open(os.path.join(settings.MEDIA_ROOT,jobID,"annotation.txt"),'a')
+                annotationFile.write("sample\tgroup\n")
+                for sample in samples:
+                    annotationFile.write(sample+"\t"+sample+"\n")
+                annotationFile.close()
+
                 annotation=False
 
             # Parameters contain the info for config.json

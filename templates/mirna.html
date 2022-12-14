@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block modals %}
-    {% include "modals/mirna/modal_plots.html" %}
+    {% include "modals/mirna/modal_heatmap.html" %}
     {% include "modals/mirna/modal_pca.html" %}
 {% endblock %}
 
@@ -98,22 +98,14 @@
 
 <!-- Modal plot -->
 <script>
-    $('.modalPlot').on('click', function (e) {
+    $('.modalHeatmapPlot').on('click', function (e) {
         title = this.title;
         url = this.name;
-
-        $.ajax({
-             url: '{% url "ajax_plot" %}',
-             data: {
-                 "url" : url
-             },
-             dataType: 'json',
-            success: function (dataE) {
-                $("#modalContent").html(dataE.plot);
-                $("#modalTitle").html(title);
-            }
+        imageHeatmap  = '<img class="img-fluid" src="'+url+'">';
+        $("#modalHeatmapContent").html(imageHeatmap);
+        document.getElementById("parametersHeatmap").setAttribute('value',url);
+        $("#modalHeatmapTitle").html(title);
         });
-    });
   
 </script>
 
@@ -149,7 +141,7 @@
         if (valor == "2"){
             url = url.replace('_3D.html', '_3D.html');
         }
-
+        $("#modalContentPCA").html("<img src='{% static 'images/loading.gif' %}'>")
         $.ajax({
             url: '{% url "ajax_plot" %}',
             data: {
@@ -185,5 +177,36 @@
     });
   
 </script> 
+
+
+<!-- On change of heatmap options, change plot -->
+<script>
+    $('#selectMethod').change(function(){ 
+        $("#modalContentHeatmap").html("<img src='{% static 'images/loading.gif' %}'>")
+
+        scale = document.getElementById("selectScale").value;
+        method = document.getElementById("selectMethod").value;
+        oldPlot = document.getElementById("parametersHeatmap").getAttribute('value');
+        
+        newPlot = oldPlot.replace('.png', '_'+method+"_"+scale+".png")
+        imageHeatmap  = '<img class="img-fluid" src="'+newPlot+'">';
+        $("#modalHeatmapContent").html(imageHeatmap);
+
+    });
+
+    $('#selectScale').change(function(){ 
+        $("#modalContentHeatmap").html("<img src='{% static 'images/loading.gif' %}'>")
+
+        scale = document.getElementById("selectScale").value;
+        method = document.getElementById("selectMethod").value;
+        oldPlot = document.getElementById("parametersHeatmap").getAttribute('value');
+        
+        newPlot = oldPlot.replace('.png', '_'+method+"_"+scale+".png")
+        imageHeatmap  = '<img class="img-fluid" src="'+newPlot+'">';
+        $("#modalHeatmapContent").html(imageHeatmap);
+
+    });
+</script>
+
 {% endblock %}
 

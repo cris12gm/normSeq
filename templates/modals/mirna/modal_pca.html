@@ -1,3 +1,4 @@
+{% load static %}
 <div class="modal fade" id="modalTargetPCA" role="dialog">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -15,8 +16,8 @@
                     </select>
                   </div>
             </div>
-            <div id="modalContentPCA">
-                Calculating PCA
+            <div id="modalContentPCA" class="d-flex justify-content-center">
+                <img src="{% static 'images/loading.gif' %}"> 
             </div>
         </div>
         <div class="modal-footer">

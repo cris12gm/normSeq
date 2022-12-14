@@ -1,0 +1,7 @@
+sample	group
+sample1	Healthy
+sample2	Healthy
+sample3	Healthy
+sample4	Desease
+sample5	Desease
+sample6	Desease

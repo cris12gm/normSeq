@@ -6,9 +6,10 @@ import plotly.express as px
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import MinMaxScaler
 
-from config import METHODS
+from config import METHODS,R_PATH
+import subprocess
 
-def createplots(df,method,jobDir):
+def createplots(infile,df,method,jobDir,annotation):
     outDir = os.path.join(jobDir,"graphs")
 
     if not os.path.exists(outDir):
@@ -20,13 +21,13 @@ def createplots(df,method,jobDir):
     pca(df,outfile,outfileImage)
 
     # Heatmap
-    outfile = os.path.join(outDir,"heatmap_"+method+".html")
+    outfile = os.path.join(outDir,"heatmap_"+method+".png")
     outfileImage = os.path.join(outDir,"heatmap_"+method+".png")
     title = METHODS[method]
-    heatmap(df,outfile,outfileImage,title)
+    heatmap(infile,outfile,annotation)
 
 
-def heatmap(df,outfile,outfileImage,title):
+def heatmap_old(df,outfile,outfileImage,title):
     pd.options.plotting.backend = "plotly"
     rpm = df.values.T
 #    sumrpm =  np.array(pd.DataFrame(np.sum(rpm,axis=0)).T)
@@ -57,6 +58,10 @@ def heatmap(df,outfile,outfileImage,title):
 
     fig.write_image(outfileImage)
 
+def heatmap(infile,outfile,annotation):
+
+    #Execute in R
+    test = subprocess.call ([R_PATH," --vanilla","bin/R/heatmap.R",infile,annotation,outfile],shell=True)
 
 def pca(df,outfile,outfileImage):
 

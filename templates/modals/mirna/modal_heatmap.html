@@ -1,0 +1,42 @@
+{% load static %}
+<div class="modal fade" id="modalHeatmapTarget" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+        <div class="modal-header">
+            <div hidden="hidden" id="parametersHeatmap" value="NA"></div>
+            <h4 class="modal-title" id="modalHeatmapTitle">
+            </h4>
+        </div>
+        <div class="modal-body">
+            <div id="selectHeatmap">
+                <div class="form-group form-inline">
+                    <div>
+                        <label for="selectMethod"><b>Method</b></label>
+                        <select class="form-control" id="selectMethod">
+                            <option value="single">Single</option>
+                            <option value="complete">Complete</option>
+                            <option value="average">Average</option>
+                            <option value="median">Median</option>
+                        </select>
+                    </div>
+                    <div class="ml-3">
+                        <label for="selectScale"><b>Scale</b></label>
+                        <select class="form-control" id="selectScale">
+                            <option value="row">Row</option>
+                            <option value="col">Column</option>
+                            <option value="none">None</option>
+                        </select>
+                    </div>
+                    
+                  </div>
+            </div>
+            <div id="modalHeatmapContent" class="d-flex justify-content-center">
+                <img src="{% static 'images/loading.gif' %}"> 
+            </div>
+        </div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+    </div>
+</div>

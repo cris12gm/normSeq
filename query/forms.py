@@ -4,6 +4,7 @@ from crispy_forms.layout import Layout, Submit, HTML, Field, ButtonHolder,Button
 from crispy_forms.bootstrap import Tab,TabHolder
 
 from query.utils import create_card,render_modal
+from normSeq.settings import *
 
 
 
@@ -55,7 +56,7 @@ class QueryMirna(forms.Form):
             HTML("""<br>"""),
             create_card(
                 Field('annotation',css_class='form-control'),
-                HTML('<button type="button" class="btn btn-info btn-sm float-right">Download sample template</button>'),
+                HTML('<a href="'+STATIC_URL+'testFiles/template.txt" download="template.txt"><button type="button" class="btn btn-info btn-sm float-right">Download sample template</button></a>'),
                 title="Annotation",
                 id="annotation",
                 show=False,

@@ -1,8 +1,8 @@
 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; grid-column-gap: 10px; grid-row-gap:10px;">
     {% for heatmap in heatmapPlots %}
         <div class="card cardHeatmap" style="width: 100%; ">
-            <h5 class="card-header d-flex justify-content-center">{{ heatmap.3 }}</h5>
-            <a title="{{ heatmap.3 }}" name="{{ heatmap.1 }}" class="modalPlot" data-toggle="modal" data-target="#modalTarget" onmouseover="this.style.cursor='pointer'">
+            <h5 class="card-header d-flex justify-content-center">{{ heatmap.2 }}</h5>
+            <a title="{{ heatmap.2 }}" name="{{ heatmap.0 }}" class="modalHeatmapPlot" data-toggle="modal" data-target="#modalHeatmapTarget" onmouseover="this.style.cursor='pointer'">
                 <img class="img-fluid" src="{{ heatmap.0 }}">
             </a>
         </div>

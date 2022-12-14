@@ -100,7 +100,7 @@ def norm(infile,df,method,jobDir):
         outfile = os.path.join(outDir,"matrix_RLE.txt")
         outdf = rle(infile,outfile)
     elif method == 'NN':
-        outfile = os.path.join(outDir,"matrix.txt")
+        outfile = os.path.join(jobDir,"matrix.txt")
         outdf = df
     elif method == 'Med':
         outfile = os.path.join(outDir,"matrix_Med.txt")
@@ -112,4 +112,4 @@ def norm(infile,df,method,jobDir):
         outfile = os.path.join(outDir,"matrix_QN.txt")
         outdf = qn(infile,outfile)
 
-    return outdf
+    return outdf,outfile

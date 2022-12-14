@@ -61,9 +61,11 @@ class miRNAResults(TemplateView):
             pngHeatmap = os.path.join(settings.MEDIA_URL,jobID,"graphs","heatmap_"+method+".png")
             id_modal = "heatmap_"+method
             title_modal = METHODS[method]
-            heatmapHTML = os.path.join(settings.MEDIA_URL,jobID,"graphs","heatmap_"+method+".html")
+            #heatmapHTML = os.path.join(settings.MEDIA_URL,jobID,"graphs","heatmap_"+method+".html")
 
-            heatmap.append([pngHeatmap,heatmapHTML,id_modal,title_modal])
+            # heatmap.append([pngHeatmap,heatmapHTML,id_modal,title_modal])
+            heatmap.append([pngHeatmap,id_modal,title_modal])
+            
 
             pngPCA = os.path.join(settings.MEDIA_URL,jobID,"graphs","pca_"+method+".png")
             id_modal = "pca_"+method
