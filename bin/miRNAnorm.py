@@ -81,7 +81,7 @@ def ruv(infile,outfile):
 
 def norm(infile,df,method,jobDir):
     outDir = os.path.join(jobDir,"normalized")
-
+    print (method)
     if not os.path.exists(outDir):
         os.mkdir(outDir)
 
