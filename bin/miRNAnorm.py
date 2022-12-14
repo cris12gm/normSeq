@@ -93,7 +93,6 @@ def norm(infile,df,method,jobDir):
         outdf = tc(df,outfile)
     elif method == "UQ":
         outfile = os.path.join(outDir,"matrix_UQ.txt")
-        print (outfile)
         outdf = uq(infile,outfile)
         
     elif method == "TMM":

@@ -25,7 +25,7 @@ methods = config['methods']
 for method in methods:
 
     outdf,normfile = norm(infile,df,method,jobDir)
-#    createplots(normfile,outdf,method,jobDir,annotation)
+    createplots(normfile,outdf,method,jobDir,annotation)
     
 
 #Check and create results.txt
