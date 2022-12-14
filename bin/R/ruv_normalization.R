@@ -1,4 +1,3 @@
-#! /usr/bin/Rscript
 args = commandArgs(trailingOnly=TRUE)
 
 library(RUVSeq)
