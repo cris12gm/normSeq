@@ -6,7 +6,7 @@ import plotly.express as px
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import MinMaxScaler
 
-from config import METHODS,R_PATH
+from config import METHODS,R_PATH,R_SCRIPTS_PATH
 import subprocess
 
 def createplots(infile,df,method,jobDir,annotation):
@@ -61,7 +61,7 @@ def heatmap_old(df,outfile,outfileImage,title):
 def heatmap(infile,outfile,annotation):
 
     #Execute in R
-    subprocess.call (R_PATH+" --vanilla bin/R/heatmap.R "+infile+" "+annotation+" "+outfile,shell=True)
+    subprocess.call (R_PATH+" --vanilla "+R_SCRIPTS_PATH+"heatmap.R "+infile+" "+annotation+" "+outfile,shell=True)
 
 def pca(df,outfile,outfileImage):
 

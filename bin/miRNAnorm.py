@@ -4,6 +4,7 @@ import numpy as np
 import subprocess
 
 from config import R_PATH
+from config import R_SCRIPTS_PATH
 
 def processInput(infile):
     cabecera = open(infile).readline().split("\t")[0]
@@ -34,20 +35,19 @@ def tc(df,outfile):
 
 def uq(infile,outfile):
     #Execute in R
-    subprocess.call (R_PATH+" --vanilla bin/R/edgeR_normalization.R "+infile+" UQ "+outfile, shell=True)
+    subprocess.call (R_PATH+" --vanilla "+R_SCRIPTS_PATH+"edgeR_normalization.R "+infile+" UQ "+outfile, shell=True)
     outdf = processInput(outfile)
-    print (outdf)
     return outdf
 
 def tmm(infile,outfile):
     #Execute in R
-    subprocess.call (R_PATH+" --vanilla bin/R/edgeR_normalization.R "+infile+" TMM "+outfile, shell=True)
+    subprocess.call (R_PATH+" --vanilla "+R_SCRIPTS_PATH+"edgeR_normalization.R "+infile+" TMM "+outfile, shell=True)
     outdf = processInput(outfile)
     return outdf
 
 def rle(infile,outfile):
     #Execute in R
-    subprocess.call (R_PATH+" --vanilla bin/R/edgeR_normalization.R "+infile+" RLE "+outfile, shell=True)
+    subprocess.call (R_PATH+" --vanilla "+R_SCRIPTS_PATH+"edgeR_normalization.R "+infile+" RLE "+outfile, shell=True)
     outdf = processInput(outfile)
     return outdf
 
@@ -62,20 +62,20 @@ def med(df,outfile):
 
 def deseq(infile,outfile):
     #Execute in R
-    subprocess.call (R_PATH+" --vanilla bin/R/deseq_normalization.R "+infile+" "+outfile, shell=True)
+    subprocess.call (R_PATH+" --vanilla "+R_SCRIPTS_PATH+"deseq_normalization.R "+infile+" "+outfile, shell=True)
     outdf = processInput(outfile)
     return outdf
 
 
 def qn(infile,outfile):
     #Execute in R
-    subprocess.call (R_PATH+" --vanilla bin/R/quantile_normalization.R "+infile+" "+outfile, shell=True)
+    subprocess.call (R_PATH+" --vanilla "+R_SCRIPTS_PATH+"quantile_normalization.R "+infile+" "+outfile, shell=True)
     outdf = processInput(outfile)
     return outdf
 
 def ruv(infile,outfile):
     #Execute in R
-    subprocess.call (R_PATH+" --vanilla bin/R/ruv_normalization.R "+infile+" "+outfile, shell=True)
+    subprocess.call (R_PATH+" --vanilla "+R_SCRIPTS_PATH+"ruv_normalization.R "+infile+" "+outfile, shell=True)
     outdf = processInput(outfile)
     return outdf
 
