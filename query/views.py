@@ -190,3 +190,12 @@ class Query(TemplateView):
 
                 return render(request, self.template, {"formMirna":formMirna,"jobID":jobID,
                 "formMrna":formMrna,"formTrna":formTrna,"formOther":formOther})
+        else:
+            jobID = request.POST['jobID']
+            formMirna = QueryMirna(request.POST,request.FILES)
+            formTrna = QueryTrna()
+            formMrna = QueryMrna()
+            formOther = QueryOther()
+
+            return render(request, self.template, {"formMirna":formMirna,"jobID":jobID,
+                "formMrna":formMrna,"formTrna":formTrna,"formOther":formOther})
