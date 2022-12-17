@@ -41,11 +41,12 @@ class Query(TemplateView):
         if jobID:
             Job.objects.create(JobID= jobID, status="Created", typeJob="Created")
         formMirna = QueryMirna()
-        # formTrna = QueryTrna()
-        # # formMrna = QueryMrna()
-        # formOther = QueryOther()
+        formTrna = QueryTrna()
+        formMrna = QueryMrna()
+        formOther = QueryOther()
 
-        return render(request, self.template, {"jobID":jobID,"formMirna":formMirna})
+        return render(request, self.template, {"jobID":jobID,"formMirna":formMirna,"formMrna":formMrna,
+        "formTrna":formTrna,"formOther":formOther})
 
     def post(self,request):
 
@@ -182,6 +183,10 @@ class Query(TemplateView):
                 return redirect(settings.SUB_SITE+"/status?jobID="+jobID)
             else:
                 jobID = request.POST['jobID']
-                form = QueryMirna(request.POST,request.FILES)
+                formMirna = QueryMirna(request.POST,request.FILES)
+                formTrna = QueryTrna()
+                formMrna = QueryMrna()
+                formOther = QueryOther()
 
-                return render(request, self.template, {"formMirna":form,"jobID":jobID})
+                return render(request, self.template, {"formMirna":formMirna,"jobID":jobID,
+                "formMrna":formMrna,"formTrna":formTrna,"formOther":formOther})
