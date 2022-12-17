@@ -81,7 +81,6 @@ def ruv(infile,outfile):
 
 def norm(infile,df,method,jobDir):
     outDir = os.path.join(jobDir,"normalized")
-    print (method)
     if not os.path.exists(outDir):
         os.mkdir(outDir)
 
@@ -103,6 +102,8 @@ def norm(infile,df,method,jobDir):
         outdf = rle(infile,outfile)
     elif method == 'NN':
         outfile = os.path.join(jobDir,"matrix.txt")
+        outfile_2 = os.path.join(outDir,"matrix_NN.txt") 
+        os.system("cp "+outfile+" "+outfile_2)
         outdf = df
     elif method == 'Med':
         outfile = os.path.join(outDir,"matrix_Med.txt")

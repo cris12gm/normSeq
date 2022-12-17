@@ -70,8 +70,10 @@ def pca(df,outfile,outfileImage):
     pca = PCA(n_components=2)
     components = pca.fit_transform(norm_X)
     variance = pca.explained_variance_ratio_*100
+    total_var = pca.explained_variance_ratio_.sum() * 100
 
-    fig = px.scatter(components, x=0, y=1, color=list(dfT.index))
+    fig = px.scatter(components, x=0, y=1, color=list(dfT.index),
+        title=f'Total Explained Variance: {total_var:.2f}%')
     fig.update_layout(
     xaxis_title="PC1 ("+str(round(variance[0],2))+"%)",
     yaxis_title="PC2 ("+str(round(variance[1],2))+"%)",
@@ -97,6 +99,10 @@ def pca(df,outfile,outfileImage):
         title=f'Total Explained Variance: {total_var:.2f}%',
         labels={'0': 'PC 1', '1': 'PC 2', '2': 'PC 3'}
     )
+    fig3D.update_layout(
+    legend_title="Group"
+    )
+    
     plotCode = plot(fig3D, show_link=False, auto_open=False, output_type = 'div')
     outfile_W = open(outfile.replace(".html","_3D.html"),'a')
     outfile_W.write(plotCode)

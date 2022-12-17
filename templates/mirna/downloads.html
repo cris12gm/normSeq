@@ -1,0 +1,4 @@
+<h5>Download Expression matrix</h5>
+{% for key, value in downloads.items %}
+    <a href="{{ value.0 }}" download="{{ value.1 }}"><button type="button" class="btn btn-success mt-3">{{ key}}</button></a>
+{% endfor %}

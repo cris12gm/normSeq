@@ -2,6 +2,7 @@ args = commandArgs(trailingOnly=TRUE)
 library(pheatmap)
 library(stringr)
 library(RColorBrewer)
+library(ggplot2)
 
 matrix <- read.table(args[1],header=TRUE,sep="\t")
 
@@ -18,7 +19,9 @@ samplesheet <- read.table(args[2],header=T,sep="\t")
 samplesheet$sample <- make.names(samplesheet$sample)
 
 row.names(samplesheet) <- samplesheet$sample
+samplesheet$Group <- samplesheet$group
 samplesheet$sample <- NULL
+samplesheet$group <- NULL
 
 output <- args[3]
 

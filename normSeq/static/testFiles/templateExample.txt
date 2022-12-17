@@ -1,0 +1,11 @@
+sample	group
+Control_M	M
+ERG202_M	M
+ERG201_M	M
+ERG203_M	M
+ERG206_M	M
+ERG201_O	O
+ERG206_O	O
+Control_O	O
+ERG202_O	O
+ERG203_O	O

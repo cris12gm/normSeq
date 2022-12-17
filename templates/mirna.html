@@ -31,11 +31,18 @@
                             <a class="nav-link" id="visualization-tab" data-toggle="tab" href="#visualization" role="tab" aria-controls="visualization" aria-selected="false"><h5>Visualization</h5></a>
                         </li>
                         {% endif %}
-                        {% if normalization %}
                         <li class="nav-item">
-                            <a class="nav-link" id="normalization-tab" data-toggle="tab" href="#normalization" role="tab" aria-controls="normalization" aria-selected="false"><h5>Normalized data</h5></a>
+                            <a class="nav-link" id="de-tab" data-toggle="tab" href="#de" role="tab" aria-controls="de" aria-selected="false"><h5>Differential Expression</h5></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="batch-tab" data-toggle="tab" href="#batch" role="tab" aria-controls="batch" aria-selected="false"><h5>Batch effect correction</h5></a>
+                        </li>
+                        {% if downloads %}
+                        <li class="nav-item">
+                            <a class="nav-link" id="downloads-tab" data-toggle="tab" href="#downloads" role="tab" aria-controls="downloads" aria-selected="false"><h5>Downloads</h5></a>
                         </li>
                         {% endif %}
+
                     </ul>
             
                     <div class="tab-content" id="myTabContent">
@@ -47,11 +54,17 @@
                             {% include "mirna/visualization.html" %}
                         </div>
                         {% endif %}
-                        {% if normalization %}
-                        <div class="tab-pane fade tabResult" id="normalization" role="tabpanel" aria-labelledby="normalization-tab">
-                            {% include "mirna/normalization.html" %}
+                        <div class="tab-pane fade tabResult" id="de" role="tabpanel" aria-labelledby="de-tab">
+                            {% include "mirna/de.html" %}
+                        </div>
+                        {% if downloads %}
+                        <div class="tab-pane fade tabResult" id="downloads" role="tabpanel" aria-labelledby="downloads-tab">
+                            {% include "mirna/downloads.html" %}
                         </div>
                         {% endif %}
+                        <div class="tab-pane fade tabResult" id="batch" role="tabpanel" aria-labelledby="batch-tab">
+                            {% include "mirna/batcheffect.html" %}
+                        </div>
                     </div>
                 </div>
 

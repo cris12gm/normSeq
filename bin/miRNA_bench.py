@@ -4,6 +4,7 @@ import os,sys
 import json
 from plots import createplots
 from miRNAnorm import processInput,norm
+from summary import createsummary
 
 
 #Error = False
@@ -25,7 +26,9 @@ methods = config['methods']
 for method in methods:
 
     outdf,normfile = norm(infile,df,method,jobDir)
+    #createsummary(normfile,outdf,method,jobDir,annotation)
     createplots(normfile,outdf,method,jobDir,annotation)
+
     
 
 #Check and create results.txt

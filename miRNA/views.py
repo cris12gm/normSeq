@@ -56,6 +56,7 @@ class miRNAResults(TemplateView):
 
         heatmap = []
         pca = []
+        downloads = {}
 
         for method in methods:
             pngHeatmap = os.path.join(settings.MEDIA_URL,jobID,"graphs","heatmap_"+method+".png")
@@ -74,11 +75,18 @@ class miRNAResults(TemplateView):
 
             pca.append([pngPCA,pcaHTML,id_modal,title_modal])
 
+
+            ##Downloads
+            downloadLink = os.path.join(settings.MEDIA_URL,jobID,"normalized","matrix_"+method+".txt")
+
+            downloads[METHODS[method]] = [downloadLink,"matrix_"+method+".txt"]
+
+
         if heatmap or pca:
             visualization=True
 
         return render(request, self.template, {"jobID":jobID,"visualization":visualization,"heatmapPlots":heatmap,
-        "pcaPlots":pca})
+        "pcaPlots":pca,"downloads":downloads})
 
 
 def queryPlotHTML(request):

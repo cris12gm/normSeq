@@ -24,33 +24,46 @@
         <div class="col-9">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">RNA CLASS</h5>
-                    <form>
-                        <div class='form-group'">
-                            <input type="radio" name="RNAtypeS" value="miRNA" checked="checked" onclick="changeDropdown()">miRNA</input>
-                            <input type="radio" name="RNAtypeS" value="mRNA" onclick="changeDropdown()">mRNA</input>
-                            <input type="radio" name="RNAtypeS" value="tRNA" onclick="changeDropdown()">tRNA</input>
-                            <input type="radio" name="RNAtypeS" value="otherRNA" onclick="changeDropdown()">Other RNAs</input>
+                    <div class='card mb-3'>
+                        <div class='card-header'>
+                            <div class='row'>
+                                <div class='col-9'>
+                                    <button class='btn btn-link btn-block text-left' type='button' data-toggle='collapse' data-target='#typesRNA' aria-expanded='true' aria-controls='typesRNA'>
+                                        <h5>
+                                            RNA class
+                                        </h5>
+                                    </button>
+                                </div>
+                            </div>      
                         </div>
-                    </form>  
-                </div>
-            </div>
-            <br>
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title" id="RNAtypeTitle">miRNA</h5>
+                        <div id='typesRNA' class='collapse show'>
+                            <div class='card-body'>
+                                <form>
+                                    <div class="form-group">
+                                        <input type="radio" name="RNAtypeS" value="miRNA" checked="checked" onclick="changeDropdown()">miRNA</input>
+                                        <input type="radio" name="RNAtypeS" value="mRNA" onclick="changeDropdown()">mRNA</input>
+                                        <input type="radio" name="RNAtypeS" value="tRNA" onclick="changeDropdown()">tRNA</input>
+                                        <input type="radio" name="RNAtypeS" value="otherRNA" onclick="changeDropdown()">Other RNAs</input>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                     <div id="form_miRNA" style="display:block;">
                         {% load crispy_forms_tags %}    
                         {% crispy formMirna %}
                     </div>
                     <div id="form_mRNA" style="display:none;">
-                        Test
+                        {% load crispy_forms_tags %}    
+                        {% crispy formMrna %}
                     </div>
                     <div id="form_tRNA" style="display:none;">
-                        tRNA form
+                        {% load crispy_forms_tags %}    
+                        {% crispy formTrna %}
                     </div>
                     <div id="form_otherRNA" style="display:none;">
-                        other RNAs form
+                        {% load crispy_forms_tags %}    
+                        {% crispy formOther %}
                     </div>
                 </div>
             </div>
@@ -62,13 +75,15 @@
                 <h5 class="card-header" id="info">INFO</h5>
                 <div class="card-body">
                     <b>Job ID:</b> {{ jobID }}
+                    <br>
+                    <div id="RNAselected"><b>RNA class: </b>miRNA</div>
                 </div>
             </div>
             <br>
             <div class="card">
                 <h5 class="card-header" id="info">TEST DATA</h5>
                 <div class="card-body">
-                    <button class="btn btn-sm btn-success">Load Test Data</button>
+                    <button class="btn btn-sm btn-success" id="loadEx">Load Test Data</button>
                 </div>
             </div>
         </div>
@@ -83,8 +98,8 @@
         var radios = document.getElementsByName('RNAtypeS');
         for (var i = 0, length = radios.length; i < length; i++) {
             if (radios[i].checked) {
-                var newTitle = radios[i].value;    
-                document.getElementById("RNAtypeTitle").innerHTML = newTitle;
+                var newTitle = radios[i].value;   
+                document.getElementById("RNAselected").innerHTML = "<b>RNA class: </b>"+newTitle;
                 var divNew = document.getElementById("form_".concat(newTitle));
                 var allDivs = document.querySelectorAll('*[id^="form_"]');
                 for (var i = 0, length = allDivs.length; i < length; i++) {
@@ -111,18 +126,75 @@
 <!-- Initialize the plugin: -->
 <script type="text/javascript">
     $(document).ready(function() {
-        $('#id_methods').multiselect({
+        $('#id_methods_mirna').multiselect({
             includeSelectAllOption: true,
             maxHeight: 200,
             buttonWidth: '300px',
-            enableCaseInsensitiveFiltering: true
+            enableCaseInsensitiveFiltering: true,
+            selectAll: true
         });
-        $('#id_mirgenedb').multiselect({
+        $('#id_methods_mrna').multiselect({
+            includeSelectAllOption: true,
             maxHeight: 200,
             buttonWidth: '300px',
-            enableCaseInsensitiveFiltering: true
+            enableCaseInsensitiveFiltering: true,
+            selectAll: true
+        });
+        $('#id_methods_trna').multiselect({
+            includeSelectAllOption: true,
+            maxHeight: 200,
+            buttonWidth: '300px',
+            enableCaseInsensitiveFiltering: true,
+            selectAll: true
+        });
+        $('#id_methods_other').multiselect({
+            includeSelectAllOption: true,
+            maxHeight: 200,
+            buttonWidth: '300px',
+            enableCaseInsensitiveFiltering: true,
+            selectAll: true
         });
 
+    });
+</script>
+
+<!-- Load example data -->
+<script type="text/javascript">
+     $('#loadEx').on('click', function(){
+        var radios = document.getElementsByName('RNAtypeS');
+        for (var i = 0, length = radios.length; i < length; i++) {
+            if (radios[i].checked) {
+                    var newTitle = radios[i].value;
+                    if (newTitle =='miRNA'){
+                        $('#id_url_mirna').val("http://127.0.0.1:8000/static/testFiles/exampleMatrix.txt");
+                        $('[href="#url_mirna"]').tab('show');
+                        $('#id_annotationURL_mirna').val("http://127.0.0.1:8000/static/testFiles/templateExample.txt");
+                        $('[href="#annotation_url_mirna"]').tab('show');
+                        $('#id_methods_mirna').multiselect('select', ['NN','CPM','UQ','Med','TC','TMM','QN','RLE']);
+                    }
+                    if (newTitle =='mRNA'){
+                        $('#id_url_mrna').val("http://127.0.0.1:8000/static/testFiles/exampleMatrix.txt");
+                        $('[href="#url_mrna"]').tab('show');
+                        $('#id_annotationURL_mrna').val("http://127.0.0.1:8000/static/testFiles/templateExample.txt");
+                        $('[href="#annotation_url_mrna"]').tab('show');
+                        $('#id_methods_mrna').multiselect('select', ['NN','CPM','UQ','Med','TC','TMM','QN','RLE']);
+                    }
+                    if (newTitle =='tRNA'){
+                        $('#id_url_trna').val("http://127.0.0.1:8000/static/testFiles/exampleMatrix.txt");
+                        $('[href="#url_trna"]').tab('show');
+                        $('#id_annotationURL_trna').val("http://127.0.0.1:8000/static/testFiles/templateExample.txt");
+                        $('[href="#annotation_url_trna"]').tab('show');
+                        $('#id_methods_trna').multiselect('select', ['NN','CPM','UQ','Med','TC','TMM','QN','RLE']);
+                    }
+                    if (newTitle =='otherRNA'){
+                        $('#id_url_other').val("http://127.0.0.1:8000/static/testFiles/exampleMatrix.txt");
+                        $('[href="#url_other"]').tab('show');
+                        $('#id_annotationURL_other').val("http://127.0.0.1:8000/static/testFiles/templateExample.txt");
+                        $('[href="#annotation_url_other"]').tab('show');
+                        $('#id_methods_other').multiselect('select', ['NN','CPM','UQ','Med','TC','TMM','QN','RLE']);
+                    }
+            }
+        }
     });
 </script>
 

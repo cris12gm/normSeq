@@ -11,7 +11,11 @@ def create_card(*fields, **kwargs):
     card =  HTML("<div class='card'>")
     panel_title_1 = HTML("<div class='card-header'>")
     panel_title_2 = HTML("<div class='row'><div class='col-9'><button class='btn btn-link btn-block text-left' type='button' data-toggle='collapse' data-target='#"+id_card+"' aria-expanded='true' aria-controls='"+id_card+"'><h5>"+title+"</h5></button></div>")
-    panel_title_3 = HTML("<div class='col-3'><div class='float-right'>"+render_modal(modal)+"</div></div></div></div>")
+    if modal!=None:
+        panel_title_3 = HTML("<div class='col-3'><div class='float-right'>"+render_modal(modal)+"</div></div></div></div>")
+    else:
+        panel_title_3 = HTML("<div class='col-3'><div class='float-right'></div></div></div></div>")
+      
     panel_title = Div(panel_title_1,panel_title_2,panel_title_3)
     if show:
         card_body=HTML("<div id='"+id_card+"' class='collapse show'><div class='card-body'>")
