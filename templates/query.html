@@ -12,6 +12,8 @@
     {% include "modals/query/chooseAnnotation.html" %}
 {% endblock %}
 
+{% load crispy_forms_tags %}    
+
 {% block content %}
 
 <div class="menu-hide" id="menu-hide">
@@ -50,19 +52,15 @@
                         </div>
                     </div>
                     <div id="form_miRNA" style="display:block;">
-                        {% load crispy_forms_tags %}    
                         {% crispy formMirna %}
                     </div>
                     <div id="form_mRNA" style="display:none;">
-                        {% load crispy_forms_tags %}    
                         {% crispy formMrna %}
                     </div>
                     <div id="form_tRNA" style="display:none;">
-                        {% load crispy_forms_tags %}    
                         {% crispy formTrna %}
                     </div>
                     <div id="form_otherRNA" style="display:none;">
-                        {% load crispy_forms_tags %}    
                         {% crispy formOther %}
                     </div>
                 </div>
