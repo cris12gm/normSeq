@@ -114,10 +114,7 @@ class Query(TemplateView):
                             df2.to_csv(os.path.join(settings.MEDIA_ROOT,jobID,"matrix.txt"),sep="\t",index=None)
 
                     except:
-                        jobID = request.POST['jobID']
-                        form = QueryMirna(request.POST,request.FILES)
-
-                        return render(request, self.template, {"formMirna":form,"jobID":jobID})
+                        return render(request, "error.html", {})
                         #Error
 
                 #Save annotation
