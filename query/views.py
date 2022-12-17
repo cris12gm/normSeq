@@ -41,12 +41,11 @@ class Query(TemplateView):
         if jobID:
             Job.objects.create(JobID= jobID, status="Created", typeJob="Created")
         formMirna = QueryMirna()
-        formTrna = QueryTrna()
-        formMrna = QueryMrna()
-        formOther = QueryOther()
+        # formTrna = QueryTrna()
+        # # formMrna = QueryMrna()
+        # formOther = QueryOther()
 
-        return render(request, self.template, {"jobID":jobID,"formMirna":formMirna,
-        "formTrna":formTrna,"formMrna":formMrna,"formOther":formOther})
+        return render(request, self.template, {"jobID":jobID,"formMirna":formMirna})
 
     def post(self,request):
 
