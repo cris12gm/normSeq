@@ -1,8 +1,35 @@
-<div class="card">
-    <div class="card-header">
-        <h5>Expression level per miRNA distribution</h5>
-    </div>
-    <div class="card-body">
-        
-    </div>
-  </div>
+{% if summary %}
+    {% if summary.distribution %}
+        <div class="card">
+            <div class="card-header">
+                <h5>Expression level per miRNA distribution</h5>
+            </div>
+            <div class="card-body">
+                <div>
+                    <div class="form-group">
+                        <label for="selectDistribution">Select normalization method:</label>
+                        <select class="form-control" id="selectDistribution">
+                            {% for key,value in summary.distribution.items %}
+                                    <option value="{{ key }}">{{ value.name }}</option>
+                            {% endfor %}
+                        </select>
+                      </div>
+                </div>
+                {% for key, value in summary.distribution.items %}
+                    <div id="distribution_{{key}}" class="distributionPlot" style="display:{{value.active}}">
+                        <a title="{{ value.name }}" name="{{ value.HTML }}" class="modalPlotDistribution" data-toggle="modal" data-target="#modalTargetDistribution" onmouseover="this.style.cursor='pointer'">
+                            <img class="img-fluid" src="{{ value.PNG }}">
+                            </a>
+                    </div>
+                
+                {% endfor %}
+                <!-- <a title="{{ pca.3 }}" name="{{ pca.1 }}" class="modalPlotPCA" data-toggle="modal" data-target="#modalTargetPCA" onmouseover="this.style.cursor='pointer'">
+                    <img class="img-fluid" src="{{ pca.0 }}">
+                </a>
+                <div id="sumDist" value="{{ summary.distributionHTML }}">
+                    <img
+                </div> -->
+            </div>
+        </div>
+    {% endif %}
+{% endif %}

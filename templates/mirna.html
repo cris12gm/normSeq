@@ -8,6 +8,7 @@
 {% block modals %}
     {% include "modals/mirna/modal_heatmap.html" %}
     {% include "modals/mirna/modal_pca.html" %}
+    {% include "modals/mirna/modal_distribution.html" %}
 {% endblock %}
 
 {% block content %}
@@ -109,7 +110,7 @@
   
 </script>
 
-<!-- Modal plot -->
+<!-- Modal plot Heatmap -->
 <script>
     $('.modalHeatmapPlot').on('click', function (e) {
         title = this.title;
@@ -122,7 +123,7 @@
   
 </script>
 
-<!-- Modal plot PCA -->
+<!-- Modal plot PCA, modalDistribution -->
 <script>
     $('.modalPlotPCA').on('click', function (e) {
         title = this.title;
@@ -140,10 +141,26 @@
             }
         });
     });
+    $('.modalPlotDistribution').on('click', function (e) {
+        title = this.title;
+        url = this.name;
+        
+        $.ajax({
+             url: '{% url "ajax_plot" %}',
+             data: {
+                 "url" : url
+             },
+             dataType: 'json',
+            success: function (dataE) {
+                $("#modalContentDistribution").html(dataE.plot);
+                $("#modalTitleDistribution").html(title);
+            }
+        });
+    });
   
 </script>
 
-<!-- On change of number of dimensions, change plot -->
+<!-- On change of number of dimensions, change plot PCA-->
 <script>
     $('#selectDimensions').change(function(){ 
         valor = this.value;
@@ -220,6 +237,23 @@
 
     });
 </script>
+
+<!-- Select distribution plot -->
+<script>
+    $('#selectDistribution').change(function(){ 
+        valor = this.value;
+        newDiv = document.getElementById("distribution_"+valor);
+
+        const allDivs = document.getElementsByClassName('distributionPlot');
+        for (const div of allDivs) {
+        // 👇️ Remove element from DOM
+            div.style.display = 'none';
+        }
+        newDiv.style.display="block";
+    });
+</script>
+
+
 
 {% endblock %}
 

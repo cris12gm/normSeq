@@ -57,8 +57,11 @@ class miRNAResults(TemplateView):
         heatmap = []
         pca = []
         downloads = {}
+        distribution = {}
 
+        i = 0
         for method in methods:
+
             pngHeatmap = os.path.join(settings.MEDIA_URL,jobID,"graphs","heatmap_"+method+".png")
             id_modal = "heatmap_"+method
             title_modal = METHODS[method]
@@ -75,18 +78,30 @@ class miRNAResults(TemplateView):
 
             pca.append([pngPCA,pcaHTML,id_modal,title_modal])
 
-
+            #Summary
+            distribution[method] = {}
+            distributionHTML = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","distribution_"+method+".html")
+            distributionPNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","distribution_"+method+".png")
+            distribution[method]['HTML'] = distributionHTML
+            distribution[method]['PNG'] = distributionPNG
+            distribution[method]['name'] = METHODS[method]
+            if i==0:
+                distribution[method]['active'] = "block;"
+            else:
+                distribution[method]['active'] = "none;"
+            i = i + 1     
             ##Downloads
             downloadLink = os.path.join(settings.MEDIA_URL,jobID,"normalized","matrix_"+method+".txt")
 
             downloads[METHODS[method]] = [downloadLink,"matrix_"+method+".txt"]
 
+        summary = {'distribution':distribution}
 
         if heatmap or pca:
             visualization=True
 
         return render(request, self.template, {"jobID":jobID,"visualization":visualization,"heatmapPlots":heatmap,
-        "pcaPlots":pca,"downloads":downloads})
+        "pcaPlots":pca,"downloads":downloads,"summary":summary})
 
 
 def queryPlotHTML(request):

@@ -7,6 +7,7 @@ from query.models import Job
 
 import os
 import psutil
+import json
 
 class Errors(Enum):
     NO_ERROR = 0
@@ -50,7 +51,9 @@ class statusJob(TemplateView):
             if typeJob=="miRNA":
                 return redirect(settings.SUB_SITE+"/mirna/?jobID="+jobID)
         elif status=="Running":
-            return render(request, self.template, {"jobID":jobID,"status":status,"typeJob":typeJob})
+            configFile = jobDB.getConfig()
+            config = json.load(open(configFile,'r'))
+            return render(request, self.template, {"jobID":jobID,"status":status,"typeJob":typeJob,"config":config})
         else:
             return render(request, self.template, {"jobID":jobID,"status":status,"typeJob":typeJob}) ##Poner error aqui
             

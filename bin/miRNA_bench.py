@@ -26,7 +26,7 @@ methods = config['methods']
 for method in methods:
 
     outdf,normfile = norm(infile,df,method,jobDir)
-    #createsummary(normfile,outdf,method,jobDir,annotation)
+    createsummary(normfile,outdf,method,jobDir,annotation)
     createplots(normfile,outdf,method,jobDir,annotation)
 
     

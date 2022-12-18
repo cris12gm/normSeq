@@ -9,7 +9,7 @@ import numpy as np
 
 from plotly.subplots import make_subplots
 from config import METHODS,R_PATH,R_SCRIPTS_PATH
-import subprocess
+import plotly.figure_factory as ff
 
 def createsummary(infile,df,method,jobDir,annotation):
     outDir = os.path.join(jobDir,"graphs","summary")
@@ -22,22 +22,22 @@ def createsummary(infile,df,method,jobDir,annotation):
     # distribution
     outfile = os.path.join(outDir,"distribution_"+method+".html")
     outfileImage = os.path.join(outDir,"distribution_"+method+".png")
-    distribution(df,outfile,outfileImage)
+    title = METHODS[method]
+    distribution(df,outfile,outfileImage,title)
 
-
-
-def distribution(df,outfile,outfileImage):
+def distribution(df,outfile,outfileImage,title):
 
     fig = make_subplots(rows=1, cols=1)
+    hist_data = []
+    group_labels = []
     for col in df.columns:
-        trace0 = go.Histogram(x=np.log2(df[col]+1),legendgroup=col)
-        fig.append_trace(trace0, 1, 1)
-    fig.show()
-    sys.exit(1)
-    fig = px.histogram(df, x="Control_M",color="Sample")
-
-    fig.write_image(outfileImage)
-
+        hist_data_this = np.log2(df[col]+1).values.tolist()
+        hist_data.append(hist_data_this)
+        group_labels.append(col)
+    fig = ff.create_distplot(hist_data,group_labels,show_hist=False,show_rug=False)
+    fig.update_layout(title_text=title)
+    fig.write_image(outfileImage,scale=3,height=400)
+    
     plotCode = plot(fig, show_link=False, auto_open=False, output_type = 'div')
     outfile_W = open(outfile,'a')
     outfile_W.write(plotCode)

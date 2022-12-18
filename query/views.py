@@ -39,7 +39,7 @@ class Query(TemplateView):
 
         jobID = generate_id()
         if jobID:
-            Job.objects.create(JobID= jobID, status="Created", typeJob="Created")
+            Job.objects.create(JobID= jobID, status="Created", typeJob="Created",configFile=settings.MEDIA_ROOT+jobID+'/config.json')
         formMirna = QueryMirna()
         formTrna = QueryTrna()
         formMrna = QueryMrna()
