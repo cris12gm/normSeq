@@ -1,0 +1,31 @@
+{% if summary.top10 %}
+    <div class="card">
+        <div class="card-header">
+            <h5>
+                Top 10 miRNAs
+            </h5>
+        </div>
+        <div id='topCard' class='collapse show'>
+            <div class="card-body">
+            <div>
+                <div class="form-group">
+                    <label for="selectTop">Select normalization method:</label>
+                    <select class="form-control" id="selectTop">
+                        {% for key,value in summary.top10.items %}
+                                <option value="{{ key }}">{{ value.name }}</option>
+                        {% endfor %}
+                    </select>
+                  </div>
+            </div>
+            {% for key, value in summary.top10.items %}
+                <div id="top10_{{key}}" class="topPlot" style="display:{{value.active}}">
+                    <a title="{{ value.name }}" name="{{ value.HTML }}" class="modalPlotTop" data-toggle="modal" data-target="#modalTargetTop" onmouseover="this.style.cursor='pointer'">
+                        <img class="img-fluid" src="{{ value.PNG }}">
+                        </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+</div>
+{% endif %}

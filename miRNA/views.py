@@ -58,6 +58,7 @@ class miRNAResults(TemplateView):
         pca = []
         downloads = {}
         distribution = {}
+        top10 = {}
 
         i = 0
         for method in methods:
@@ -79,6 +80,7 @@ class miRNAResults(TemplateView):
             pca.append([pngPCA,pcaHTML,id_modal,title_modal])
 
             #Summary
+            #Distribution
             distribution[method] = {}
             distributionHTML = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","distribution_"+method+".html")
             distributionPNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","distribution_"+method+".png")
@@ -89,13 +91,27 @@ class miRNAResults(TemplateView):
                 distribution[method]['active'] = "block;"
             else:
                 distribution[method]['active'] = "none;"
-            i = i + 1     
+               
+
+            #Top miRNAS
+            top10[method] = {}
+            top = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","top10_"+method+".html")
+            topPNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","top10_"+method+".png")
+            top10[method]['HTML'] = top
+            top10[method]['PNG'] = topPNG
+            top10[method]['name'] = METHODS[method]
+            if i==0:
+                top10[method]['active'] = "block;"
+            else:
+                top10[method]['active'] = "none;"
+             
             ##Downloads
             downloadLink = os.path.join(settings.MEDIA_URL,jobID,"normalized","matrix_"+method+".txt")
 
             downloads[METHODS[method]] = [downloadLink,"matrix_"+method+".txt"]
+            i = i + 1 
 
-        summary = {'distribution':distribution}
+        summary = {'distribution':distribution,'top10':top10}
 
         if heatmap or pca:
             visualization=True

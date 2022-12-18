@@ -9,6 +9,7 @@
     {% include "modals/mirna/modal_heatmap.html" %}
     {% include "modals/mirna/modal_pca.html" %}
     {% include "modals/mirna/modal_distribution.html" %}
+    {% include "modals/mirna/modal_top.html" %}
 {% endblock %}
 
 {% block content %}
@@ -123,7 +124,7 @@
   
 </script>
 
-<!-- Modal plot PCA, modalDistribution -->
+<!-- Modal plot PCA, modalDistribution, modalTop -->
 <script>
     $('.modalPlotPCA').on('click', function (e) {
         title = this.title;
@@ -154,6 +155,22 @@
             success: function (dataE) {
                 $("#modalContentDistribution").html(dataE.plot);
                 $("#modalTitleDistribution").html(title);
+            }
+        });
+    });
+    $('.modalPlotTop').on('click', function (e) {
+        title = this.title;
+        url = this.name;
+        
+        $.ajax({
+             url: '{% url "ajax_plot" %}',
+             data: {
+                 "url" : url
+             },
+             dataType: 'json',
+            success: function (dataE) {
+                $("#modalContentTop").html(dataE.plot);
+                $("#modalTitleTop").html(title);
             }
         });
     });
@@ -238,13 +255,26 @@
     });
 </script>
 
-<!-- Select distribution plot -->
+<!-- Select distribution plot and top-->
 <script>
     $('#selectDistribution').change(function(){ 
         valor = this.value;
         newDiv = document.getElementById("distribution_"+valor);
 
         const allDivs = document.getElementsByClassName('distributionPlot');
+        for (const div of allDivs) {
+        // 👇️ Remove element from DOM
+            div.style.display = 'none';
+        }
+        newDiv.style.display="block";
+    });
+</script>
+<script>
+    
+    $('#selectTop').change(function(){ 
+        valor = this.value;
+        newDiv = document.getElementById("top10_"+valor);
+        const allDivs = document.getElementsByClassName('topPlot');
         for (const div of allDivs) {
         // 👇️ Remove element from DOM
             div.style.display = 'none';

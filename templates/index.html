@@ -14,10 +14,10 @@
                         <div class="card-body" id='cardInicio'>
                             <font size="3">
                                 <p>
-                                    NormSEQ
-                                </p>
+                                    The constant evolving of various RNA sequencing (RNAseq) methods has lead to the direct quantitative analysis of the transciptome in large biological datasets and revealed compelling details about various small RNA populations like miRNA and tRNA molecules. The selection of the appropriate processing pipeline and normalization strategy for these large datasets are key to preservation of biological truth. However, experimental noise resulting from the inherent variability in the collection of RNA-seq data often hinders accurate quantification and analysis of differences in true expression. Although data normalization is an essential step to meaningful interpretation of these high-throughput sequencing datasets,  it is difficult to determine the best normalization strategy that can eventually lead to problems with downstream analysis.
+	                            </p>
                                 <p>
-                                    Description
+                                    Our free webserver tool aims for reproducible analysis and visualization of micro-array or RNAseq data by offering systematic evaluation of 9 commonly used RNA-seq normalization methods. Both, mRNA gene expression datasets as well as small RNA, like miRNA and tRNA, expression datasets can be applied for data normalization, batch-effect correction and differential expression analysis with a wide range of  visualization options and downloadable output plots and tables. Our platform enables researchers a better evaluation and selection of their normalization method and increased flexibility for downstream analysis.
                                 </p>
                             </font>
                         </div>
@@ -25,9 +25,9 @@
             </div>
         </div>
         <div class = "row">
-            <div class= "col-6">
+            <div class= "col-12">
                 <div class="buttonIndex">
-                    <a href="{% url 'query' %}" ><button id="buttonQuery" class="btn btn-success btn-lg" onclick="ShowLoading()">Start a query</button></a>
+                    <a href="{% url 'query' %}" ><button id="buttonQuery" class="btn btn-success btn-lg " onclick="ShowLoading()">Try it!</button></a>
                 </div>
             </div>
         </div>
