@@ -1,7 +1,7 @@
 from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, HTML, Field, ButtonHolder,Button
-from crispy_forms.bootstrap import Tab,TabHolder
+from crispy_forms.bootstrap import Tab,TabHolder,Div
 from django.core.validators import MaxValueValidator, MinValueValidator 
 
 from query.utils import create_card,render_modal
@@ -32,6 +32,10 @@ class QueryMirna(forms.Form):
     annotationURL_mirna = forms.URLField(label='URL/link to annotation file:', required=False)
     minrc_mirna = forms.IntegerField(label="Minimum RC",validators=[MinValueValidator(0)],initial=0,required=False)
     
+    batchEffect_mirna = forms.TypedChoiceField(coerce=lambda x: x =='True', 
+                                   choices=((False, 'No'), (True, 'Yes')),label="Apply batch effect correction:")
+    batchFile_mirna = forms.FileField(label="Batch Effect Annotation File:", required=False)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
@@ -79,10 +83,15 @@ class QueryMirna(forms.Form):
             HTML("""<br>"""),
             create_card(
                 Field('minrc_mirna',css_class='form-control'),
+                Field('batchEffect_mirna',css_class='form-control',css_id='batchE'),
+                Div(
+                    Field('batchFile_mirna', css_class='form-control'),
+                    HTML('<a href="'+STATIC_URL+'testFiles/template.txt" download="template.txt"><button type="button" class="btn btn-info btn-sm float-right mb-3">Download sample template</button></a>'),
+                    css_id='divFileBatch'),
                 title="Parameters",
                 id="parameters_mirna",
                 show=False,
-                modal="Parameters"
+                modal="chooseParameters"
             ),
             HTML("""<br>"""),
             create_card(

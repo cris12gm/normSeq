@@ -10,6 +10,7 @@
     {% include "modals/query/chooseMethod.html" %}
     {% include "modals/query/uploadAnnotation.html" %}
     {% include "modals/query/chooseAnnotation.html" %}
+    {% include "modals/query/chooseParameters.html" %}
 {% endblock %}
 
 {% load crispy_forms_tags %}    
@@ -150,6 +151,9 @@
             selectAll: true
         });
 
+        var BatchF = document.getElementById("divFileBatch");
+        BatchF.style.display = "none";
+
     });
 </script>
 
@@ -191,6 +195,19 @@
             }
         }
     });
+</script>
+
+<script>
+    $('#id_batchEffect_mirna').change(function(){ 
+            valor = this.value;
+            if (valor == 'True'){
+                document.getElementById("divFileBatch").style.display="block";
+            }
+            if (valor == 'False' ){
+                document.getElementById("divFileBatch").style.display="none";
+            }
+            
+        });
 </script>
 
 {% endblock %}
