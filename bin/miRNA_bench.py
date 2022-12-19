@@ -5,7 +5,7 @@ import json
 from plots import createplots
 from miRNAnorm import processInput,norm
 from summary import createsummary
-from correctBatch import combat
+from correctBatch import combat,plotsBatch
 
 
 #Error = False
@@ -23,11 +23,18 @@ annotation = os.path.join(jobDir,"annotation.txt")
 #Correct batch effect
 if config['batchEffect'] == 'True':
     batchAnnotation = os.path.join(jobDir,"batchFile.txt")
-#    combat(infile,batchAnnotation)
-    
+    outfile = os.path.join(jobDir,"matrix_corrected.txt")
+    combat(infile,batchAnnotation,outfile)
+    oldMatrix = os.path.join(jobDir,"matrix_old.txt")
+    os.rename(infile, oldMatrix)
+    os.rename(outfile, infile)
 
+    dfCorrected = processInput(os.path.join(jobDir,"matrix.txt"))
+    dfOld = processInput(os.path.join(jobDir,"matrix_old.txt"))
+
+    plotsBatch(dfCorrected,dfOld,annotation,jobDir)
 # Make normalization and plots
-
+sys.exit(1)
 methods = config['methods']
 
 for method in methods:

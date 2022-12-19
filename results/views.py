@@ -105,6 +105,8 @@ class Results(TemplateView):
                 top10[method]['active'] = "block;"
             else:
                 top10[method]['active'] = "none;"
+
+            
              
             ##Downloads
             downloadLink = os.path.join(settings.MEDIA_URL,jobID,"normalized","matrix_"+method+".txt")
