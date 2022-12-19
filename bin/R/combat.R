@@ -16,15 +16,14 @@ keep <- rowSums(matrix>0) > 0
 df <- matrix[keep, ]
 
 batchSheet <- read.table(args[2],header=T,sep="\t")
-print(batchSheet)
-#batchSheet$sample <- make.names(samplesheet$sample)
+batchSheet$Sample <- make.names(batchSheet$sample)
 
-#row.names(samplesheet) <- samplesheet$sample
-#samplesheet$Group <- samplesheet$group
-#samplesheet$sample <- NULL
-#samplesheet$group <- NULL
+row.names(batchSheet) <- batchSheet$sample
+batchSheet$sample <- NULL
 
 # output <- args[3]
+
+
 
 # png(str_replace(output, ".png", "_single_row.png"),res=300,width=1800,height=1200)
 

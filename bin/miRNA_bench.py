@@ -22,11 +22,9 @@ annotation = os.path.join(jobDir,"annotation.txt")
 
 #Correct batch effect
 if config['batchEffect'] == 'True':
-    batchAnnotation = os.path.join(jobDir,"batchAnnotation.txt")
-    combat(infile,batchAnnotation)
+    batchAnnotation = os.path.join(jobDir,"batchFile.txt")
+#    combat(infile,batchAnnotation)
     
-
-sys.exit(1)
 
 # Make normalization and plots
 

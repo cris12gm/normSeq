@@ -153,13 +153,13 @@ class Query(TemplateView):
                 #Batch effect
                 batchEffect = request.POST['batchEffect_mirna']
 
-                if batchEffect==True:
+                if batchEffect=='True':
                     batchFile = request.FILES['batchFile_mirna']
                     extension = batchFile.name.split(".")[1]
                     batchs = batchFile.name
                     fs = FileSystemStorage()
                     filename = fs.save(jobID+"/"+"batchFile."+extension, batchFile)
-
+                    
                     if extension == "csv":
                         df = pd.read_csv(os.path.join(settings.MEDIA_ROOT,jobID,"batchfile.csv"),sep=";")
                         df2=df.dropna(how='all')
