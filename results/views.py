@@ -50,6 +50,7 @@ class Results(TemplateView):
 
         methods = config['methods']
         jobDir = config['jobDir']
+        typeJob = config['typeJob']
 
         ##All visualizations
         visualization = False
@@ -116,7 +117,7 @@ class Results(TemplateView):
         if heatmap or pca:
             visualization=True
 
-        return render(request, self.template, {"jobID":jobID,"visualization":visualization,"heatmapPlots":heatmap,
+        return render(request, self.template, {"jobID":jobID,"typeJob":typeJob,"visualization":visualization,"heatmapPlots":heatmap,
         "pcaPlots":pca,"downloads":downloads,"summary":summary})
 
 

@@ -2,14 +2,14 @@
 {% load static %}
 
 {% block css %}
-<link href="{% static 'css/customStyles/stylesMirna.css'%}" rel="stylesheet">
+<link href="{% static 'css/customStyles/stylesResults.css'%}" rel="stylesheet">
 {% endblock %}
 
 {% block modals %}
-    {% include "modals/mirna/modal_heatmap.html" %}
-    {% include "modals/mirna/modal_pca.html" %}
-    {% include "modals/mirna/modal_distribution.html" %}
-    {% include "modals/mirna/modal_top.html" %}
+    {% include "modals/results/modal_heatmap.html" %}
+    {% include "modals/results/modal_pca.html" %}
+    {% include "modals/results/modal_distribution.html" %}
+    {% include "modals/results/modal_top.html" %}
 {% endblock %}
 
 {% block content %}
@@ -49,23 +49,23 @@
             
                     <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade show active tabResult" id="summary" role="tabpanel" aria-labelledby="summary-tab">
-                            {% include "mirna/summary.html" %}
+                            {% include "results/summary.html" %}
                         </div>
                         {% if visualization %}
                         <div class="tab-pane fade tabResult" id="visualization" role="tabpanel" aria-labelledby="visualization-tab">
-                            {% include "mirna/visualization.html" %}
+                            {% include "results/visualization.html" %}
                         </div>
                         {% endif %}
                         <div class="tab-pane fade tabResult" id="de" role="tabpanel" aria-labelledby="de-tab">
-                            {% include "mirna/de.html" %}
+                            {% include "results/de.html" %}
                         </div>
                         {% if downloads %}
                         <div class="tab-pane fade tabResult" id="downloads" role="tabpanel" aria-labelledby="downloads-tab">
-                            {% include "mirna/downloads.html" %}
+                            {% include "results/downloads.html" %}
                         </div>
                         {% endif %}
                         <div class="tab-pane fade tabResult" id="batch" role="tabpanel" aria-labelledby="batch-tab">
-                            {% include "mirna/batcheffect.html" %}
+                            {% include "results/batcheffect.html" %}
                         </div>
                     </div>
                 </div>
