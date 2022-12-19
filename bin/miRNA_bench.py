@@ -34,7 +34,6 @@ if config['batchEffect'] == 'True':
 
     plotsBatch(dfCorrected,dfOld,annotation,jobDir)
 # Make normalization and plots
-sys.exit(1)
 methods = config['methods']
 
 for method in methods:
