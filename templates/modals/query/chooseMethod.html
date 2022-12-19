@@ -1,13 +1,75 @@
-{% extends "modals/modal_template.html" %}
+{% extends "modals/modal_lg_template.html" %}
 {% block id %}Choose_Method{% endblock %}
 {% block title %}
     Methods
 {% endblock %}
 {% block text %}
-<p>FALTA</p>
-<p> NormSEQ input is a read count matrix where each column is a sample and each row a miRNA. You can provide the input file in two ways:</p>
-    <ul>
-        <li>Upload a file (a fasta file)</li>
-        <li>Provide a link/URL with your data (it will be downloaded and then the tool will use it) </li>
-    </ul>
+<p>
+    The RNA class of interest will be analyzed and compared by the number of normalization methods of choice. Some normalization methods are specific to the properties of certain RNA classes. The user can also decide to analyze data without data normalization or by selecting all normalization methods if the user is uncertain by the method of choice:
+</p>
+<span style="font-size: 12px">
+    <div class="table-responsive">
+        <table class="table table-bordered" id="dataTableMethods" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Experimental Bias</th>
+                    <th>Normalization Method</th>
+                    <th>Description</th>
+                    <th>Reference</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td rowspan="8">Library Size</td>
+                    <td>Counts per Million (CPM)</td>
+                    <td>Counts per million without consideration of transcript length
+                    Calculation: [number of mapped reads]/[total read count/10<sup>6</sup>]</td>
+                    <td>Dillies, Brief Bioinfor, 2013</td>
+                </tr>
+                <tr>
+                    <td>Total Count (TC)</td>
+                    <td></td>
+                    <td>Dillies, Brief Bioinfor, 2013</td>
+                </tr>
+                <tr>
+                    <td>Total Count (TC)</td>
+                    <td></td>
+                    <td>Dillies, Brief Bioinfor, 2013</td>
+                </tr>
+                <tr>
+                    <td>Upper Quartile (UQ)</td>
+                    <td></td>
+                    <td>Bullard, Bioinfor, 2010</td>
+                </tr>
+                <tr>
+                    <td>Median</td>
+                    <td></td>
+                    <td>Dillies, Brief Bioinfor, 2013</td>
+                </tr>
+                <tr>
+                    <td>Trimmed mean of M values (TMM)</td>
+                    <td></td>
+                    <td>Robinson, Genome Biol, 2010</td>
+                </tr>
+                <tr>
+                    <td>Quantile</td>
+                    <td></td>
+                    <td>Bolstad et al, Bioinfor, 2003</td>
+                </tr>
+                <tr>
+                    <td>Relative log expression (RLE)</td>
+                    <td></td>
+                    <td>Anders, Genome Biol, 2010</td>
+                </tr>
+                <tr>
+                    <td>Fragment per Kilobase million (FPKM)</td>
+                    <td>Fragments per kilobase of transcript per million mapped reads
+                        Calculation: [# fragments]/[transcript length/1000]/(total read count)/10<exp>6</exp>]</td>
+                    <td></td>
+                    <td>Mortazavi, Nat Meth, 2008</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</span>
 {% endblock %}

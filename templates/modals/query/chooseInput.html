@@ -4,9 +4,12 @@
     Input File
 {% endblock %}
 {% block text %}
-<p> NormSEQ input is a read count matrix where each column is a sample and each row a miRNA. You can provide the input file in two ways:</p>
+<p>
+    The input matrix can be directly uploaded or provided as an URL link in .txt/.csv/.tsv/.xls formats:
     <ul>
-        <li>Upload a file (a matrix file)</li>
-        <li>Provide a link/URL with your data (it will be downloaded and then the tool will use it) </li>
+        <li> Upload a file (typically <i>.txt/.csv/.tsv/.xls</i>)</li>
+        <li> Provide a link/URL with your data (it will be downloaded and then analyzed)</li>
+        <li> Provide an ID from a previous normSeq job to reuse an uploaded file (e.g. N2LM1BEIU8PW6B8)</li>
     </ul>
+</p>
 {% endblock %}
