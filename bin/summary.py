@@ -22,7 +22,6 @@ def createsummary(infile,df,method,jobDir,annotation):
     #annotation
     annotation_df = pd.read_csv(annotation,sep="\t")
     annotation_df = annotation_df.set_index('sample')
-    print(annotation_df)
 
     # distribution
     outfile = os.path.join(outDir,"distribution_"+method+".html")

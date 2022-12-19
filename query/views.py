@@ -27,6 +27,7 @@ def generate_id():
         if not Job.objects.filter(JobID=pipeline_id):
             return pipeline_id
 
+
 class Errors(Enum):
     NO_ERROR = 0
     NOT_VALID = 1
@@ -149,6 +150,28 @@ class Query(TemplateView):
 
                     annotation=False
 
+                #Batch effect
+                batchEffect = request.POST['batchEffect_mirna']
+
+                if batchEffect==True:
+                    batchFile = request.FILES['batchFile_mirna']
+                    extension = batchFile.name.split(".")[1]
+                    batchs = batchFile.name
+                    fs = FileSystemStorage()
+                    filename = fs.save(jobID+"/"+"batchFile."+extension, batchFile)
+
+                    if extension == "csv":
+                        df = pd.read_csv(os.path.join(settings.MEDIA_ROOT,jobID,"batchfile.csv"),sep=";")
+                        df2=df.dropna(how='all')
+                        df2.to_csv(os.path.join(settings.MEDIA_ROOT,jobID,"batchfile.txt"),sep="\t",index=None)
+                    elif extension == "tsv":
+                        filename = fs.save(jobID+"/"+"batchfile.txt", batchFile)
+                    elif extension == "xlsx":
+                        df = pd.read_excel(os.path.join(settings.MEDIA_ROOT,jobID,"batchFile.xlsx"))
+                        df2=df.dropna(how='all')
+                        df2.to_csv(os.path.join(settings.MEDIA_ROOT,jobID,"batchFile.txt"),sep="\t",index=None)
+
+
                 # Parameters contain the info for config.json
                 parameters = {}
                 parameters["inputExtension"] = extension
@@ -157,6 +180,7 @@ class Query(TemplateView):
                 parameters["methods"] = methodsForm
                 parameters["annotation"] = annotation
                 parameters["jobDir"]= os.path.join(settings.MEDIA_ROOT+jobID)
+                parameters["batchEffect"] = batchEffect
 
                 # Save parameters and Launch
            
