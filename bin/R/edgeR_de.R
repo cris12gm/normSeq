@@ -14,28 +14,55 @@ matrix = subset(matrix, select = -c(name) )
 keep <- rowSums(matrix>0) > 0
 df <- matrix[keep, ]
 
-#create DGEList object
-d <- DGEList(counts=df)
+method <- args[2]
+annotation <- args[3]
+
+pvalue <- args[4]
+group1 <- args[5]
+group2 <- args[6]
+
+sampleSheet <- read.table(annotation,header=T,sep="\t")
+groups <- sampleSheet$group
+sampletypevalues <- groups[!duplicated(groups)]  # Getting the group levels
+
+# #create DGEList object
+d <- DGEList(counts=df,group=factor(groups))
 d <- estimateCommonDisp(d)
 
-method <- args[2]
-
 if (method == "UQ") {
-    uq <- calcNormFactors(d, method="upperquartile")
-    normalized <- as.data.frame(uq$counts)
+    edgeR_table <- calcNormFactors(d, method="upperquartile")
 }
 
 if (method == "TMM") {
-    tmm <- calcNormFactors(d, method="TMM")
-    normalized <- as.data.frame(tmm$counts)
+    edgeR_table <- calcNormFactors(d, method="TMM")
 }
 if (method == "RLE") {
-    rle <- calcNormFactors(d, method="RLE")
-    normalized <- as.data.frame(rle$counts)
+    edgeR_table <- calcNormFactors(d, method="RLE")
 }
 
-outfile <- args[3]
-                                         # Duplicate example data
-normalized <- tibble::rownames_to_column(normalized, "name") # Apply rownames_to_column
+edgeR_table <- estimateCommonDisp(edgeR_table)
+  
+edgeR_table <- estimateTagwiseDisp(edgeR_table)
+selected <- NULL
+dgeTest <- exactTest(edgeR_table, pair=c(group1,group2))
 
-write.table(normalized,outfile,sep="\t",row.names=FALSE, quote=F,col.names=TRUE)
+tt <- topTags(dgeTest, n=Inf)
+selected_samples <- (which(groups==group1 | groups==group2))
+
+# Obtaining the pseudocounts for each sample
+z <- as.data.frame(edgeR_table$pseudo.counts)[ ,selected_samples]
+  # Obtaining the statistical results from the edge test
+t <- as.data.frame(tt)
+  # Merging the above info into one table
+data <- merge(z, t, by="row.names")
+row.names(data) <- data$Row.names  # row names manipulation
+data$Row.names <- NULL  # row names manipulation
+  # Selecting only features with FDR lower than the input p-value
+selected <- which(data$FDR<=pvalue)
+  # Obtaining the final matrix of selected features
+result <- data[selected, ]
+
+output <- args[7]
+result <- tibble::rownames_to_column(as.data.frame(result), "name")
+
+write.table(result,output,sep="\t",row.names=FALSE, quote=FALSE,col.names=TRUE)

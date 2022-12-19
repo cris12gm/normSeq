@@ -167,6 +167,7 @@ class QueryElement(TemplateView):
                     df2=df.dropna(how='all')
                     df2.to_csv(os.path.join(settings.MEDIA_ROOT,jobID,"batchFile.txt"),sep="\t",index=None)
 
+
             # Parameters contain the info for config.json
             parameters = {}
             parameters["inputExtension"] = extension
@@ -176,6 +177,8 @@ class QueryElement(TemplateView):
             parameters["annotation"] = annotation
             parameters["jobDir"]= os.path.join(settings.MEDIA_ROOT+jobID)
             parameters["batchEffect"] = batchEffect
+            parameters['diffExpr'] = request.POST['diffExpr']
+            parameters['pval'] = request.POST['pval']
 
             # Save parameters and Launch
           

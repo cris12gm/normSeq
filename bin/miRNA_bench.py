@@ -6,6 +6,7 @@ from plots import createplots
 from miRNAnorm import processInput,norm
 from summary import createsummary
 from correctBatch import combat,plotsBatch
+from de import edgeR,processAnnotation
 
 
 #Error = False
@@ -33,14 +34,20 @@ if config['batchEffect'] == 'True':
     dfOld = processInput(os.path.join(jobDir,"matrix_old.txt"))
 
     plotsBatch(dfCorrected,dfOld,annotation,jobDir)
+
+
 # Make normalization and plots
 methods = config['methods']
 
 for method in methods:
 
+    if method=='UQ' or method=='TMM' or method=='RLE':
+        FDR = config['pval']
+        edgeR(infile,method,annotation,FDR,jobDir)
     outdf,normfile = norm(infile,df,method,jobDir)
     createsummary(normfile,outdf,method,jobDir,annotation)
     createplots(normfile,outdf,method,jobDir,annotation)
+
 
     
 

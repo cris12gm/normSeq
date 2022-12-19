@@ -35,6 +35,10 @@ class Query(forms.Form):
     batchEffect = forms.TypedChoiceField(coerce=lambda x: x =='True', 
                                    choices=((False, 'No'), (True, 'Yes')),label="Apply batch effect correction:")
     batchFile = forms.FileField(label="Batch Effect Annotation File:", required=False)
+    diffExpr = forms.TypedChoiceField(coerce=lambda x: x =='True', 
+                                   choices=((False, 'No'), (True, 'Yes')),label="Differential expression:")
+    pval = forms.FloatField(label="FDR:",validators=[MaxValueValidator(1)],initial=0.05,required=True)
+    
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -88,6 +92,11 @@ class Query(forms.Form):
                     Field('batchFile', css_class='form-control'),
                     HTML('<a href="'+STATIC_URL+'testFiles/template_batch.txt" download="template.txt"><button type="button" class="btn btn-info btn-sm float-right mb-3">Download sample template</button></a>'),
                     css_id='divFileBatch'),
+                Div(
+                    Div(Field('diffExpr',css_class='form-control',css_id='diffExpr'),css_class='col-md-6'),
+                    Div(Field('pval',css_class='form-control',css_id='pval'),css_class='col-md-6'),
+                css_class='row'
+                ),
                 title="Parameters",
                 id="parameters",
                 show=False,

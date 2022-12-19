@@ -9,6 +9,7 @@ from config import R_SCRIPTS_PATH
 def processInput(infile):
     cabecera = open(infile).readline().split("\t")[0]
     df = pd.read_table(infile)
+    df.rename(columns = {cabecera:'name'}, inplace = True)
     df = df.set_index(cabecera)
     df = df.dropna()
 
