@@ -10,6 +10,7 @@
     {% include "modals/results/modal_pca.html" %}
     {% include "modals/results/modal_distribution.html" %}
     {% include "modals/results/modal_top.html" %}
+    {% include "modals/results/modal_batch.html" %}
 {% endblock %}
 
 {% block content %}
@@ -36,9 +37,11 @@
                         <li class="nav-item">
                             <a class="nav-link" id="de-tab" data-toggle="tab" href="#de" role="tab" aria-controls="de" aria-selected="false"><h5>Differential Expression</h5></a>
                         </li>
+                        {% if batchEffect %}
                         <li class="nav-item">
                             <a class="nav-link" id="batch-tab" data-toggle="tab" href="#batch" role="tab" aria-controls="batch" aria-selected="false"><h5>Batch effect correction</h5></a>
                         </li>
+                        {% endif %}
                         {% if downloads %}
                         <li class="nav-item">
                             <a class="nav-link" id="downloads-tab" data-toggle="tab" href="#downloads" role="tab" aria-controls="downloads" aria-selected="false"><h5>Downloads</h5></a>
@@ -64,9 +67,11 @@
                             {% include "results/downloads.html" %}
                         </div>
                         {% endif %}
+                        {% if batchEffect %}
                         <div class="tab-pane fade tabResult" id="batch" role="tabpanel" aria-labelledby="batch-tab">
                             {% include "results/batcheffect.html" %}
                         </div>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -174,6 +179,22 @@
             }
         });
     });
+    $('.modalPlotBatch').on('click', function (e) {
+        title = this.title;
+        url = this.name;
+        
+        $.ajax({
+             url: '{% url "ajax_plot" %}',
+             data: {
+                 "url" : url
+             },
+             dataType: 'json',
+            success: function (dataE) {
+                $("#modalContentBatch").html(dataE.plot);
+                $("#modalTitleBatch").html(title);
+            }
+        });
+    });
   
 </script>
 
@@ -269,6 +290,7 @@
         newDiv.style.display="block";
     });
 </script>
+
 <script>
     
     $('#selectTop').change(function(){ 

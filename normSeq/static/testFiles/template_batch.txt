@@ -1,0 +1,11 @@
+sample	batchEffect
+Control_M	Lane1
+ERG202_M	Lane1
+ERG201_M	Lane1
+ERG203_M	Lane1
+ERG206_M	Lane1
+ERG201_O	Lane2
+ERG206_O	Lane2
+Control_O	Lane2
+ERG202_O	Lane2
+ERG203_O	Lane2

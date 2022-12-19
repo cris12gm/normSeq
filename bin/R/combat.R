@@ -27,7 +27,7 @@ df <- t(t(df)[order(row.names(t(df))), ])
 
 output <- args[3]
 
-batch <- batchSheet$group
+batch <- batchSheet$batchEffect
 
 adjusted <- ComBat_seq(df, batch=batch, group=NULL)
 adjusted <- tibble::rownames_to_column(as.data.frame(adjusted), "name")

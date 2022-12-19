@@ -86,7 +86,7 @@ class Query(forms.Form):
                 Field('batchEffect',css_class='form-control',css_id='batchE'),
                 Div(
                     Field('batchFile', css_class='form-control'),
-                    HTML('<a href="'+STATIC_URL+'testFiles/template.txt" download="template.txt"><button type="button" class="btn btn-info btn-sm float-right mb-3">Download sample template</button></a>'),
+                    HTML('<a href="'+STATIC_URL+'testFiles/template_batch.txt" download="template.txt"><button type="button" class="btn btn-info btn-sm float-right mb-3">Download sample template</button></a>'),
                     css_id='divFileBatch'),
                 title="Parameters",
                 id="parameters",

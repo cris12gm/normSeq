@@ -106,8 +106,21 @@ class Results(TemplateView):
             else:
                 top10[method]['active'] = "none;"
 
+            if config['batchEffect'] == 'True':
+                #Batch effect Plots
+                batchEffect = {}
+                before = os.path.join(settings.MEDIA_URL,jobID,"graphs","batchEffect","pca_old.html")
+                beforePNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","batchEffect","pca_old.png")
+                after = os.path.join(settings.MEDIA_URL,jobID,"graphs","batchEffect","pca_corrected.html")
+                afterPNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","batchEffect","pca_corrected.png")
             
-             
+                batchEffect['before'] = before
+                batchEffect['beforePNG'] = beforePNG
+                batchEffect['after'] = after
+                batchEffect['afterPNG'] = afterPNG
+            else:
+                batchEffect=False
+
             ##Downloads
             downloadLink = os.path.join(settings.MEDIA_URL,jobID,"normalized","matrix_"+method+".txt")
 
@@ -120,7 +133,7 @@ class Results(TemplateView):
             visualization=True
 
         return render(request, self.template, {"jobID":jobID,"typeJob":typeJob,"visualization":visualization,"heatmapPlots":heatmap,
-        "pcaPlots":pca,"downloads":downloads,"summary":summary})
+        "pcaPlots":pca,"batchEffect":batchEffect,"downloads":downloads,"summary":summary})
 
 
 def queryPlotHTML(request):
