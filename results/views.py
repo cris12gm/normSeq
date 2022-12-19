@@ -33,8 +33,8 @@ class Errors(Enum):
     NOT_VALID = 1
     NOT_ASSOCIATED = 2
 
-class miRNAResults(TemplateView):
-    template = 'mirna.html'
+class Results(TemplateView):
+    template = 'results.html'
 
     def get(self, request):
 

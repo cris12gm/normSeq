@@ -48,8 +48,7 @@ class statusJob(TemplateView):
         if status=="Created":
             return render(request, self.template, {"jobID":jobID,"status":status,"typeJob":typeJob})
         elif status=="Finished":
-            if typeJob=="miRNA":
-                return redirect(settings.SUB_SITE+"/mirna/?jobID="+jobID)
+            return redirect(settings.SUB_SITE+"/results/?jobID="+jobID)
         elif status=="Running":
             configFile = jobDB.getConfig()
             config = json.load(open(configFile,'r'))

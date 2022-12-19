@@ -8,7 +8,7 @@ urlpatterns = [
     re_path('admin/', admin.site.urls),
     re_path(r'^$', views.index, name='home'),
     re_path(r'^query/', include ('query.urls')),
-    re_path(r'^mirna/', include ('miRNA.urls')),
+    re_path(r'^results/', include ('results.urls')),
     re_path(r'^status/', include ('status.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

@@ -52,18 +52,12 @@
                             </div>
                         </div>
                     </div>
-                    <div id="form_miRNA" style="display:block;">
-                        {% crispy formMirna %}
-                    </div>
-                    <div id="form_mRNA" style="display:none;">
-                    </div>
-                    <div id="form_tRNA" style="display:none;">
-                    </div>
-                    <div id="form_otherRNA" style="display:none;">
+                    <div id="formMirna" style="display:block;">
+                        {% crispy form %}
                     </div>
                 </div>
             </div>
-            <div class='form-group'">
+            <div class='form-group'>
             </div>  
         </div>
         <div class="col-3">
@@ -122,14 +116,14 @@
 <!-- Initialize the plugin: -->
 <script type="text/javascript">
     $(document).ready(function() {
-        $('#id_methods_mirna').multiselect({
+        $('#id_methods').multiselect({
             includeSelectAllOption: true,
             maxHeight: 200,
             buttonWidth: '300px',
             enableCaseInsensitiveFiltering: true,
             selectAll: true
         });
-        $('#id_methods_mrna').multiselect({
+        $('#id_methods').multiselect({
             includeSelectAllOption: true,
             maxHeight: 200,
             buttonWidth: '300px',
@@ -165,11 +159,11 @@
             if (radios[i].checked) {
                     var newTitle = radios[i].value;
                     if (newTitle =='miRNA'){
-                        $('#id_url_mirna').val("https://arn.ugr.es/normSeq/static/testFiles/exampleMatrix.txt");
-                        $('[href="#url_mirna"]').tab('show');
-                        $('#id_annotationURL_mirna').val("http://arn.ugr.es/normSeq/static/testFiles/templateExample.txt");
-                        $('[href="#annotation_url_mirna"]').tab('show');
-                        $('#id_methods_mirna').multiselect('select', ['NN','CPM','UQ','Med','TC','TMM','QN','RLE']);
+                        $('#id_url').val("https://arn.ugr.es/normSeq/static/testFiles/exampleMatrix.txt");
+                        $('[href="#url"]').tab('show');
+                        $('#id_annotationURL').val("http://arn.ugr.es/normSeq/static/testFiles/templateExample.txt");
+                        $('[href="#annotation_url"]').tab('show');
+                        $('#id_methods').multiselect('select', ['NN','CPM','UQ','Med','TC','TMM','QN','RLE']);
                     }
                     if (newTitle =='mRNA'){
                         $('#id_url_mrna').val("http://arn.ugr.es/normSeq/static/testFiles/exampleMatrix.txt");
@@ -198,7 +192,7 @@
 </script>
 
 <script>
-    $('#id_batchEffect_mirna').change(function(){ 
+    $('#id_batchEffect').change(function(){ 
             valor = this.value;
             if (valor == 'True'){
                 document.getElementById("divFileBatch").style.display="block";
