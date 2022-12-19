@@ -46,7 +46,7 @@
                                         <input type="radio" name="RNAtypeS" value="miRNA" checked="checked" onclick="changeDropdown()">miRNA</input>
                                         <input type="radio" name="RNAtypeS" value="mRNA" onclick="changeDropdown()">mRNA</input>
                                         <input type="radio" name="RNAtypeS" value="tRNA" onclick="changeDropdown()">tRNA</input>
-                                        <input type="radio" name="RNAtypeS" value="otherRNA" onclick="changeDropdown()">Other RNAs</input>
+                                        <input type="radio" name="RNAtypeS" value="feature" onclick="changeDropdown()">Other</input>
                                     </div>
                                 </form>
                             </div>
@@ -118,27 +118,6 @@
             enableCaseInsensitiveFiltering: true,
             selectAll: true
         });
-        $('#id_methods').multiselect({
-            includeSelectAllOption: true,
-            maxHeight: 200,
-            buttonWidth: '300px',
-            enableCaseInsensitiveFiltering: true,
-            selectAll: true
-        });
-        $('#id_methods_trna').multiselect({
-            includeSelectAllOption: true,
-            maxHeight: 200,
-            buttonWidth: '300px',
-            enableCaseInsensitiveFiltering: true,
-            selectAll: true
-        });
-        $('#id_methods_other').multiselect({
-            includeSelectAllOption: true,
-            maxHeight: 200,
-            buttonWidth: '300px',
-            enableCaseInsensitiveFiltering: true,
-            selectAll: true
-        });
 
         var BatchF = document.getElementById("divFileBatch");
         BatchF.style.display = "none";
@@ -159,27 +138,6 @@
                         $('#id_annotationURL').val("http://arn.ugr.es/normSeq/static/testFiles/templateExample.txt");
                         $('[href="#annotation_url"]').tab('show');
                         $('#id_methods').multiselect('select', ['NN','CPM','UQ','Med','TC','TMM','QN','RLE']);
-                    }
-                    if (newTitle =='mRNA'){
-                        $('#id_url_mrna').val("http://arn.ugr.es/normSeq/static/testFiles/exampleMatrix.txt");
-                        $('[href="#url_mrna"]').tab('show');
-                        $('#id_annotationURL_mrna').val("http://arn.ugr.es/normSeq/static/testFiles/templateExample.txt");
-                        $('[href="#annotation_url_mrna"]').tab('show');
-                        $('#id_methods_mrna').multiselect('select', ['NN','CPM','UQ','Med','TC','TMM','QN','RLE']);
-                    }
-                    if (newTitle =='tRNA'){
-                        $('#id_url_trna').val("http://arn.ugr.es/normSeq/static/testFiles/exampleMatrix.txt");
-                        $('[href="#url_trna"]').tab('show');
-                        $('#id_annotationURL_trna').val("http://arn.ugr.es/normSeq/static/testFiles/templateExample.txt");
-                        $('[href="#annotation_url_trna"]').tab('show');
-                        $('#id_methods_trna').multiselect('select', ['NN','CPM','UQ','Med','TC','TMM','QN','RLE']);
-                    }
-                    if (newTitle =='otherRNA'){
-                        $('#id_url_other').val("http://arn.ugr.es/normSeq/static/testFiles/exampleMatrix.txt");
-                        $('[href="#url_other"]').tab('show');
-                        $('#id_annotationURL_other').val("http://arn.ugr.es/normSeq/static/testFiles/templateExample.txt");
-                        $('[href="#annotation_url_other"]').tab('show');
-                        $('#id_methods_other').multiselect('select', ['NN','CPM','UQ','Med','TC','TMM','QN','RLE']);
                     }
             }
         }
