@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% block css %}
-    <link href="{% static 'css/customStyles/stylesIndex.css'%}" rel="stylesheet">
+<link href="{% static 'css/customStyles/stylesIndex.css'%}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -18,10 +18,18 @@
                 </div>
             </div>
         </div>
+        <div class="alert text-center cookiealert" role="alert">
+            This website is free and open to all users and there is no login requirement. This site does not use cookies to track your behaviour or keep any personal data.
+        
+            <button type="button" class="btn btn-primary btn-sm acceptcookies">
+                I agree
+            </button>
+        </div>
     </div>
 
 {% endblock %}
 
 {% block js %}  
+<script src="https://cdn.jsdelivr.net/gh/Wruczek/Bootstrap-Cookie-Alert@gh-pages/cookiealert.js"></script>
 
 {% endblock %}
