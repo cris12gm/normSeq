@@ -1,19 +1,26 @@
 {% if summary %}
 <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link tabs-plots border-0 active" id="pills-top-tab" data-toggle="pill" data-target="#pills-top" type="button" role="tab" aria-controls="pills-top" aria-selected="false">Top 10 expressed {{ typeJob }}s</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link border-0" id="pills-info-tab" data-toggle="pill" data-target="#pills-info" type="button" role="tab" aria-controls="pills-info" aria-selected="true">Information Gain per {{ typeJob }} distribution</button>
+  </li>
     <li class="nav-item" role="presentation">
-      <button class="nav-link border-0 active" id="pills-distribution-tab" data-toggle="pill" data-target="#pills-distribution" type="button" role="tab" aria-controls="pills-distribution" aria-selected="true">Expression level per {{typeJob}} distribution</button>
-    </li>
-    <li class="nav-item" role="presentation">
-      <button class="nav-link tabs-plots border-0" id="pills-top-tab" data-toggle="pill" data-target="#pills-top" type="button" role="tab" aria-controls="pills-top" aria-selected="false">Top 10 expressed {{ typeJob }}s</button>
+      <button class="nav-link border-0" id="pills-distribution-tab" data-toggle="pill" data-target="#pills-distribution" type="button" role="tab" aria-controls="pills-distribution" aria-selected="true">Expression level per {{typeJob}} distribution</button>
     </li>
   </ul>
 
   <div class="tab-content" id="pills-tabContent">
-    <div class="tab-pane fade show active" id="pills-distribution" role="tabpanel" aria-labelledby="pills-distribution-tab">
+    <div class="tab-pane fade" id="pills-info" role="tabpanel" aria-labelledby="pills-info-tab">
+      {% include "results/info.html" %}
+
+  </div>
+    <div class="tab-pane fade" id="pills-distribution" role="tabpanel" aria-labelledby="pills-distribution-tab">
         {% include "results/distribution.html" %}
 
     </div>
-    <div class="tab-pane fade" id="pills-top" role="tabpanel" aria-labelledby="pills-top-tab">
+    <div class="tab-pane active show" id="pills-top" role="tabpanel" aria-labelledby="pills-top-tab">
       {% include "results/top10.html" %}
     </div>
   </div>

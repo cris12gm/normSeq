@@ -11,6 +11,7 @@
     {% include "modals/results/modal_distribution.html" %}
     {% include "modals/results/modal_top.html" %}
     {% include "modals/results/modal_batch.html" %}
+    {% include "modals/results/modal_info.html" %}
 {% endblock %}
 
 {% block content %}
@@ -34,9 +35,11 @@
                             <a class="nav-link" id="visualization-tab" data-toggle="tab" href="#visualization" role="tab" aria-controls="visualization" aria-selected="false"><h5>Visualization</h5></a>
                         </li>
                         {% endif %}
+                        {% if de %}
                         <li class="nav-item">
                             <a class="nav-link" id="de-tab" data-toggle="tab" href="#de" role="tab" aria-controls="de" aria-selected="false"><h5>Differential Expression</h5></a>
                         </li>
+                        {% endif %}
                         {% if batchEffect %}
                         <li class="nav-item">
                             <a class="nav-link" id="batch-tab" data-toggle="tab" href="#batch" role="tab" aria-controls="batch" aria-selected="false"><h5>Batch effect correction</h5></a>
@@ -59,9 +62,11 @@
                             {% include "results/visualization.html" %}
                         </div>
                         {% endif %}
+                        {% if de %}
                         <div class="tab-pane fade tabResult" id="de" role="tabpanel" aria-labelledby="de-tab">
                             {% include "results/de.html" %}
                         </div>
+                        {% endif %}
                         {% if downloads %}
                         <div class="tab-pane fade tabResult" id="downloads" role="tabpanel" aria-labelledby="downloads-tab">
                             {% include "results/downloads.html" %}
@@ -195,7 +200,22 @@
             }
         });
     });
-  
+    $('.modalPlotInfo').on('click', function (e) {
+        title = this.title;
+        url = this.name;
+        
+        $.ajax({
+             url: '{% url "ajax_plot" %}',
+             data: {
+                 "url" : url
+             },
+             dataType: 'json',
+            success: function (dataE) {
+                $("#modalContentInfo").html(dataE.plot);
+                $("#modalTitleInfo").html(title);
+            }
+        });
+    });
 </script>
 
 <!-- On change of number of dimensions, change plot PCA-->

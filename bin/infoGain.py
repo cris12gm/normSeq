@@ -1,7 +1,9 @@
 from scipy.stats import entropy
 import pandas as pd
 import numpy as np
+import plotly.express as px
 import sys
+from plotly.offline import plot
 
 def compute_impurity(feature, impurity_criterion):
     """
@@ -64,33 +66,60 @@ def comp_feature_information_gain(df, target, descriptive_feature, split_criteri
 
     return(information_gain)
 
+def calculate_infoGain(infile,annotationFile,criterion):
 
-infile = 'C:/Users/Cris/Dropbox/TRABAJO/NL/normSeq/Website/normSeq/uploads/HYLM9GQEDKRG69K/matrix.txt'
-cabecera = open(infile).readline().split("\t")[0]
-df = pd.read_table(infile)
-df.rename(columns = {cabecera:'name'}, inplace = True)
-df = df.set_index(cabecera)
-df = df.dropna()
-df = df.T
-
-
-#Read annotation
-annotationFile = "C:/Users/Cris/Dropbox/TRABAJO/NL/normSeq/Website/normSeq/uploads/HYLM9GQEDKRG69K/annotation.txt"
-cabecera = open(annotationFile).readline().split("\t")[0]
-ann = pd.read_table(annotationFile)
-ann.rename(columns = {cabecera:'sample'}, inplace = True)
-ann = ann.set_index(cabecera)
+    print(infile)
+    cabecera = open(infile).readline().split("\t")[0]
+    df = pd.read_table(infile)
+    df.rename(columns = {cabecera:'name'}, inplace = True)
+    df = df.set_index(cabecera)
+    df = df.dropna()
+    df = df.T
 
 
-together = pd.concat([df, ann], axis=1, join="inner")
+    #Read annotation
+    cabecera = open(annotationFile).readline().split("\t")[0]
+    ann = pd.read_table(annotationFile)
+    ann.rename(columns = {cabecera:'sample'}, inplace = True)
+    ann = ann.set_index(cabecera)
+
+    together = pd.concat([df, ann], axis=1, join="inner")
 
 
-split_criterion = 'entropy'
-infoGain = {}
-for feature in together.drop(columns='group').columns:
-    feature_info_gain = comp_feature_information_gain(together, 'group', feature, split_criterion)
-    infoGain[feature]=feature_info_gain
+    split_criterion = criterion
+    infoGain = {}
+    for feature in together.drop(columns='group').columns:
+        feature_info_gain = comp_feature_information_gain(together, 'group', feature, split_criterion)
+        infoGain[feature]=feature_info_gain
 
-data = pd.DataFrame.from_dict(infoGain,orient='index')
-joined = pd.concat([data, together.T.drop("group")], axis=1, join="inner")
-print (joined)
+    data = pd.DataFrame.from_dict(infoGain,orient='index')
+    data.columns = ['info']
+
+    together = together.T.drop("group")
+    together['mean'] = together.mean(axis=1)
+    result = pd.merge(data, together, left_index =True ,right_index=True)
+
+    #top100 = result.nlargest(100, 'mean')
+    information_gain = result['info']
+
+    return information_gain
+
+def plotInfo(df,outfileImage,outfile):
+
+    x = []
+    y = []
+    for element in df:
+        x.append(element)
+        y.append(df[element])
+
+    fig = px.box(df)
+    fig.update_layout(
+    xaxis_title="Method",
+    yaxis_title="Information Gain per miRNA")
+    
+    fig.write_image(outfileImage)
+
+    plotCode = plot(fig, show_link=False, auto_open=False, output_type = 'div')
+    outfile_W = open(outfile,'a')
+    outfile_W.write(plotCode)
+    outfile_W.close()

@@ -7,6 +7,7 @@ from miRNAnorm import processInput,norm
 from summary import createsummary
 from correctBatch import combat,plotsBatch
 from de import edgeR,processAnnotation
+from infoGain import calculate_infoGain,plotInfo
 
 
 #Error = False
@@ -39,17 +40,24 @@ if config['batchEffect'] == 'True':
 # Make normalization and plots
 methods = config['methods']
 
+infoGain = {}
 for method in methods:
 
-    if method=='UQ' or method=='TMM' or method=='RLE':
-        FDR = config['pval']
-        edgeR(infile,method,annotation,FDR,jobDir)
+    #if method=='UQ' or method=='TMM' or method=='RLE':
+    #    FDR = config['pval']
+    #    edgeR(infile,method,annotation,FDR,jobDir)
     outdf,normfile = norm(infile,df,method,jobDir)
+
+    criterion='entropy'
+    info_method = calculate_infoGain(normfile,annotation,criterion)
+    infoGain[method] = info_method
     createsummary(normfile,outdf,method,jobDir,annotation)
     createplots(normfile,outdf,method,jobDir,annotation)
 
+outfileImage = os.path.join(jobDir,"graphs","summary","infoGain.png")
+outfile = os.path.join(jobDir,"graphs","summary","infoGain.html")
+plotInfo(infoGain,outfileImage,outfile)
 
-    
 
 #Check and create results.txt
 

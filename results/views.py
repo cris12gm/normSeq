@@ -62,6 +62,15 @@ class Results(TemplateView):
         top10 = {}
 
         i = 0
+
+        #InfoGain
+        infoGain = {}
+        info = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain.html")
+        infoPNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain.png")
+        infoGain['HTML'] = info
+        infoGain['PNG'] = infoPNG
+        infoGain['name'] = "Information Gain"
+
         for method in methods:
 
             pngHeatmap = os.path.join(settings.MEDIA_URL,jobID,"graphs","heatmap_"+method+".png")
@@ -121,13 +130,15 @@ class Results(TemplateView):
             else:
                 batchEffect=False
 
+ 
+
             ##Downloads
             downloadLink = os.path.join(settings.MEDIA_URL,jobID,"normalized","matrix_"+method+".txt")
 
             downloads[METHODS[method]] = [downloadLink,"matrix_"+method+".txt"]
             i = i + 1 
 
-        summary = {'distribution':distribution,'top10':top10}
+        summary = {'distribution':distribution,'top10':top10,'info':infoGain}
 
         if heatmap or pca:
             visualization=True
