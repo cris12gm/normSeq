@@ -49,6 +49,9 @@ dgeTest <- exactTest(edgeR_table, pair=c(group1,group2))
 tt <- topTags(dgeTest, n=Inf)
 selected_samples <- (which(groups==group1 | groups==group2))
 
+group1Element <- (which(groups==group1))
+group2Element <- (which(groups==group2))
+
 # Obtaining the pseudocounts for each sample
 z <- as.data.frame(edgeR_table$pseudo.counts)[ ,selected_samples]
   # Obtaining the statistical results from the edge test
@@ -57,7 +60,17 @@ t <- as.data.frame(tt)
 data <- merge(z, t, by="row.names")
 row.names(data) <- data$Row.names  # row names manipulation
 data$Row.names <- NULL  # row names manipulation
-  # Selecting only features with FDR lower than the input p-value
+
+group1_Mean = rowMeans(edgeR_table$pseudo.counts[,group1Element])
+group2_Mean = rowMeans(edgeR_table$pseudo.counts[,group2Element])
+
+data$group1Mean <- group1_Mean
+data$group2Mean <- group2_Mean
+
+names(data)[names(data) == 'group1Mean'] <- gsub(" ","",paste(group1,"_mean"))
+names(data)[names(data) == 'group2Mean'] <- gsub(" ","",paste(group2,"_mean"))
+
+# Selecting only features with FDR lower than the input p-value
 selected <- which(data$FDR<=pvalue)
   # Obtaining the final matrix of selected features
 result <- data[selected, ]
