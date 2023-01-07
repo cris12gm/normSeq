@@ -58,7 +58,6 @@ if config['diffExpr']:
     ttest = ttest(df,annotation,FDR,jobDir)
     #consensus(edgeR,deseq,noiseq,ttest,jobDir)
 
-sys.exit(1)
 
 for method in methods:
 
