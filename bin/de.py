@@ -19,11 +19,22 @@ def processAnnotation(infile):
     df = df.dropna()
     return(df)
 
-def edgeR(infile,method,annotation,FDR,jobDir):
-    #Get groups from annotation
+def createGroupFile(annotation,jobDir):
+    annotationFile = processAnnotation(annotation)
+    groups = annotationFile["group"].values.tolist()
+    diffGroups = list(set(groups))
+    combinations = []
+    for subset in itertools.combinations(diffGroups, 2):
+        combination = subset[0]+"-"+subset[1]
+        combinations.append(combination)
+    output = open(os.path.join(jobDir,"DE","groups.txt"),'a')
+    for element in combinations:
+        output.write(element+"\n")
+    output.close()
+    return combinations
 
-    if not os.path.exists(os.path.join(jobDir,"DE")):
-        os.mkdir(os.path.join(jobDir,"DE"))
+
+def edgeR(infile,method,annotation,FDR,jobDir):
 
     annotationFile = processAnnotation(annotation)
     groups = annotationFile["group"].values.tolist()
@@ -42,10 +53,6 @@ def edgeR(infile,method,annotation,FDR,jobDir):
     return outputdf
 
 def deseq(infile,annotation,FDR,min_t,jobDir):
-    #Get groups from annotation
-
-    if not os.path.exists(os.path.join(jobDir,"DE")):
-        os.mkdir(os.path.join(jobDir,"DE"))
 
     annotationFile = processAnnotation(annotation)
     groups = annotationFile["group"].values.tolist()
@@ -64,10 +71,6 @@ def deseq(infile,annotation,FDR,min_t,jobDir):
     return outputdf
 
 def noiseq(infile,method,annotation,FDR,min_t,jobDir):
-    #Get groups from annotation
-
-    if not os.path.exists(os.path.join(jobDir,"DE")):
-        os.mkdir(os.path.join(jobDir,"DE"))
 
     annotationFile = processAnnotation(annotation)
     groups = annotationFile["group"].values.tolist()
@@ -95,7 +98,7 @@ def ttest(df,annotation,FDR,jobDir):
         group1 = subset[0]
         group2 = subset[1]
         output = open(os.path.join(jobDir,"DE","ttest_"+group1+"_"+group2+".txt"),'a')
-        cabecera = "name\t"+group1+"\t"+group2+"\tpvalue\n"
+        cabecera = "name\t"+group1+"_mean\t"+group2+"_mean\tlogFC\tPValue\n"
         output.write(cabecera)
         samples_group1 = annotationFile[annotationFile['group'] ==group1].index.tolist()
         samples_group2 = annotationFile[annotationFile['group'] ==group2].index.tolist()
@@ -118,6 +121,8 @@ def ttest(df,annotation,FDR,jobDir):
                 output_this['name'].append(mirna)
                 output_this['logFC'].append(log2)
                 output_this['PValue'].append(ttest)
+                output_this[group1+"_mean"] = mean_group1
+                output_this[group2+"_mean"] = mean_group2
         output.close()
         output_this = pd.DataFrame(output_this)
         outputdf[group1,group2] = output_this

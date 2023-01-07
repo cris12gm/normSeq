@@ -130,7 +130,21 @@ class Results(TemplateView):
             else:
                 batchEffect=False
 
- 
+            ##Dif expr
+            diffExpr = {}
+            if config['diffExpr'] == 'True':
+                groupsFile = open(os.path.join(settings.MEDIA_ROOT,jobID,"DE","groups.txt"),'r')
+                groups = []
+                for line in groupsFile:
+                    groups.append(line.strip())
+                de_groups = groups
+                for group in groups:
+                    group = group.replace("-","_")
+                    group1 = group.split("_")[0]
+                    group2 = group.split("_")[1]
+                    resultsGroup = de_prepare(jobID,group,group1,group2)
+                    group = group.replace("_","-")
+                    diffExpr[group]= resultsGroup
 
             ##Downloads
             downloadLink = os.path.join(settings.MEDIA_URL,jobID,"normalized","matrix_"+method+".txt")
@@ -144,7 +158,7 @@ class Results(TemplateView):
             visualization=True
 
         return render(request, self.template, {"jobID":jobID,"typeJob":typeJob,"visualization":visualization,"heatmapPlots":heatmap,
-        "pcaPlots":pca,"batchEffect":batchEffect,"downloads":downloads,"summary":summary})
+        "pcaPlots":pca,"batchEffect":batchEffect,"downloads":downloads,"summary":summary,"de":diffExpr,"de_groups":de_groups})
 
 
 def queryPlotHTML(request):
@@ -160,3 +174,50 @@ def queryPlotHTML(request):
     return JsonResponse(data)
     # except:
     #     return render(request, templateError)
+
+def de_prepare(jobID,group,group1,group2):
+    resultsGroup = {}
+    #edgeR
+    edgeRFile = os.path.join(settings.MEDIA_ROOT,jobID,"DE","edgeR_"+group+".txt")
+    edgeRdf = pd.read_table(edgeRFile)
+    edgeR = edgeRdf[["name",group1+"_mean", group2+"_mean","PValue","FDR"]]
+    edgeR = edgeR.set_index("name")
+    edgeR = edgeR.round(decimals=3)
+    edgeR_header = list(edgeR.columns)
+    edgeR = edgeR.T.to_dict()
+    resultsGroup['edgeR_header'] = edgeR_header
+    resultsGroup['edgeR'] = edgeR
+
+    #deseq
+    deseqFile = os.path.join(settings.MEDIA_ROOT,jobID,"DE","deseq_"+group+".txt")
+    deseqdf = pd.read_table(deseqFile)
+    deseq = deseqdf[["name",group1+"_mean", group2+"_mean","PValue","FDR"]]
+    deseq = deseq.set_index("name")
+    deseq = deseq.round(decimals=3)
+    deseq_header = list(deseq.columns)
+    deseq = deseq.T.to_dict()
+    resultsGroup['deseq_header'] = deseq_header
+    resultsGroup['deseq'] = deseq
+    
+    #noiseq
+    noiseqFile = os.path.join(settings.MEDIA_ROOT,jobID,"DE","noiseq_"+group+".txt")
+    noiseqdf = pd.read_table(noiseqFile)
+    noiseq = noiseqdf[["name",group1+"_mean", group2+"_mean","PValue"]]
+    noiseq = noiseq.set_index("name")
+    noiseq = noiseq.round(decimals=3)
+    noiseq_header = list(noiseq.columns)
+    noiseq = noiseq.T.to_dict()
+    resultsGroup['noiseq_header'] = noiseq_header
+    resultsGroup['noiseq'] = noiseq
+
+    #ttest
+    ttestFile = os.path.join(settings.MEDIA_ROOT,jobID,"DE","ttest_"+group+".txt")
+    ttestdf = pd.read_table(ttestFile)
+    ttest = ttestdf[["name",group1+"_mean", group2+"_mean","PValue"]]
+    ttest = ttest.set_index("name")
+    ttest_header = list(ttest.columns)
+    ttest = ttest.T.to_dict()
+    resultsGroup['ttest_header'] = ttest_header
+    resultsGroup['ttest'] = ttest
+
+    return resultsGroup

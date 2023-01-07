@@ -32,6 +32,7 @@ samplefactors <- data.frame(row.names=colnames(matfile), condition = factor(grou
 # Constructing the data set object that DESeq2 needs to perform the analysis
 dds = DESeqDataSetFromMatrix(countData = round(matfile), colData = samplefactors, design = ~condition)
 
+
 # Calling DESeq method
 dds <- DESeq(dds)
 # Obtaining the normalised matrix
@@ -50,12 +51,18 @@ dds_filtered <- DESeq(dds_filtered)
 sizeFactors(dds_filtered) <- sizeFactors(dds)
 # Normalisation of the filtered data
 ncounts <- counts(dds_filtered, normalized=TRUE)
+
 # Extracting the table containing the test results for each feature in the original count table
 curresult <- results(dds_filtered)
 selected <- NULL
 
+
 # Selecting the samples
 selected_samples <- (which(groups==sampletypevalues[1] | groups==sampletypevalues[2]))
+
+group1Element <- (which(groups==group1))
+group2Element <- (which(groups==group2))
+
 # Obtaining the list of features with absolute log2FoldChange greater than 1 and p adjusted value lower than the user-input value
 selected <- row.names(curresult)[(abs(curresult$log2FoldChange)>=1) & (curresult$padj<=pvalue)]
 # Removing rows with missing values on columns
@@ -63,10 +70,18 @@ selected <- na.omit(selected)
 
 # Combing the normalised data along with statistical analysis results ("log2FoldChange", "pval", "padj")
 ncounts_selected <- cbind(ncounts[ , selected_samples], curresult$log2FoldChange, curresult$pvalue, curresult$padj)
+
 # Naming the new columns
 colnames(ncounts_selected) <- c(head(colnames(ncounts_selected), n=-3), "logFC", "PValue", "FDR")
 # Obtaining the final matrix of selected features
-result <- ncounts_selected[selected, ]
+result <- as.data.frame(ncounts_selected[selected, ])
+
+result$group1Mean <- rowMeans(subset(result, select = group1Element))
+result$group2Mean <- rowMeans(subset(result, select = group2Element))
+
+names(result)[names(result) == 'group1Mean'] <- gsub(" ","",paste(group1,"_mean"))
+names(result)[names(result) == 'group2Mean'] <- gsub(" ","",paste(group2,"_mean"))
+
 
 output <- args[7]
 result <- tibble::rownames_to_column(as.data.frame(result), "name")

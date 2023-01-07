@@ -117,6 +117,11 @@
     {
         $("#loadpage").hide();
         $('#divPageContent').css("visibility", "visible");
+
+        comparison = document.getElementById("select_de").value;
+        valor = document.getElementById("select_de_method").value;
+        text  = "<b>Method:</b> "+valor+"<br><b>Comparison:</b> "+comparison;
+        $("#selectionDE").html(text);
     });
   
 </script>
@@ -323,6 +328,43 @@
         }
         newDiv.style.display="block";
     });
+</script>
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
+<script>
+    $('#select_de_method').change(function(){ 
+        valor = this.value;
+        comparison = document.getElementById("select_de").value;
+        text  = "<b>Method:</b> "+valor+"<br><b>Comparison:</b> "+comparison;
+        $("#selectionDE").html(text);
+
+        newDiv = document.getElementById(valor+"_"+comparison);
+        const allDivs = document.getElementsByClassName('resultsTable');
+        for (const div of allDivs) {
+        // 👇️ Remove element from DOM
+            div.style.display = 'none';
+        }
+        newDiv.style.display="block";
+    });
+
+    $('#select_de').change(function(){ 
+        comparison = this.value;
+        valor = document.getElementById("select_de_method").value;
+        text  = "<b>Method:</b> "+valor+"<br><b>Comparison:</b> "+comparison;
+        $("#selectionDE").html(text);
+
+        newDiv = document.getElementById(valor+"_"+comparison);
+        const allDivs = document.getElementsByClassName('resultsTable');
+        for (const div of allDivs) {
+        // 👇️ Remove element from DOM
+            div.style.display = 'none';
+        }
+        newDiv.style.display="block";
+    });
+
 </script>
 
 {% endblock %}

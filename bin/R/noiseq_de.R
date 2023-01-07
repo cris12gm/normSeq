@@ -54,6 +54,8 @@ curresult <- mynoiseq.deg
 
 # Selecting the samples
 selected_samples <- (which(groups==sampletypevalues[1] | groups==sampletypevalues[2]))
+group1Element <- (which(groups==group1))
+group2Element <- (which(groups==group2))
 
 # Obtaining the list of features with absolute log2FoldChange greater than 1 and p value lower than the user-input value
 selected <- curresult[(abs(curresult$M)>=1),]
@@ -65,4 +67,6 @@ result <- result[(result$pval)<=pvalue,]
 output <- args[8]
 result <- tibble::rownames_to_column(as.data.frame(result), "name")
 colnames(result) <- c(head(colnames(result), n=-3), "logFC", "prob", "PValue")
+
+
 write.table(result,output,sep="\t",row.names=FALSE, quote=FALSE,col.names=TRUE)

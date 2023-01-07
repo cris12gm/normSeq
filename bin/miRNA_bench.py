@@ -6,7 +6,7 @@ from plots import createplots
 from miRNAnorm import processInput,norm
 from summary import createsummary
 from correctBatch import combat,plotsBatch
-from de import edgeR,processAnnotation,deseq,noiseq,ttest,consensus
+from de import createGroupFile,edgeR,deseq,noiseq,ttest,consensus
 from infoGain import calculate_infoGain,plotInfo
 
 
@@ -49,6 +49,9 @@ if config['diffExpr']:
     FDR = config['pval']
     min_t = str(0)
     method = "TMM" #Change in input
+    if not os.path.exists(os.path.join(jobDir,"DE")):
+        os.mkdir(os.path.join(jobDir,"DE"))
+    combinations = createGroupFile(annotation,jobDir)
     edgeR = edgeR(infile,method,annotation,FDR,jobDir)
     deseq = deseq(infile,annotation,FDR,min_t,jobDir)
     noiseq = noiseq(infile,method,annotation,FDR,min_t,jobDir)
@@ -56,6 +59,7 @@ if config['diffExpr']:
     #consensus(edgeR,deseq,noiseq,ttest,jobDir)
 
 sys.exit(1)
+
 for method in methods:
 
     #Normalization
