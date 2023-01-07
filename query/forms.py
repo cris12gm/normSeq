@@ -36,7 +36,7 @@ class Query(forms.Form):
                                    choices=((False, 'No'), (True, 'Yes')),label="Apply batch effect correction:")
     batchFile = forms.FileField(label="Batch Effect Annotation File:", required=False)
     diffExpr = forms.TypedChoiceField(coerce=lambda x: x =='True', 
-                                   choices=((False, 'No'), (True, 'Yes')),label="Differential expression:")
+                                   choices=((True, 'Yes'),(False, 'No')),label="Differential expression:")
     pval = forms.FloatField(label="FDR:",validators=[MaxValueValidator(1)],initial=0.05,required=True)
     
 
