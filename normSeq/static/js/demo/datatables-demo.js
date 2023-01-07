@@ -5,16 +5,24 @@ $(document).ready(function() {
     "order":[[1, "desc"]]
   });
   $('#dataTableEdgeR').DataTable({
-    "order":[[4, "asc"]]
+    "order":[[5, "asc"]]
   });
   $('#dataTableDeseq').DataTable({
-    "order":[[4, "asc"]]
+    "order":[[5, "asc"]]
   });
   $('#dataTableNoiseq').DataTable({
-    "order":[[3, "asc"]]
+    "order":[[4, "asc"]]
   });
   $('#dataTableTtest').DataTable({
-    "order":[[3, "asc"]]
+    "order":[[4, "asc"]]
+  });
+  $('#dataTableSummaryDE').DataTable({
+    "columns": [
+      { "width": "20%" },
+      null,
+      null,
+      null
+    ]
   });
   
 }); 

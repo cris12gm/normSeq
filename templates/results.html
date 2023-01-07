@@ -122,6 +122,9 @@
         valor = document.getElementById("select_de_method").value;
         text  = "<b>Method:</b> "+valor+"<br><b>Comparison:</b> "+comparison;
         $("#selectionDE").html(text);
+
+        comparisonSummary = document.getElementById("select_de_summary").value;
+        $("#comparisonSummaryDE").html(comparisonSummary);
     });
   
 </script>
@@ -342,7 +345,7 @@
         $("#selectionDE").html(text);
 
         newDiv = document.getElementById(valor+"_"+comparison);
-        const allDivs = document.getElementsByClassName('resultsTable');
+        const allDivs = document.getElementsByClassName('methodDETable');
         for (const div of allDivs) {
         // 👇️ Remove element from DOM
             div.style.display = 'none';
@@ -357,7 +360,21 @@
         $("#selectionDE").html(text);
 
         newDiv = document.getElementById(valor+"_"+comparison);
-        const allDivs = document.getElementsByClassName('resultsTable');
+        const allDivs = document.getElementsByClassName('methodDETable');
+        for (const div of allDivs) {
+        // 👇️ Remove element from DOM
+            div.style.display = 'none';
+        }
+        newDiv.style.display="block";
+    });
+
+    $('#select_de_summary').change(function(){ 
+        comparison = this.value;
+        valor = document.getElementById("select_de_summary").value;
+        $("#comparisonSummaryDE").html(text);
+
+        newDiv = document.getElementById("summary_"+comparison);
+        const allDivs = document.getElementsByClassName('summaryDETable');
         for (const div of allDivs) {
         // 👇️ Remove element from DOM
             div.style.display = 'none';

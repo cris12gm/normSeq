@@ -1,0 +1,41 @@
+<div class="row">
+    <div class="col-4">
+      <select id='select_de_summary' class="custom-select">
+        {% for element in de_groups %}
+        <option value="{{ element }}">{{ element }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-6">
+        Differentially Expressed {{typeJob}}s for <b><div id="comparisonSummaryDE"></div></b> 
+    </div>
+</div>
+
+<div class="row mr-2 ml-2">
+    {% for mykey,myvalue in de.items %}
+    <div class="table-responsive resultsTable summaryDETable" id="summaryDE_{{mykey}}">
+        <table class="table table-hover table-sm" id="dataTableSummaryDE" width="100%" cellspacing="3">
+            <thead>
+                <tr>
+                  <th class="titleTable"><span class="table_tooltip">Method</span></th>
+                  <th class="titleTable"><span class="table_tooltip">Number Infraexpressed</span></th>
+                  <th class="titleTable"><span class="table_tooltip">Infraexpressed {{ typeJob }}s</span></th>
+                  <th class="titleTable"><span class="table_tooltip">Number Overexpressed </span></th>
+                  <th class="titleTable"><span class="table_tooltip">Overexpressed {{ typeJob }}s</span></th>
+                </tr>
+            </thead>
+            <tbody>
+              {% for element,value in myvalue.0.items %}
+                <tr>
+                  <td class="rowTable">{{element}}</td>
+                  <td class="rowTable">{{value.numInfra}}</td>
+                  <td class="rowTable" style=" font-size: 0.6em;">{{value.infra}}</td>
+                  <td class="rowTable">{{value.numOver}}</td>
+                  <td class="rowTable" style=" font-size: 0.6em;">{{value.over}}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endfor %}
+</div>

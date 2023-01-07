@@ -1,113 +1,20 @@
-<div class="row">
-  <div class="col-4">
-    <select id='select_de' class="custom-select">
-      {% for element in de_groups %}
-      <option value="{{ element }}">{{ element }}</option>
-      {% endfor %}
-    </select>
-  </div>
-  <div class="col-4 float-right">
-    <select id='select_de_method' class="custom-select">
-      <option value="edgeR">edgeR</option>
-      <option value="DESeq2">DESeq2</option>
-      <option value="NOISeq">NOISeq</option>
-      <option value="T Test">T Test</option>
-    </select>
-  </div>
-  <div class="col-4" id="selectionDE">
-  </div>
-</div>
-{% for mykey,myvalue in de.items %}
+<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link border-0 active" id="pills-summaryDE-tab" data-toggle="pill" data-target="#pills-summaryDE" type="button" role="tab" aria-controls="pills-summaryDE" aria-selected="true">Summary</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link tabs-plots border-0" id="pills-method-tab" data-toggle="pill" data-target="#pills-method" type="button" role="tab" aria-controls="pills-method" aria-selected="false">Results per method</button>
+  </li>
+</ul>
 
-  <div class="row mr-2 ml-2">
-    <div class="table-responsive resultsTable" id="edgeR_{{mykey}}">
-      <table class="table table-hover table-sm" id="dataTableEdgeR" width="100%" cellspacing="3">
-          <thead>
-              <tr>
-                <th class="titleTable"><span class="table_tooltip">Name</span></th>
-                  {% for element in myvalue.edgeR_header %}
-                    <th class="titleTable"><span class="table_tooltip">{{ element }}</span></th>
-                  {% endfor %}
-              </tr>
-          </thead>
-          <tbody>
-            {% for element,value in myvalue.edgeR.items %}
-              <tr>
-                <td class="rowTable">{{element}}</td>
-                {% for data,value2 in value.items %}
-                <td class="rowTable">{{value2}}</td>
-                {% endfor %}
-              </tr>
-            {% endfor %}
-          </tbody>
-      </table>
+<div class="tab-content" id="pills-tabContent">
+  <div class="tab-pane fade show active" id="pills-summaryDE" role="tabpanel" aria-labelledby="pills-summaryDE-tab">
+      {% include "results/de/summary.html" %}
+
   </div>
-  <div class="table-responsive resultsTable" id="DESeq2_{{mykey}}" style="display: none;">
-    <table class="table table-hover table-sm" id="dataTableDeseq" width="100%" cellspacing="3">
-        <thead>
-            <tr>
-              <th class="titleTable"><span class="table_tooltip">Name</span></th>
-                {% for element in myvalue.deseq_header %}
-                  <th class="titleTable"><span class="table_tooltip">{{ element }}</span></th>
-                {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-          {% for element,value in myvalue.deseq.items %}
-            <tr>
-              <td class="rowTable">{{element}}</td>
-              {% for data,value2 in value.items %}
-              <td class="rowTable">{{value2}}</td>
-              {% endfor %}
-            </tr>
-          {% endfor %}
-        </tbody>
-    </table>
+  <div class="tab-pane fade" id="pills-method" role="tabpanel" aria-labelledby="pills-method-tab">
+    {% include "results/de/permethod.html" %}
   </div>
-  <div class="table-responsive resultsTable" id="NOISeq_{{mykey}}" style="display: none;">
-    <table class="table table-hover table-sm" id="dataTableNoiseq" width="100%" cellspacing="3">
-        <thead>
-            <tr>
-              <th class="titleTable"><span class="table_tooltip">Name</span></th>
-                {% for element in myvalue.noiseq_header %}
-                  <th class="titleTable"><span class="table_tooltip">{{ element }}</span></th>
-                {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-          {% for element,value in myvalue.noiseq.items %}
-            <tr>
-              <td class="rowTable">{{element}}</td>
-              {% for data,value2 in value.items %}
-              <td class="rowTable">{{value2}}</td>
-              {% endfor %}
-            </tr>
-          {% endfor %}
-        </tbody>
-    </table>
-  </div>
-  <div class="table-responsive resultsTable" id="T Test_{{mykey}}" style="display: none;">
-    <table class="table table-hover table-sm" id="dataTableTtest" width="100%" cellspacing="3">
-        <thead>
-            <tr>
-              <th class="titleTable"><span class="table_tooltip">Name</span></th>
-                {% for element in myvalue.ttest_header %}
-                  <th class="titleTable"><span class="table_tooltip">{{ element }}</span></th>
-                {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-          {% for element,value in myvalue.ttest.items %}
-            <tr>
-              <td class="rowTable">{{element}}</td>
-              {% for data,value2 in value.items %}
-              <td class="rowTable">{{value2}}</td>
-              {% endfor %}
-            </tr>
-          {% endfor %}
-        </tbody>
-    </table>
-  </div>
-  {% endfor %}
 </div>
+
 

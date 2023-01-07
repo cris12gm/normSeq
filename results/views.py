@@ -71,6 +71,23 @@ class Results(TemplateView):
         infoGain['PNG'] = infoPNG
         infoGain['name'] = "Information Gain"
 
+        ##Dif expr
+        diffExpr = {}
+        if config['diffExpr'] == 'True':
+            groupsFile = open(os.path.join(settings.MEDIA_ROOT,jobID,"DE","groups.txt"),'r')
+            groups = []
+            for line in groupsFile:
+                groups.append(line.strip())
+            de_groups = groups
+                
+            for group in groups:
+                group = group.replace("-","_")
+                group1 = group.split("_")[0]
+                group2 = group.split("_")[1]
+                summaryDE,resultsGroup = de_prepare(jobID,group,group1,group2)
+                group = group.replace("_","-")
+                diffExpr[group]= summaryDE,resultsGroup
+                
         for method in methods:
 
             pngHeatmap = os.path.join(settings.MEDIA_URL,jobID,"graphs","heatmap_"+method+".png")
@@ -130,21 +147,6 @@ class Results(TemplateView):
             else:
                 batchEffect=False
 
-            ##Dif expr
-            diffExpr = {}
-            if config['diffExpr'] == 'True':
-                groupsFile = open(os.path.join(settings.MEDIA_ROOT,jobID,"DE","groups.txt"),'r')
-                groups = []
-                for line in groupsFile:
-                    groups.append(line.strip())
-                de_groups = groups
-                for group in groups:
-                    group = group.replace("-","_")
-                    group1 = group.split("_")[0]
-                    group2 = group.split("_")[1]
-                    resultsGroup = de_prepare(jobID,group,group1,group2)
-                    group = group.replace("_","-")
-                    diffExpr[group]= resultsGroup
 
             ##Downloads
             downloadLink = os.path.join(settings.MEDIA_URL,jobID,"normalized","matrix_"+method+".txt")
@@ -176,13 +178,16 @@ def queryPlotHTML(request):
     #     return render(request, templateError)
 
 def de_prepare(jobID,group,group1,group2):
+    summary = {}
     resultsGroup = {}
     #edgeR
     edgeRFile = os.path.join(settings.MEDIA_ROOT,jobID,"DE","edgeR_"+group+".txt")
     edgeRdf = pd.read_table(edgeRFile)
-    edgeR = edgeRdf[["name",group1+"_mean", group2+"_mean","PValue","FDR"]]
+    edgeR = edgeRdf[["name",group1+"_mean", group2+"_mean","logFC","PValue","FDR"]]
     edgeR = edgeR.set_index("name")
     edgeR = edgeR.round(decimals=3)
+    summary['edgeR'] = getInfraOver(edgeR)
+
     edgeR_header = list(edgeR.columns)
     edgeR = edgeR.T.to_dict()
     resultsGroup['edgeR_header'] = edgeR_header
@@ -191,9 +196,10 @@ def de_prepare(jobID,group,group1,group2):
     #deseq
     deseqFile = os.path.join(settings.MEDIA_ROOT,jobID,"DE","deseq_"+group+".txt")
     deseqdf = pd.read_table(deseqFile)
-    deseq = deseqdf[["name",group1+"_mean", group2+"_mean","PValue","FDR"]]
+    deseq = deseqdf[["name",group1+"_mean", group2+"_mean","logFC","PValue","FDR"]]
     deseq = deseq.set_index("name")
     deseq = deseq.round(decimals=3)
+    summary['DESeq2'] = getInfraOver(deseq)
     deseq_header = list(deseq.columns)
     deseq = deseq.T.to_dict()
     resultsGroup['deseq_header'] = deseq_header
@@ -202,9 +208,10 @@ def de_prepare(jobID,group,group1,group2):
     #noiseq
     noiseqFile = os.path.join(settings.MEDIA_ROOT,jobID,"DE","noiseq_"+group+".txt")
     noiseqdf = pd.read_table(noiseqFile)
-    noiseq = noiseqdf[["name",group1+"_mean", group2+"_mean","PValue"]]
+    noiseq = noiseqdf[["name",group1+"_mean", group2+"_mean","logFC","PValue"]]
     noiseq = noiseq.set_index("name")
     noiseq = noiseq.round(decimals=3)
+    summary['NOISeq'] = getInfraOver(noiseq)
     noiseq_header = list(noiseq.columns)
     noiseq = noiseq.T.to_dict()
     resultsGroup['noiseq_header'] = noiseq_header
@@ -213,11 +220,29 @@ def de_prepare(jobID,group,group1,group2):
     #ttest
     ttestFile = os.path.join(settings.MEDIA_ROOT,jobID,"DE","ttest_"+group+".txt")
     ttestdf = pd.read_table(ttestFile)
-    ttest = ttestdf[["name",group1+"_mean", group2+"_mean","PValue"]]
+    ttest = ttestdf[["name",group1+"_mean", group2+"_mean","logFC","PValue"]]
     ttest = ttest.set_index("name")
+    summary['T Test'] = getInfraOver(ttest)
     ttest_header = list(ttest.columns)
     ttest = ttest.T.to_dict()
     resultsGroup['ttest_header'] = ttest_header
     resultsGroup['ttest'] = ttest
 
-    return resultsGroup
+    return summary,resultsGroup
+
+def getInfraOver(df):
+    output = {}
+
+    overExpressed = df.query("logFC >= 0")
+    overExpressed_number = overExpressed.shape[0]
+    overExpressed_names = overExpressed.index.tolist()
+    overExpressed_names = ','.join(overExpressed_names)
+
+    infraExpressed = df.query("logFC < 0")
+    infraExpressed_number = infraExpressed.shape[0]
+    infraExpressed_names = infraExpressed.index.tolist()
+    infraExpressed_names = ','.join(infraExpressed_names)
+
+    output = {"over":overExpressed_names,"infra":infraExpressed_names,"numOver":overExpressed_number,"numInfra":infraExpressed_number}
+
+    return output
