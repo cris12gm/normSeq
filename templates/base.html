@@ -4,11 +4,20 @@
 <html lang="en">
 
     <head>
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-9CY616TD4H"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            
+            gtag('config', 'G-9CY616TD4H');
+        </script>
 
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta name="author" content="Cristina Gomez-Martin">
-        <meta name="google-site-verification" content="_gSo6kOKaI0cxmom6Ms2b6mpLiNspPhuASuzBJUfwnk" />
+        <!-- <meta name="google-site-verification" content="_gSo6kOKaI0cxmom6Ms2b6mpLiNspPhuASuzBJUfwnk" /> -->
         <link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.png'%}">
         <title>normSeq</title>
 
@@ -28,14 +37,7 @@
          <!-- To multiselect -->
         <link rel="stylesheet" href="{% static 'css/bootstrap-multiselect.css' %}" type="text/css"/>
 
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-130797336-2"></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'UA-130797336-2');
-        </script>
+
 
     {% block css %}{% endblock %}
 
