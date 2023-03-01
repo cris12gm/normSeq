@@ -24,7 +24,10 @@ class statusJob(TemplateView):
         except:
             return redirect(settings.SUB_SITE+"/query/")
 
-        jobDB = Job.objects.get(JobID=jobID)
+        try:
+            jobDB = Job.objects.get(JobID=jobID)
+        except:
+            return redirect(settings.SUB_SITE+"/query/")
         status = jobDB.getStatus()
         typeJob = jobDB.getType()
 
@@ -60,7 +63,14 @@ class statusJob(TemplateView):
     def post(self, request):
         jobID = request.POST['jobID']
 
-        return redirect(settings.SUB_SITE+"/status?jobID="+jobID)
+        #Check if jobID exists
+        try:
+            jobDB = Job.objects.get(JobID=jobID)
+            return redirect(settings.SUB_SITE+"/status?jobID="+jobID)
+        except:
+            return redirect(settings.SUB_SITE+"/query")
+
+        
     
 
     

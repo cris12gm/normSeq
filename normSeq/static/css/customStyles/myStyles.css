@@ -1,44 +1,44 @@
 /* Formato de todos los títulos */
 .titlePag {
   margin-top: 10px;
-  color: #3B2030 ;
+  color: #041C34 ;
 }
 
 .btn-success {
   color: #fff;
-  background-color: #dd9c1a;
-  border-color: #dd9c1a;
+  background-color: #087E8B;
+  border-color: #087E8B;
 }
 
 .btn-success:hover {
   color: #fff;
-  background-color: #a77615;
-  border-color: #a77615;
+  background-color: #044b53;
+  border-color: #044b53;
 }
 
 .btn-success:focus, .btn-success.focus {
   color: #fff;
-  background-color: #dd9c1a;
-  border-color: #dd9c1a;
-  box-shadow: 0 0 0 0.2rem #dd9c1a;
+  background-color: #087E8B;
+  border-color: #087E8B;
+  box-shadow: 0 0 0 0.2rem #087E8B;
 }
 
 .btn-success.disabled, .btn-success:disabled {
   color: #fff;
-  background-color:  #dd9c1a;
-  border-color:  #dd9c1a;
+  background-color:  #087E8B;
+  border-color:  #087E8B;
 }
 
 .btn-success:not(:disabled):not(.disabled):active, .btn-success:not(:disabled):not(.disabled).active,
 .show > .btn-success.dropdown-toggle {
   color: #fff;
-  background-color: #dd9c1a;
-  border-color: #362503;
+  background-color: #087E8B;
+  border-color: #041C34;
 }
 
 .btn-success:not(:disabled):not(.disabled):active:focus, .btn-success:not(:disabled):not(.disabled).active:focus,
 .show > .btn-success.dropdown-toggle:focus {
-  box-shadow: 0 0 0 0.2rem#dd9c1a;
+  box-shadow: 0 0 0 0.2rem#087E8B;
 }
 
 
@@ -58,11 +58,11 @@
 
   /* Color de las pestañas cuando están activas (el link) */
 .nav-link {
-  color: #dd9c1a;
+  color: #087E8B;
 }
 .nav-tabs .nav-link.active,
 .nav-tabs .nav-item.show .nav-link {
-  color: #dd9c1a;
+  color: #087E8B;
   background-color: #fff;
   border-color: #dee2e6 #dee2e6 #fff;
 }
@@ -72,28 +72,28 @@
 
 .nav-pills .nav-link {
   border-radius: 0.25rem;
-  color:#dd9c1a;
+  color:#087E8B;
 }
 
 .nav-pills .nav-link.active,
 .nav-pills .show > .nav-link {
   color: #fff;
-  background-color: #dd9c1a;
+  background-color: #087E8B;
 }
 
 /* Color de los link */
 
 .btn-link {
-  color: #dd9c1a;
+  color: #087E8B;
 }
 
 a{
-  color: #dd9c1a;
+  color: #087E8B;
 }
 
 /* mouse over link */
 a:hover {
-  color: #805809;
+  color: #044b53;
 }
 
 
@@ -101,6 +101,6 @@ a:hover {
 /* Color de datatables */
 
 .page-item.active .page-link {
-  background-color: #C48405 !important;
-  border: 1px solid #dd9c1a;
+  background-color: #041C34 !important;
+  border: 1px solid #087E8B;
 }

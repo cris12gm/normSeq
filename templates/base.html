@@ -45,70 +45,69 @@
 
     <body onload="showHidenMenu();">
 
-        <div class="d-flex" id="wrapper">
-            <!-- Sidebar -->
-            <div class="bg-dark" id="sidebar-wrapper">
-            <div id="tittleBar">
-                <a class="navbar-brand mr-1" href="{% url 'home' %}"><img src="{% static 'images/title_white.png'%}" width="180"></a>
-            </div>
-            <div class="list-group list-group-flush">
-                <a href="{% url 'query' %}" class="list-group-item list-group-item-action bg-light">
-                    <i class="fas fa-fw fa-cogs"></i>
-                    <span>Use normSeq</span>
-                </a>
-                <a href="https://arn.ugr.es/normseq_doc" class="list-group-item list-group-item-action bg-light">
-                    <i class="fas fa-fw fa-book"></i>
-                    <span>Web Manual</span>
-                </a>
-                <a href="" class="list-group-item list-group-item-action bg-light" data-toggle="modal" data-target="#modalAbout">
-                    <i class="fas fa-fw fa-question"></i>
-                    <span>About</span>
-                </a>
-                <div class="modal fade" id="modalAbout" role="dialog">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                        <div class="modal-header">
-                          <h4 class="modal-title">
-                            About
-                          </h4>
-                        </div>
-                        <div class="modal-body">
-                            <h5 class="align-center">This website is free and open to all users and there is no login requirement. </h5>
-                            <p>NormSeq is is a freely accessible web-server tool for data normalization, batch-effect correction and differential expression analysis obtained from next generation sequencing platforms such as Illumina or SOLiD. The platform offers multiple visualization options and downloadable output plots and tables.</p>
-                            <p>Developed by the <a href="http://exosomes.nl">Exosomes Research Group</a> at Cancer Center Amsterdam</p>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                      </div>
-                    </div>
-                </div>
-                <hr>
-                <div class="card ml-2 mr-2">
-                    <div class="card-body">
-                        <form action="{% url 'status' %}">
-                            <label for="jobID">Search a Job ID:</label><br>
-                            <input type="text" id="jobID" name="jobID"><br>
-                            <br>
-                            <input class="btn btn-success btn-sm" type="submit" value="Search">
-                        </form> 
-                    </div>
-                </div>
-                
-                
-            </div>
-            </div>
-            <!-- /#sidebar-wrapper -->
-    
-            <!-- Page Content -->
-            <div id="page-content-wrapper">
+        <nav class="navbar navbar-expand-sm navbar-light">
+            <a class="navbar-brand" href="{% url 'home' %}"><img src="{% static 'images/title_white.png'%}" width="180"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler11"
+                aria-controls="navbarToggler11" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
         
-                <nav id="topNav" class="navbar navbar-expand navbar-dark bg-dark">
-                    <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="menu-toggle" href="#">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                </nav>  
+            <div class="collapse navbar-collapse" id="navbarToggler11">
+                <ul class="navbar-nav  ml-auto">
+                    <li class="nav-item mt-2">
+                        <a href="{% url 'home' %}" class="nav-link">
+                            <i class="fas fa-solid fa-user iconsMenu"></i>
+                            Home
+                        </a>
+                    </li>
+                    <li class="nav-item mt-2">
+                        <a href="{% url 'query' %}" class="nav-link">
+                            <i class="fas fa-solid fa-cogs iconsMenu"></i>
+                            Use NormSeq
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown ml-2 mr-2 mt-2">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-solid fa-book iconsMenu"></i>
+                            Help
+                          </a>
+                          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="https://arn.ugr.es/normseq_doc">Manual</a>
+                            <a class="dropdown-item" href="#">Tutorial</a>
+                            <a class="dropdown-item" href="#">FAQ</a>
+                          </div>
+                    </li>
+                    <li class="nav-item mt-2 mr-2">
+                        <a class="nav-link" href="" data-toggle="modal" data-target="#modalAbout">
+                            <i class="fas fa-solid fa-question iconsMenu"></i>
+                            About
+                        </a>
+                        <div class="modal fade" id="modalAbout" role="dialog">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">
+                                            About
+                                        </h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <h5 class="align-center">This website is free and open to all users and there is no login requirement. </h5>
+                                        <p>NormSeq is is a freely accessible web-server tool for data normalization, batch-effect correction and differential expression analysis obtained from next generation sequencing platforms such as Illumina or SOLiD. The platform offers multiple visualization options and downloadable output plots and tables.</p>
+                                        <p>Developed by the <a href="http://exosomes.nl">Exosomes Research Group</a> at Cancer Center Amsterdam</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
 
+            <div id="page-content-wrapper">
+    
                 <div class="container-fluid">
 
                     <!-- Page Content -->
@@ -118,11 +117,7 @@
                     
                     
                 </div>
-                
-
-
             </div>
-        </div>
 
         <!-- Bootstrap core JavaScript -->
 
@@ -132,18 +127,11 @@
         <script src="{% static 'js/bootstrap.min.js' %}"></script>
         <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
 
-        <!-- Menu Toggle Script -->
-        <script>
-        $("#menu-toggle").click(function(e) {
-            e.preventDefault();
-            $("#wrapper").toggleClass("toggled");
-        });
-        </script>
-
         <!-- Datatables -->
         <script src="{% static 'js/demo/datatables-demo.js'%}"></script>
         <script src="{% static 'vendor/datatables/jquery.dataTables.js'%}"></script>
         <script src="{% static 'vendor/datatables/dataTables.bootstrap4.js'%}"></script>
+
 
         <script>
             function showHidenMenu(){
