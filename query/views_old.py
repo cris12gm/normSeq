@@ -4,11 +4,9 @@ from enum import Enum
 from functools import reduce
 from django.shortcuts import render, redirect
 from django.views.generic import  TemplateView
+from .forms_old import Query
 from .models import Job
 from django.core.files.storage import FileSystemStorage
-from django.http import HttpResponse
-
-from .forms import Query
 
 import os,sys
 import pandas as pd
@@ -34,7 +32,6 @@ class Errors(Enum):
     NO_ERROR = 0
     NOT_VALID = 1
     NOT_ASSOCIATED = 2
-
 
 class QueryElement(TemplateView):
     template = 'query.html'

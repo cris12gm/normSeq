@@ -4,6 +4,8 @@
 <html lang="en">
 
     <head>
+        {% block head %}
+        {% endblock %}
         <!-- Google tag (gtag.js) -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-9CY616TD4H"></script>
         <script>
@@ -54,19 +56,19 @@
         
             <div class="collapse navbar-collapse" id="navbarToggler11">
                 <ul class="navbar-nav  ml-auto">
-                    <li class="nav-item mt-2">
+                    <li class="nav-item mt-1">
                         <a href="{% url 'home' %}" class="nav-link">
                             <i class="fas fa-solid fa-user iconsMenu"></i>
                             Home
                         </a>
                     </li>
-                    <li class="nav-item mt-2">
+                    <li class="nav-item mt-1">
                         <a href="{% url 'query' %}" class="nav-link">
                             <i class="fas fa-solid fa-cogs iconsMenu"></i>
                             Use NormSeq
                         </a>
                     </li>
-                    <li class="nav-item dropdown ml-2 mr-2 mt-2">
+                    <li class="nav-item dropdown ml-2 mr-2 mt-1">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fas fa-solid fa-book iconsMenu"></i>
                             Help
@@ -77,7 +79,7 @@
                             <a class="dropdown-item" href="#">FAQ</a>
                           </div>
                     </li>
-                    <li class="nav-item mt-2 mr-2">
+                    <li class="nav-item mt-1 mr-2">
                         <a class="nav-link" href="" data-toggle="modal" data-target="#modalAbout">
                             <i class="fas fa-solid fa-question iconsMenu"></i>
                             About

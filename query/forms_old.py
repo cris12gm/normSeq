@@ -7,6 +7,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from query.utils import create_card,render_modal
 from normSeq.settings import *
 
+
 class Query(forms.Form):
     METHODS = (
         ('NN', ' No normalization, just visualization'),
@@ -43,8 +44,6 @@ class Query(forms.Form):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.layout = Layout(
-            HTML("<div class='row'>"),
-            HTML("<div class='col-6'>"),
             create_card(
                 TabHolder(
                         Tab(' Upload ',
@@ -62,10 +61,9 @@ class Query(forms.Form):
                 title='Input Matrix',
                 id="input",
                 show=True,
-                modal="Choose_Input",
+                modal="Choose_Input"
             ),
-            HTML("</div>"),
-            HTML("<div class='col-6'>"),
+            HTML("""<br>"""),
             create_card(
                 TabHolder(
                     Tab('Upload Annotation File',
@@ -86,8 +84,6 @@ class Query(forms.Form):
                 show=True,
                 modal="Choose_Annotation"
             ),
-            HTML("</div>"),
-            HTML("</div>"),
             HTML("""<br>"""),
             create_card(
                 Field('minrc',css_class='form-control'),
@@ -139,4 +135,3 @@ class Query(forms.Form):
         
 
         return cleaned_data
-

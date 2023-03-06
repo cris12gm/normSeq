@@ -24,34 +24,25 @@
     
     <hr>
     <div class="row">
-        <div class="col-9">
+        <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <div class='card mb-3'>
-                        <div class='card-header'>
-                            <div class='row'>
-                                <div class='col-9'>
-                                    <button class='btn btn-link btn-block text-left' type='button' data-toggle='collapse' data-target='#typesRNA' aria-expanded='true' aria-controls='typesRNA'>
-                                        <h5>
-                                            RNA class
-                                        </h5>
-                                    </button>
-                                </div>
-                            </div>      
+                    <div class="text-center">
+                        <div class="btn-group btn-group-lg mr-3" role="group" id="aBtnGroup" aria-label="Basic example">
+                            <button type="button" value="miRNA" name="miRNA" class="btn btn-info">miRNA</button>
+                            <button type="button" value="mRNA" name="mRNA" class="btn btn-info">mRNA</button>
+                            <button type="button" value="tRNA" name="tRNA" class="btn btn-info">tRNA</button>
+                            <button type="button" value="feature" name="Other" class="btn btn-info">Other</button>
                         </div>
-                        <div id='typesRNA' class='collapse show'>
-                            <div class='card-body'>
-                                <form>
-                                    <div class="form-group">
-                                        <input type="radio" name="RNAtypeS" value="miRNA" checked="checked" onclick="changeDropdown()">miRNA</input>
-                                        <input type="radio" name="RNAtypeS" value="mRNA" onclick="changeDropdown()">mRNA</input>
-                                        <input type="radio" name="RNAtypeS" value="tRNA" onclick="changeDropdown()">tRNA</input>
-                                        <input type="radio" name="RNAtypeS" value="feature" onclick="changeDropdown()">Other</input>
-                                    </div>
-                                </form>
-                            </div>
+                        <div class="btn-group btn-group-lg">
+                            <button type="button" id="loadEx" name="Example Data" class="btn btn-warning ml-3">Load Example Data</button>
+                            <button type="button" class="btn btn-light"><i class="fas fa-solid fa-question"></i></button>
+                            <!-- <h5 id="ExampleLoaded" style="color:red;"></h5> -->
                         </div>
                     </div>
+                    <h3 id="selectedRNA">
+                    </h3>
+                    <br>
                     <div id="formMirna" style="display:block;">
                         {% crispy form %}
                     </div>
@@ -60,23 +51,6 @@
             <div class='form-group'>
             </div>  
         </div>
-        <div class="col-3">
-            <div class="card">
-                <h5 class="card-header" id="info">INFO</h5>
-                <div class="card-body">
-                    <b>Job ID:</b> {{ jobID }}
-                    <br>
-                    <div id="RNAselected"><b>RNA class: </b>miRNA</div>
-                </div>
-            </div>
-            <br>
-            <div class="card">
-                <h5 class="card-header" id="info">TEST DATA</h5>
-                <div class="card-body">
-                    <button class="btn btn-sm btn-success" id="loadEx">Load Test Data</button>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 {% endblock %}
@@ -84,18 +58,29 @@
 {% block js %}
 
 <script>
-    function changeDropdown(number) {
-        var radios = document.getElementsByName('RNAtypeS');
-        for (var i = 0, length = radios.length; i < length; i++) {
-            if (radios[i].checked) {
-                var newTitle = radios[i].value;   
-                document.getElementById("RNAselected").innerHTML = "<b>RNA class: </b>"+newTitle;
-                document.getElementById("id_typeJob").value = newTitle;
-                break;
-            }
-        }
-    }
+    $(document).ready(
+        function() {
+              // Get click event, assign button to var, and get values from that var
+                $('#aBtnGroup button').on('click', function() {
+                    var thisBtn = $(this);
+                    
+                    thisBtn.addClass('active').siblings().removeClass('active');
+                    var btnValue = thisBtn.val();
+                    
+                    if (btnValue=="feature") {
+                        var name = "Other"
+                    }
+                    else{
+                        var name = btnValue;
+                    }
+                    // document.getElementById("RNAselected").innerHTML = "<b>RNA class: </b>"+name;
+                    document.getElementById("selectedRNA").innerHTML = name;
+                    document.getElementById("id_typeJob").value = btnValue;
 
+                }); 
+                $('#aBtnGroup button[value="miRNA"]').click();
+    });
+    
 </script>
 
 
@@ -128,20 +113,15 @@
 <!-- Load example data -->
 <script type="text/javascript">
      $('#loadEx').on('click', function(){
-        var radios = document.getElementsByName('RNAtypeS');
-        for (var i = 0, length = radios.length; i < length; i++) {
-            if (radios[i].checked) {
-                    var newTitle = radios[i].value;
-                    if (newTitle =='miRNA'){
-                        $('#id_url').val("https://arn.ugr.es/normSeq/static/testFiles/exampleMatrix.txt");
-                        $('[href="#url"]').tab('show');
-                        $('#id_annotationURL').val("http://arn.ugr.es/normSeq/static/testFiles/templateExample.txt");
-                        $('[href="#annotation_url"]').tab('show');
-                        $('#id_methods').multiselect('select', ['NN','CPM','QN']);
-                    }
-            }
-        }
-    });
+        $('#aBtnGroup button[value="miRNA"]').click();
+        $('#id_url').val("https://arn.ugr.es/normSeq/static/testFiles/exampleMatrix.txt");
+        $('[href="#url"]').tab('show');
+        $('#id_annotationURL').val("http://arn.ugr.es/normSeq/static/testFiles/templateExample.txt");
+        $('[href="#annotation_url"]').tab('show');
+        $('#id_methods').multiselect('select', ['NN','CPM','QN']);
+        document.getElementById("ExampleLoaded").innerHTML = "Example data was loaded";
+
+   });
 </script>
 
 <script>

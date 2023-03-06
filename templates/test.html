@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block head %}
+{{ wizard.form.media }}
+{% endblock %}
+
+{% block content %}
+    
+    <form action="" method="post">{% csrf_token %}
+    <table>
+    {{ wizard.management_form }}
+    {% if wizard.form.forms %}
+        {{ wizard.form.management_form }}
+        {% for form in wizard.form.forms %}
+            {{ form.url | crispy_form }}
+        {% endfor %}
+    {% else %}
+        {{ wizard.form |crispy }}
+    {% endif %}
+    </table>
+    {% if wizard.steps.prev %}
+    <button name="wizard_goto_step" type="submit" class="btn btn-success" value="{{ wizard.steps.first }}">{% trans "Next step" %}</button>
+    <button name="wizard_goto_step" type="submit" class="btn btn-success" value="{{ wizard.steps.prev }}">{% trans "Previous step" %}</button>
+    {% endif %}
+    <p>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</p>
+    <input type="submit" value="{% trans "Submit" %}"/>
+    </form>
+{% endblock %}
