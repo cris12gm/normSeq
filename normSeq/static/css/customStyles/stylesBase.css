@@ -77,21 +77,22 @@ button.bg-light:focus {
 }
 
 .navbar-light{
-  background-color:#041C34 !important;
+  background-color:#ffffff !important;
+  border-bottom: 1px solid #041C34;
 }
 
 .navbar .navbar-nav .nav-link {
-  color: #ffffff;
+  color: #041C34;
   font-size: 1em;
 }
 .navbar .navbar-nav .nav-link:hover {
-  color: #1FC4D6;
+  color: #53a1f0;
 }
 .navbar .navbar-nav .nav-link:visited {
-  color: #FFFFFF;
+  color: #041C34;
 }
 .navbar .navbar-nav .nav-link:visited:hover {
-  color: #1FC4D6;
+  color: #53a1f0;
 }
 
 @media only screen and (min-width: 992px) {

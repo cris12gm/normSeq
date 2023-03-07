@@ -22,9 +22,10 @@
         {% endif %}
 
         <div class="row">
-            <div class="col-9">
+            <div class="col-md-11"style="float:none;margin:auto;">
                 <h2>Results for Job ID <a href="{% url 'status' %}/?jobID={{ jobID }}">{{ jobID }}</a></h2>
-
+                <p> You can <a id="bookmarkt" href="{% url 'status' %}/?jobID={{ jobID }}"><i class="fas fa-fw fa-bookmark"></i>bookmark this page</a> to access the results later.</p>
+                
                 <div class="menu-hide" id="menu-hide">
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                         <li class="nav-item">
@@ -83,15 +84,6 @@
 
 
             </div>
-            <div class="col-3">
-                <div class="card">
-                    <h5 class="card-header" id="info">INFO</h5>
-                    <div class="card-body">
-                        <b>Job ID:</b> {{ jobID }}
-                    </div>
-                </div>
-            </div>
-
         </div>
 
 
@@ -384,5 +376,34 @@
 
 </script>
 
+
+    <!-- To save bookmarks -->
+    <script>
+        $("#bookmarkt").click(function () {
+        var url = 'https://' + location.host; // i'm in a sub-page and bookmarking the home page
+        var name = "normSeq results {{ jobID }}";
+    
+        if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1){ //chrome
+            alert("Please to bookmark press " 
+                + (navigator.userAgent.toLowerCase().indexOf('mac') != -1 ? 
+                    'Command/Cmd' : 'CTRL') + "+D.")
+        } 
+        else if (window.sidebar) { // Mozilla Firefox Bookmark
+            //important for firefox to add bookmarks - remember to check out the checkbox on the popup
+            $(this).attr('rel', 'sidebar');
+            //set the appropriate attributes
+            $(this).attr('href', url);
+            $(this).attr('title', name);
+    
+            window.sidebar.addPanel('', '', '');
+        } 
+        else if (window.external) { // IE Favorite
+                window.external.addFavorite(url, name);
+        } 
+        return;
+    });
+    
+    </script>
+    
 {% endblock %}
 

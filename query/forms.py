@@ -80,7 +80,7 @@ class Query(forms.Form):
                     ),
                     css_id="tab_annotation"
                 ),
-                HTML('<a href="'+STATIC_URL+'testFiles/template.txt" download="template.txt"><button type="button" class="btn btn-info btn-sm float-right">Download sample template</button></a>'),
+                HTML('<a href="'+STATIC_URL+'testFiles/template.txt" download="template.txt"><button type="button" class="btn btn-warning btn-sm float-right">Download sample template</button></a>'),
                 title="Annotation",
                 id="annotation",
                 show=True,
@@ -117,9 +117,13 @@ class Query(forms.Form):
             HTML("""<br>"""),
             'jobID',
             'typeJob',
-            ButtonHolder(
-                Submit('submit', 'SUBMIT', css_class='btn btn-success btn-xl', css_id="submit", onclick='check_form();')
-            )
+            Div(
+                ButtonHolder(
+                    Submit('submit', 'SUBMIT', css_class='btn btn-info btn-lg float-centre', css_id="submit", onclick='check_form();')
+                ),
+                css_class="text-center"
+
+            ),
         )
     def clean(self):
         ALLOWED_FORMATS = ["txt","xlsx","tsv","csv"]

@@ -13,7 +13,7 @@
         {% endif %}
         <br>
         <div class="row">
-            <div class="col-9">
+            <div class="col-md-11"style="float:none;margin:auto;">
                 <h2>Status of Job ID <a href="{% url 'status' %}/?jobID={{ jobID }}">{{ jobID }}</a></h2>
                 <hr>
                 <p> You can <a id="bookmarkt" href="{% url 'status' %}/?jobID={{ jobID }}"><i class="fas fa-fw fa-bookmark"></i>bookmark this page</a> to access the results later.</p>
@@ -22,15 +22,6 @@
                     <p class="card-text">Your job with ID {{ jobID }} with {{ typeJob }} data is now {{ status }}</p>
                     </div>
                 </div>
-            </div>
-            <div class="col-3">
-                <div class="card">
-                    <h5 class="card-header" id="info">INFO</h5>
-                    <div class="card-body">
-                        <b>Job ID:</b> {{ jobID }}
-                    </div>
-                </div>
-
             </div>
         </div>
     </div>

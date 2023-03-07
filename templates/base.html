@@ -79,7 +79,7 @@
                             <a class="dropdown-item" href="#">FAQ</a>
                           </div>
                     </li>
-                    <li class="nav-item mt-1 mr-2">
+                    <li class="nav-item ml-2 mr-2 mt-1 ">
                         <a class="nav-link" href="" data-toggle="modal" data-target="#modalAbout">
                             <i class="fas fa-solid fa-question iconsMenu"></i>
                             About
@@ -103,6 +103,14 @@
                                 </div>
                             </div>
                         </div>
+                    </li>
+                    <li class="nav-item mt-1 mr-2">
+                        <form action="{% url 'status' %}"> 
+                            <div class="btn-group btn-group mr-3" role="group" id="aBtnGroup" aria-label="Basic example">
+                                <input type="text" id="jobID" placeholder="Search a Job ID" name="jobID">
+                                <input class="btn btn-info btn-sm" type="submit" value="Search">
+                            </div>
+                        </form> 
                     </li>
                 </ul>
             </div>

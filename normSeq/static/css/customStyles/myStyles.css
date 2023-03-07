@@ -4,44 +4,50 @@
   color: #041C34 ;
 }
 
-.btn-success {
-  color: #fff;
-  background-color: #087E8B;
-  border-color: #087E8B;
-}
+/* Btn info */
 
-.btn-success:hover {
+.btn-info {
   color: #fff;
-  background-color: #044b53;
-  border-color: #044b53;
-}
-
-.btn-success:focus, .btn-success.focus {
-  color: #fff;
-  background-color: #087E8B;
-  border-color: #087E8B;
-  box-shadow: 0 0 0 0.2rem #087E8B;
-}
-
-.btn-success.disabled, .btn-success:disabled {
-  color: #fff;
-  background-color:  #087E8B;
-  border-color:  #087E8B;
-}
-
-.btn-success:not(:disabled):not(.disabled):active, .btn-success:not(:disabled):not(.disabled).active,
-.show > .btn-success.dropdown-toggle {
-  color: #fff;
-  background-color: #087E8B;
+  background-color: #041C34;
   border-color: #041C34;
 }
 
-.btn-success:not(:disabled):not(.disabled):active:focus, .btn-success:not(:disabled):not(.disabled).active:focus,
-.show > .btn-success.dropdown-toggle:focus {
-  box-shadow: 0 0 0 0.2rem#087E8B;
+.btn-info:hover {
+  color: #fff;
+  background-color: #53a1f0;
+  border-color: #041C34;
 }
 
+.btn-info:focus, .btn-info.focus {
+  color: #fff;
+  background-color: #53a1f0;
+  border-color: #53a1f0;
+  box-shadow: 0 0 0 0.2rem #53a1f0;
+}
 
+.btn-info.disabled, .btn-info:disabled {
+  color: #fff;
+  background-color:  #041C34;
+  border-color:  #041C34;
+}
+
+.btn-info:not(:disabled):not(.disabled):active, .btn-info:not(:disabled):not(.disabled).active,
+.show > .btn-info.dropdown-toggle {
+  color: #fff;
+  background-color: #53a1f0;
+  border-color: #53a1f0;
+}
+
+.btn-info:not(:disabled):not(.disabled):active:focus, .btn-info:not(:disabled):not(.disabled).active:focus,
+.show > .btn-success.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.1rem#041C34;
+}
+
+/* Btn light */
+
+.btn-light {
+  border-color: #f0ad4e;
+}
 .preloader {
     align-items: center;
     background: rgb(23, 22, 22);
@@ -58,11 +64,11 @@
 
   /* Color de las pestañas cuando están activas (el link) */
 .nav-link {
-  color: #087E8B;
+  color: #041C34;
 }
 .nav-tabs .nav-link.active,
 .nav-tabs .nav-item.show .nav-link {
-  color: #087E8B;
+  color: #53a1f0;
   background-color: #fff;
   border-color: #dee2e6 #dee2e6 #fff;
 }
@@ -72,28 +78,28 @@
 
 .nav-pills .nav-link {
   border-radius: 0.25rem;
-  color:#087E8B;
+  color:#041C34;
 }
 
 .nav-pills .nav-link.active,
 .nav-pills .show > .nav-link {
   color: #fff;
-  background-color: #087E8B;
+  background-color: #53a1f0;
 }
 
 /* Color de los link */
 
 .btn-link {
-  color: #087E8B;
+  color: #53a1f0;
 }
 
 a{
-  color: #087E8B;
+  color: #53a1f0;
 }
 
 /* mouse over link */
 a:hover {
-  color: #044b53;
+  color: #041C34;
 }
 
 
@@ -102,5 +108,5 @@ a:hover {
 
 .page-item.active .page-link {
   background-color: #041C34 !important;
-  border: 1px solid #087E8B;
+  border: 1px solid #53a1f0;
 }
