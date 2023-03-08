@@ -65,9 +65,12 @@ def deseq(infile,annotation,FDR,min_t,jobDir):
         output = os.path.join(jobDir,"DE","deseq_"+group1+"_"+group2+".txt")
         subprocess.call (R_PATH+" --vanilla "+R_SCRIPTS_PATH+"deseq_de.R "+infile+" "+annotation+" "+FDR+" "+min_t+" "+group1+" "+group2+" "+output,shell=True)
 
-        output_this = pd.read_table(output)[["name","logFC","PValue","FDR"]]
-        outputdf[group1,group2] = output_this
-
+        #FIX!
+        try:
+            output_this = pd.read_table(output)[["name","logFC","PValue","FDR"]]
+            outputdf[group1,group2] = output_this
+        except:
+            pass
     return outputdf
 
 def noiseq(infile,method,annotation,FDR,min_t,jobDir):
