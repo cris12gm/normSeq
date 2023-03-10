@@ -60,6 +60,7 @@ class Results(TemplateView):
         downloads = {}
         distribution = {}
         top10 = {}
+        de_groups={}
 
         i = 0
 
