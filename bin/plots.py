@@ -19,7 +19,7 @@ def createplots(infile,df,method,jobDir,annotation,annotation_df):
     outfile = os.path.join(outDir,"pca_"+method+".html")
     outfileImage = os.path.join(outDir,"pca_"+method+".png")
     pca(df,annotation_df,outfile,outfileImage)
-    sys.exit(1)
+
     # Heatmap
     outfile = os.path.join(outDir,"heatmap_"+method+".png")
     outfileImage = os.path.join(outDir,"heatmap_"+method+".png")
