@@ -4,7 +4,7 @@ from crispy_forms.layout import Layout, Submit, HTML, Field, ButtonHolder,Button
 from crispy_forms.bootstrap import Tab,TabHolder,Div
 from django.core.validators import MaxValueValidator, MinValueValidator 
 
-from query.utils import create_card,render_modal
+from query.utils import create_card,render_modal,create_card_noheader
 from normSeq.settings import *
 
 class Query(forms.Form):
@@ -25,8 +25,7 @@ class Query(forms.Form):
     url = forms.URLField(label='URL/link', required=False)
     jobID = forms.CharField(widget = forms.HiddenInput())
     typeJob = forms.CharField(widget = forms.HiddenInput(), initial = "miRNA")
-    methods = forms.MultipleChoiceField(choices=METHODS,label="Choose one or more normalization methods:",required=True)
-    mirgenedb = forms.ChoiceField(choices=METHODS,label="Choose short name from MiRGeneDB:",required=False)
+    methods = forms.MultipleChoiceField(choices=METHODS,label="Choose one or more normalization methods <a data-toggle='modal' data-target='#Choose_Method' class='btn btn-link'><i class='fa fa-question-circle'></i></a>",required=True,widget=forms.CheckboxSelectMultiple)
     annotation = forms.FileField(label="Annotation:", required=False)
     annotationURL = forms.URLField(label='URL/link to annotation file:', required=False)
     minrc = forms.IntegerField(label="Minimum RC",validators=[MinValueValidator(0)],initial=0,required=False)
@@ -90,30 +89,32 @@ class Query(forms.Form):
             HTML("</div>"),
             HTML("""<br>"""),
             create_card(
-                Field('minrc',css_class='form-control'),
-                Field('batchEffect',css_class='form-control',css_id='batchE'),
                 Div(
-                    Field('batchFile', css_class='form-control'),
-                    HTML('<a href="'+STATIC_URL+'testFiles/template_batch.txt" download="template.txt"><button type="button" class="btn btn-info btn-sm float-right mb-3">Download sample template</button></a>'),
-                    css_id='divFileBatch'),
-                Div(
-                    Div(Field('diffExpr',css_class='form-control',css_id='diffExpr'),css_class='col-md-6'),
-                    Div(Field('pval',css_class='form-control',css_id='pval'),css_class='col-md-6'),
-                css_class='row'
+                    Div(
+                    Field('minrc',css_class='form-control'),
+                    Field('batchEffect',css_class='form-control',css_id='batchE'),
+                    Div(
+                        Field('batchFile', css_class='form-control'),
+                        HTML('<a href="'+STATIC_URL+'testFiles/template_batch.txt" download="template.txt"><button type="button" class="btn btn-info btn-sm float-right mb-3">Download sample template</button></a>'),
+                        css_id='divFileBatch'),
+                    Div(
+                        Div(Field('diffExpr',css_class='form-control',css_id='diffExpr'),css_class='col-md-6'),
+                        Div(Field('pval',css_class='form-control',css_id='pval'),css_class='col-md-6'),
+                    css_class='row'
+                    ),
+                    css_class='col-6'
+                    ),
+                    Div(
+                        Field('methods'),
+                        css_class='col-6'
+                    ),
+                css_class="row"
                 ),
                 title="Parameters",
                 id="parameters",
-                show=False,
-                modal="chooseParameters"
-            ),
-            HTML("""<br>"""),
-            create_card(
-                Field('methods'),
-                title= "Normalization Methods",
-                id="normalization",
                 show=True,
-                modal="Choose_Method"
-            ),
+                modal="chooseParameters"
+                ),
             HTML("""<br>"""),
             'jobID',
             'typeJob',

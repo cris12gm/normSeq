@@ -11,17 +11,13 @@ from plotly.subplots import make_subplots
 from config import METHODS,R_PATH,R_SCRIPTS_PATH
 import plotly.figure_factory as ff
 
-def createsummary(infile,df,method,jobDir,annotation):
+def createsummary(infile,df,method,jobDir,annotation_df):
     outDir = os.path.join(jobDir,"graphs","summary")
     plotDir = os.path.join(jobDir,"graphs")
     if not os.path.exists(plotDir):
         os.mkdir(plotDir)
     if not os.path.exists(outDir):
         os.mkdir(outDir)
-
-    #annotation
-    annotation_df = pd.read_csv(annotation,sep="\t")
-    annotation_df = annotation_df.set_index('sample')
 
     # distribution
     outfile = os.path.join(outDir,"distribution_"+method+".html")
