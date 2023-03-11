@@ -36,7 +36,6 @@ class Query(forms.Form):
     diffExpr = forms.TypedChoiceField(coerce=lambda x: x =='True', 
                                    choices=((True, 'Yes'),(False, 'No')),label="Differential expression:")
     pval = forms.FloatField(label="FDR:",validators=[MaxValueValidator(1)],initial=0.05,required=True)
-    
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -125,7 +124,7 @@ class Query(forms.Form):
                         Field('batchEffect',css_class='form-control',css_id='batchE'),
                         Div(
                             Field('batchFile', css_class='form-control'),
-                            HTML('<a href="'+STATIC_URL+'testFiles/template_batch.txt" download="template.txt"><button type="button" class="btn btn-info btn-sm float-right mb-3">Download sample template</button></a>'),
+                            HTML('<a href="'+STATIC_URL+'testFiles/template_batch.txt" download="template.txt"><button type="button" class="btn btn-warning btn-sm float-right mb-3">Download sample template</button></a>'),
                             css_id='divFileBatch'),
                         css_class='col-4',
                     ),
@@ -141,6 +140,7 @@ class Query(forms.Form):
             'typeJob',
             Div(
                 ButtonHolder(
+                    HTML('<input type="reset" class="btn btn-secondary btn-lg mr-2 resetbtn" value="Reset">'),
                     Submit('submit', 'SUBMIT', css_class='btn btn-info btn-lg float-centre', css_id="submit", onclick='check_form();')
                 ),
                 css_class="text-center"
