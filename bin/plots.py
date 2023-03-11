@@ -6,6 +6,7 @@ import plotly.express as px
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import MinMaxScaler
 
+
 from config import METHODS,R_PATH,R_SCRIPTS_PATH
 import subprocess
 
@@ -72,6 +73,8 @@ def pca(df,annotation_df,outfile,outfileImage):
     variance = pca.explained_variance_ratio_*100
     total_var = pca.explained_variance_ratio_.sum() * 100
 
+
+
     fig = px.scatter(components, x=0, y=1, color=list(annotation_df.group),
         title=f'Total Explained Variance: {total_var:.2f}%')
     fig.update_layout(
@@ -100,7 +103,7 @@ def pca(df,annotation_df,outfile,outfileImage):
     total_var = pca.explained_variance_ratio_.sum() * 100
 
     fig3D = px.scatter_3d(
-        components, x=0, y=1, z=2, color=list(dfT.index),
+        components, x=0, y=1, z=2, color=list(annotation_df.group),
         title=f'Total Explained Variance: {total_var:.2f}%',
         labels={'0': 'PC 1', '1': 'PC 2', '2': 'PC 3'}
     )
@@ -112,3 +115,6 @@ def pca(df,annotation_df,outfile,outfileImage):
     outfile_W = open(outfile.replace(".html","_3D.html"),'a')
     outfile_W.write(plotCode)
     outfile_W.close()
+
+
+

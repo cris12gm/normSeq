@@ -46,18 +46,17 @@ infoGain = {}
 
 #Differential Expression
 
-#if config['diffExpr']=="true":
-    #FDR = config['pval']
-    #min_t = str(0)
-    #method = "TMM" #Change in input
-    #if not os.path.exists(os.path.join(jobDir,"DE")):
-    #    os.mkdir(os.path.join(jobDir,"DE"))
-    #combinations = createGroupFile(annotation,jobDir)
-    #edgeR = edgeR(infile,method,annotation,FDR,jobDir)
-    #deseq = deseq(infile,annotation,FDR,min_t,jobDir)
-    #noiseq = noiseq(infile,method,annotation,FDR,min_t,jobDir)
-    #ttest = ttest(df,annotation,FDR,jobDir)
-    #consensus(edgeR,deseq,noiseq,ttest,jobDir)
+if config['diffExpr']=="true":
+    FDR = config['pval']
+    min_t = str(0)
+    method = "TMM" #Change in input
+    os.mkdir(os.path.join(jobDir,"DE"))
+    combinations = createGroupFile(annotation,jobDir)
+    edgeR = edgeR(infile,method,annotation,FDR,jobDir)
+    deseq = deseq(infile,annotation,FDR,min_t,jobDir)
+    noiseq = noiseq(infile,method,annotation,FDR,min_t,jobDir)
+    ttest = ttest(df,annotation,FDR,jobDir)
+    consensus(edgeR,deseq,noiseq,ttest,jobDir)
 
 
 for method in methods:

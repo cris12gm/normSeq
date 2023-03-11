@@ -43,6 +43,46 @@
   box-shadow: 0 0 0 0.1rem#041C34;
 }
 
+
+/* Btn success */
+
+.btn-success {
+  color: #fff;
+  background-color: #184b7e;
+  border-color: #184b7e;
+}
+
+.btn-success:hover {
+  color: #fff;
+  background-color: #223e5a;
+  border-color: #041C34;
+}
+
+.btn-success:focus, .btn-success.focus {
+  color: #fff;
+  background-color: #184b7e;
+  border-color: #184b7e;
+  box-shadow: 0 0 0 0.2rem #184b7e;
+}
+
+.btn-success.disabled, .btn-success:disabled {
+  color: #fff;
+  background-color:  #041C34;
+  border-color:  #041C34;
+}
+
+.btn-success:not(:disabled):not(.disabled):active, .btn-success:not(:disabled):not(.disabled).active,
+.show > .btn-success.dropdown-toggle {
+  color: #fff;
+  background-color: #184b7e;
+  border-color: #184b7e;
+}
+
+.btn-success:not(:disabled):not(.disabled):active:focus, .btn-success:not(:disabled):not(.disabled).active:focus,
+.show > .btn-success.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.1rem#041C34;
+}
+
 /* Btn light */
 
 .btn-light {

@@ -37,8 +37,8 @@
                         <div class="btn-group btn-group-lg">
                             <button type="button" id="loadEx" name="Example Data" class="btn btn-warning ml-3">Load Example Data</button>
                             <button type="button" class="btn btn-light"><i class="fas fa-solid fa-question" style="color:#f0ad4e;"></i></button>
-                            <!-- <h5 id="ExampleLoaded" style="color:red;"></h5> -->
                         </div>
+                        <h5 id="ExampleLoaded" class="mt-2" style="color:#041C34;"></h5>
                     </div>
                     <h3 id="selectedRNA">
                     </h3>
@@ -88,26 +88,10 @@
     $(document).ready(
         function() {
             var jobIDValue = document.getElementById("id_jobID");
-            jobIDValue.value = "{{ jobID }}"
+            jobIDValue.value = "{{ jobID }}";
+            document.getElementById("divFileBatch").style.display="none";
         });
 
-</script>
-
-<!-- Initialize the plugin: -->
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('#id_methods').multiselect({
-            includeSelectAllOption: true,
-            maxHeight: 200,
-            buttonWidth: '300px',
-            enableCaseInsensitiveFiltering: true,
-            selectAll: true
-        });
-
-        var BatchF = document.getElementById("divFileBatch");
-        BatchF.style.display = "none";
-
-    });
 </script>
 
 <!-- Load example data -->
@@ -118,7 +102,13 @@
         $('[href="#url"]').tab('show');
         $('#id_annotationURL').val("http://arn.ugr.es/normSeq/static/testFiles/templateExample.txt");
         $('[href="#annotation_url"]').tab('show');
-        $('#id_methods').multiselect('select', ['NN','CPM','QN']);
+        var ele=document.getElementsByName('methods');  
+                for(var i=0; i<ele.length; i++){  
+                    if(ele[i].type=='checkbox' && ele[i].value=='NN' | ele[i].value=='CPM' | ele[i].value=='QN'){
+                        ele[i].checked=true;
+                    }
+                    
+                }     
         document.getElementById("ExampleLoaded").innerHTML = "Example data was loaded";
 
    });
@@ -135,6 +125,23 @@
             }
             
         });
+</script>
+
+<script>
+    $('.select-all').click(function(){
+        var ele=document.getElementsByName('methods');  
+                for(var i=0; i<ele.length; i++){  
+                    if(ele[i].type=='checkbox')  
+                        ele[i].checked=true;  
+                }  
+    });
+    $('.deselect-all').click(function(){
+        var ele=document.getElementsByName('methods');  
+        for(var i=0; i<ele.length; i++){  
+                    if(ele[i].type=='checkbox')  
+                        ele[i].checked=false;  
+                }
+            });
 </script>
 
 {% endblock %}

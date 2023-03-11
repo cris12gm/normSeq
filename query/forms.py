@@ -91,22 +91,43 @@ class Query(forms.Form):
             create_card(
                 Div(
                     Div(
-                    Field('minrc',css_class='form-control'),
-                    Field('batchEffect',css_class='form-control',css_id='batchE'),
-                    Div(
-                        Field('batchFile', css_class='form-control'),
-                        HTML('<a href="'+STATIC_URL+'testFiles/template_batch.txt" download="template.txt"><button type="button" class="btn btn-info btn-sm float-right mb-3">Download sample template</button></a>'),
-                        css_id='divFileBatch'),
-                    Div(
-                        Div(Field('diffExpr',css_class='form-control',css_id='diffExpr'),css_class='col-md-6'),
-                        Div(Field('pval',css_class='form-control',css_id='pval'),css_class='col-md-6'),
-                    css_class='row'
-                    ),
-                    css_class='col-6'
-                    ),
-                    Div(
+                        Div(
+                            HTML("<h5>Normalization methods:</h5>"),
+                            css_class="row ml-1 mt-1"
+                        ),
                         Field('methods'),
-                        css_class='col-6'
+                        HTML("<a class='btn btn-secondary btn-sm select-all mr-2'>Select All</a>"),
+                        HTML("<a class='btn btn-secondary btn-sm deselect-all'>Reset</a>"),
+                        css_class='col-4',
+                    ),
+                    Div(
+                        Div(
+                        HTML("<h5>General:</h5>"),
+                        css_class="row ml-1 mt-1"
+                        ),
+                        Field('minrc',css_class='form-control'),
+                        Div(
+                            HTML("<h5>Differential expression:</h5>"),
+                            css_class="row ml-1 mt-1"
+                        ),
+                        Div(
+                            Div(Field('diffExpr',css_class='form-control',css_id='diffExpr'),css_class='col-md-6'),
+                            Div(Field('pval',css_class='form-control',css_id='pval'),css_class='col-md-6'),
+                        css_class='row'
+                        ),
+                        css_class='col-4'
+                    ),
+                    Div(
+                        Div(
+                            HTML("<h5>Batch effect correction:</h5>"),
+                            css_class="row ml-1 mt-1"
+                        ),
+                        Field('batchEffect',css_class='form-control',css_id='batchE'),
+                        Div(
+                            Field('batchFile', css_class='form-control'),
+                            HTML('<a href="'+STATIC_URL+'testFiles/template_batch.txt" download="template.txt"><button type="button" class="btn btn-info btn-sm float-right mb-3">Download sample template</button></a>'),
+                            css_id='divFileBatch'),
+                        css_class='col-4',
                     ),
                 css_class="row"
                 ),

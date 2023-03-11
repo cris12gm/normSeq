@@ -11,9 +11,6 @@ from django.http import JsonResponse
 import os
 import pandas as pd
 import json
-import math
-
-import time
 
 
 METHODS = {
@@ -61,6 +58,7 @@ class Results(TemplateView):
         distribution = {}
         top10 = {}
         de_groups={}
+        features = {}
 
         i = 0
 
@@ -89,6 +87,7 @@ class Results(TemplateView):
                 group = group.replace("_","-")
                 diffExpr[group]= summaryDE,resultsGroup
                 
+        #Visualization
         for method in methods:
 
             pngHeatmap = os.path.join(settings.MEDIA_URL,jobID,"graphs","heatmap_"+method+".png")
@@ -173,6 +172,21 @@ def queryPlotHTML(request):
 
     data = {}
     data["plot"]=plot
+
+    return JsonResponse(data)
+    # except:
+    #     return render(request, templateError)
+
+
+def queryPlotFeature(request):
+    method = request.GET.get('method', None)
+    print(method)
+    # url = request.GET.get('url', None).replace(settings.MEDIA_URL,settings.MEDIA_ROOT)
+    # with open(url,'r') as file:
+    #     plot = file.read().rstrip()
+
+    data = {}
+    # data["plot"]=plot
 
     return JsonResponse(data)
     # except:
