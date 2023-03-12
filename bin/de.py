@@ -55,7 +55,7 @@ def de_R(infile,annotation,combinations,method,FDR,min_t,jobDir,error,log,status
         log.write("### NOISeq DE analysis in progress\n")
         status.write("<p>Differential expression analysis with NOISeq in progress</p>")
 
-    procs = [ Popen(i) for i in commands ]
+    procs = [ Popen(i,shell=True) for i in commands ]
     for p in procs:
         p.wait()
     
