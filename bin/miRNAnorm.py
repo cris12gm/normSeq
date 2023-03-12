@@ -10,7 +10,16 @@ def processInput(infile):
     cabecera = open(infile).readline().split("\t")[0]
     df = pd.read_table(infile)
     df.rename(columns = {cabecera:'name'}, inplace = True)
-    df = df.set_index(cabecera)
+    df = df.set_index('name')
+    df = df.dropna()
+
+    return(df)
+
+def processAnnotation(infile):
+    cabecera = open(infile).readline().split("\t")[0]
+    df = pd.read_table(infile)
+    df.rename(columns = {cabecera:'sample'}, inplace = True)
+    df = df.set_index('sample')
     df = df.dropna()
 
     return(df)
@@ -34,23 +43,20 @@ def tc(df,outfile):
 
     return normalized
 
-def uq(infile,outfile):
+def uq(infile,outfile,jobDir):
     #Execute in R
-    subprocess.call (R_PATH+" --vanilla "+R_SCRIPTS_PATH+"edgeR_normalization.R "+infile+" UQ "+outfile, shell=True)
-    outdf = processInput(outfile)
-    return outdf
+    cmd_uq = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"edgeR_normalization.R "+infile+" UQ "+outfile+" >"+jobDir+"/Log.txt"
+    return cmd_uq
 
-def tmm(infile,outfile):
+def tmm(infile,outfile,jobDir):
     #Execute in R
-    subprocess.call (R_PATH+" --vanilla "+R_SCRIPTS_PATH+"edgeR_normalization.R "+infile+" TMM "+outfile, shell=True)
-    outdf = processInput(outfile)
-    return outdf
+    cmd_tmm = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"edgeR_normalization.R "+infile+" TMM "+outfile+" >"+jobDir+"/Log.txt"
+    return cmd_tmm
 
-def rle(infile,outfile):
+def rle(infile,outfile,jobDir):
     #Execute in R
-    subprocess.call (R_PATH+" --vanilla "+R_SCRIPTS_PATH+"edgeR_normalization.R "+infile+" RLE "+outfile, shell=True)
-    outdf = processInput(outfile)
-    return outdf
+    cmd_rle = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"edgeR_normalization.R "+infile+" RLE "+outfile+" >"+jobDir+"/Log.txt"
+    return cmd_rle
 
 def med(df,outfile):
     sums = np.array(pd.DataFrame(np.sum(df,axis=0)).T)
@@ -61,24 +67,20 @@ def med(df,outfile):
 
     return normalized
 
-def deseq(infile,outfile):
+def deseq(infile,outfile,jobDir):
     #Execute in R
-    subprocess.call (R_PATH+" --vanilla "+R_SCRIPTS_PATH+"deseq_normalization.R "+infile+" "+outfile, shell=True)
-    outdf = processInput(outfile)
-    return outdf
+    cmd_deseq = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"deseq_normalization.R "+infile+" "+outfile+" >"+jobDir+"/Log.txt"
+    return cmd_deseq
 
 
-def qn(infile,outfile):
+def qn(infile,outfile,jobDir):
     #Execute in R
-    subprocess.call (R_PATH+" --vanilla "+R_SCRIPTS_PATH+"quantile_normalization.R "+infile+" "+outfile, shell=True)
-    outdf = processInput(outfile)
-    return outdf
+    cmd_qn = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"quantile_normalization.R "+infile+" "+outfile+" >"+jobDir+"/Log.txt"
+    return cmd_qn
 
-def ruv(infile,outfile):
-    #Execute in R
-    subprocess.call (R_PATH+" --vanilla "+R_SCRIPTS_PATH+"ruv_normalization.R "+infile+" "+outfile, shell=True)
-    outdf = processInput(outfile)
-    return outdf
+def ruv(infile,outfile,jobDir):
+    cmd_ruv = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"ruv_normalization.R "+infile+" "+outfile+" >"+jobDir+"/Log.txt"
+    return cmd_ruv
 
 def norm(infile,df,method,jobDir):
     outDir = os.path.join(jobDir,"normalized")
@@ -91,29 +93,38 @@ def norm(infile,df,method,jobDir):
     elif method =="TC":
         outfile = os.path.join(outDir,"matrix_TC.txt")
         outdf = tc(df,outfile)
-    elif method == "UQ":
-        outfile = os.path.join(outDir,"matrix_UQ.txt")
-        outdf = uq(infile,outfile)
-        
-    elif method == "TMM":
-        outfile = os.path.join(outDir,"matrix_TMM.txt")
-        outdf = tmm(infile,outfile)
-    elif method == "RLE":
-        outfile = os.path.join(outDir,"matrix_RLE.txt")
-        outdf = rle(infile,outfile)
     elif method == 'NN':
-        outfile = os.path.join(jobDir,"matrix.txt")
-        outfile_2 = os.path.join(outDir,"matrix_NN.txt") 
-        os.system("cp "+outfile+" "+outfile_2)
+        outfile = os.path.join(outDir,"matrix_NN.txt") 
         outdf = df
     elif method == 'Med':
         outfile = os.path.join(outDir,"matrix_Med.txt")
         outdf = med(df,outfile)
-    elif method == "DESEQ":
-        outfile  = os.path.join(outDir,"matrix_DESEQ.txt")
-        outdf = deseq(infile,outfile)
-    elif method == "QN":
-        outfile = os.path.join(outDir,"matrix_QN.txt")
-        outdf = qn(infile,outfile)
 
     return outdf,outfile
+
+
+def norm_r(infile,method,jobDir,cmds):
+    outDir = os.path.join(jobDir,"normalized")
+    if not os.path.exists(outDir):
+        os.mkdir(outDir)
+
+    cmd = ""
+    if method == "UQ":
+        outfile = os.path.join(outDir,"matrix_UQ.txt")
+        cmd = uq(infile,outfile,jobDir)   
+    elif method == "TMM":
+        outfile = os.path.join(outDir,"matrix_TMM.txt")
+        cmd = tmm(infile,outfile,jobDir)
+    elif method == "RLE":
+        outfile = os.path.join(outDir,"matrix_RLE.txt")
+        cmd = rle(infile,outfile,jobDir)
+    elif method == "DESEQ":
+        outfile  = os.path.join(outDir,"matrix_DESEQ.txt")
+        cmd = deseq(infile,outfile,jobDir)
+    elif method == "QN":
+        outfile = os.path.join(outDir,"matrix_QN.txt")
+        cmd = qn(infile,outfile,jobDir)
+    if cmd!="":
+        cmds.append(cmd)
+
+    return cmds,outfile

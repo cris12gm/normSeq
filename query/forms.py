@@ -36,6 +36,8 @@ class Query(forms.Form):
     diffExpr = forms.TypedChoiceField(coerce=lambda x: x =='True', 
                                    choices=((True, 'Yes'),(False, 'No')),label="Differential expression:")
     pval = forms.FloatField(label="FDR:",validators=[MaxValueValidator(1)],initial=0.05,required=True)
+    infoGain = forms.TypedChoiceField(coerce=lambda x: x =='True', 
+                                   choices=((True, 'Entropy'),(False, 'Gini index')),label="Information gain impurity method:")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -112,6 +114,14 @@ class Query(forms.Form):
                         Div(
                             Div(Field('diffExpr',css_class='form-control',css_id='diffExpr'),css_class='col-md-6'),
                             Div(Field('pval',css_class='form-control',css_id='pval'),css_class='col-md-6'),
+                        css_class='row'
+                        ),
+                        Div(
+                            HTML("<h5>Information gain:</h5>"),
+                            css_class="row ml-1 mt-1"
+                        ),
+                        Div(
+                            Div(Field('infoGain',css_class='form-control',css_id='infoGain'),css_class='col-md-12'),
                         css_class='row'
                         ),
                         css_class='col-4'

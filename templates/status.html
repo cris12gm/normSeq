@@ -8,20 +8,18 @@
 {% block content %}
 
     <div id="page-wrapper" class="resultsPage">
-        {% if error %}
-            {% include "querySNP/error.html" %}
-        {% endif %}
         <br>
         <div class="row">
             <div class="col-md-11"style="float:none;margin:auto;">
                 <h2>Status of Job ID <a href="{% url 'status' %}/?jobID={{ jobID }}">{{ jobID }}</a></h2>
                 <hr>
                 <p> You can <a id="bookmarkt" href="{% url 'status' %}/?jobID={{ jobID }}"><i class="fas fa-fw fa-bookmark"></i>bookmark this page</a> to access the results later.</p>
-                <div class="card bg-light mb-3">
-                    <div class="card-body">
-                    <p class="card-text">Your job with ID {{ jobID }} with {{ typeJob }} data is now {{ status }}</p>
-                    </div>
-                </div>
+                {% if error %}
+                    <div class="alert alert-danger">{{messages | safe}}</div>
+                {% else %}
+                    <div class="alert alert-primary">Your job with ID {{ jobID }} with {{ typeJob }} data is now {{ status }}</div>
+                    <div class="alert alert-secondary">{{messages | safe }}</div>
+                {% endif %}
             </div>
         </div>
     </div>

@@ -183,6 +183,11 @@ class QueryElement(TemplateView):
             parameters['diffExpr'] = request.POST['diffExpr']
             parameters['pval'] = request.POST['pval']
 
+            if request.POST['infoGain']=='True':
+                parameters['infoGain'] = "entropy"
+            else:
+                parameters['infoGain'] = "gini"
+
             # Save parameters and Launch
           
            

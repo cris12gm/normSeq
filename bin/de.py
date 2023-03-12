@@ -8,103 +8,114 @@ import itertools
 from scipy.stats import ttest_ind
 import math
 
-import upsetplot
-from matplotlib import pyplot
+from upsetplot import from_contents,UpSet
+from matplotlib import pyplot as plt
+from subprocess import Popen
 
-def processAnnotation(infile):
-    cabecera = open(infile).readline().split("\t")[0]
-    df = pd.read_table(infile)
-    df.rename(columns = {cabecera:'sample'}, inplace = True)
-    df = df.set_index(cabecera)
-    df = df.dropna()
-    return(df)
-
-def createGroupFile(annotation,jobDir):
-    annotationFile = processAnnotation(annotation)
-    groups = annotationFile["group"].values.tolist()
+def createGroupFile(annotation_df,jobDir):
+    groups = annotation_df["group"].values.tolist()
     diffGroups = list(set(groups))
     combinations = []
     for subset in itertools.combinations(diffGroups, 2):
         combination = subset[0]+"-"+subset[1]
-        combinations.append(combination)
+        combinations.append([subset[0],subset[1]])
     output = open(os.path.join(jobDir,"DE","groups.txt"),'a')
     for element in combinations:
+        element = "-".join(element)
         output.write(element+"\n")
     output.close()
     return combinations
 
 
-def edgeR(infile,method,annotation,FDR,jobDir):
-
-    annotationFile = processAnnotation(annotation)
-    groups = annotationFile["group"].values.tolist()
-    diffGroups = list(set(groups))
-    outputdf = {}
-
-    for subset in itertools.combinations(diffGroups, 2):
+def de_R(infile,annotation,combinations,method,FDR,min_t,jobDir,error,log,status):
+    commands = []
+    for subset in combinations:
         group1 = subset[0]
         group2 = subset[1]
-        output = os.path.join(jobDir,"DE","edgeR_"+group1+"_"+group2+".txt")
-        subprocess.call (R_PATH+" --vanilla "+R_SCRIPTS_PATH+"edgeR_de.R "+infile+" "+method+" "+annotation+" "+FDR+" "+group1+" "+group2+" "+output,shell=True)
 
-        output_this = pd.read_table(output)[["name","logFC","PValue","FDR"]]
-        outputdf[group1,group2] = output_this
+        #edgeR
+        output_edgeR = os.path.join(jobDir,"DE","edgeR_"+group1+"_"+group2+".txt")
+        cmd_edgeR = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"edgeR_de.R "+infile+" "+method+" "+annotation+" "+FDR+" "+group1+" "+group2+" "+output_edgeR+" >"+jobDir+"/Log.txt"
+        commands.append(cmd_edgeR)      
 
-    return outputdf
+        #deseq
+        output_deseq = os.path.join(jobDir,"DE","deseq_"+group1+"_"+group2+".txt")
+        cmd_deseq = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"deseq_de.R "+infile+" "+annotation+" "+FDR+" "+min_t+" "+group1+" "+group2+" "+output_deseq+" >"+jobDir+"/Log.txt"
+        commands.append(cmd_deseq)
 
-def deseq(infile,annotation,FDR,min_t,jobDir):
+        #noiseq
+        output_noiseq = os.path.join(jobDir,"DE","noiseq_"+group1+"_"+group2+".txt")
+        cmd_noiseq = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"noiseq_de.R "+infile+" "+method+" "+annotation+" "+FDR+" "+min_t+" "+group1+" "+group2+" "+output_noiseq+" >"+jobDir+"/Log.txt"
+        commands.append(cmd_noiseq)
+        
+        log.write("### EdgeR test DE analysis in progress\n")
+        status.write("<p>Differential expression analysis with EdgeR in progress</p>")
+        log.write("### DESeq DE analysis in progress\n")
+        status.write("<p>Differential expression analysis with DESeq in progress</p>")
+        log.write("### NOISeq DE analysis in progress\n")
+        status.write("<p>Differential expression analysis with NOISeq in progress</p>")
 
-    annotationFile = processAnnotation(annotation)
-    groups = annotationFile["group"].values.tolist()
-    diffGroups = list(set(groups))
-
-    outputdf = {}
-    for subset in itertools.combinations(diffGroups, 2):
+    procs = [ Popen(i) for i in commands ]
+    for p in procs:
+        p.wait()
+    
+    #Read into df
+    output={}
+    
+    for subset in combinations:
         group1 = subset[0]
         group2 = subset[1]
-        output = os.path.join(jobDir,"DE","deseq_"+group1+"_"+group2+".txt")
-        subprocess.call (R_PATH+" --vanilla "+R_SCRIPTS_PATH+"deseq_de.R "+infile+" "+annotation+" "+FDR+" "+min_t+" "+group1+" "+group2+" "+output,shell=True)
 
-        #FIX!
-        try:
-            output_this = pd.read_table(output)[["name","logFC","PValue","FDR"]]
-            outputdf[group1,group2] = output_this
-        except:
-            pass
-    return outputdf
+        output_edgeR = os.path.join(jobDir,"DE","edgeR_"+group1+"_"+group2+".txt")
+        output_deseq = os.path.join(jobDir,"DE","deseq_"+group1+"_"+group2+".txt")
+        output_noiseq = os.path.join(jobDir,"DE","noiseq_"+group1+"_"+group2+".txt")
 
-def noiseq(infile,method,annotation,FDR,min_t,jobDir):
+        edgeR = pd.read_table(output_edgeR)[["name","logFC","PValue","FDR"]]  
+        deseq = pd.read_table(output_deseq)[["name","logFC","PValue","FDR"]]
+        noiseq = pd.read_table(output_noiseq)[["name","logFC","PValue"]]
 
-    annotationFile = processAnnotation(annotation)
-    groups = annotationFile["group"].values.tolist()
-    diffGroups = list(set(groups))
-    outputdf = {}
-    for subset in itertools.combinations(diffGroups, 2):
-        group1 = subset[0]
-        group2 = subset[1]
-        output = os.path.join(jobDir,"DE","noiseq_"+group1+"_"+group2+".txt")
-        subprocess.call (R_PATH+" --vanilla "+R_SCRIPTS_PATH+"noiseq_de.R "+infile+" "+method+" "+annotation+" "+FDR+" "+min_t+" "+group1+" "+group2+" "+output,shell=True)
+        if not edgeR.empty:
+            log.write("### EdgeR DE analysis finalized\n")
+            status.write("<p>Differential expression analysis with EdgeR finalized</p>")
+        else:
+            log.write("### EdgeR DE analysis finalized with errors\n")
+            error.write("### EdgeR DE analysis finalized with errors\n")
+            status.write("<p>Differential expression analysis with EdgeR finalized with errors</p>")
 
-        output_this = pd.read_table(output)[["name","logFC","PValue"]]
-        outputdf[group1,group2] = output_this
+        if not deseq.empty:
+            log.write("### DESeq DE analysis finalized\n")
+            status.write("<p>Differential expression analysis with DESeq finalized</p>")
+        else:
+            log.write("### DESeq DE analysis finalized with errors\n")
+            error.write("### DESeq DE analysis finalized with errors\n")
+            status.write("<p>Differential expression analysis with DESeq finalized with errors</p>")
 
-    return outputdf
+        if not noiseq.empty:
+            log.write("### NOISeq DE analysis finalized\n")
+            status.write("<p>Differential expression analysis with NOISeq finalized</p>")
+        else:
+            log.write("### NOISeq DE analysis finalized with errors\n")
+            error.write("### NOISeq DE analysis finalized with errors\n")
+            status.write("<p>Differential expression analysis with EdgNOISeqeR finalized with errors</p>")
+        
+        output[subset[0]+"-"+subset[1]] = {"edgeR":edgeR,"deseq":deseq,"noiseq":noiseq}
 
-def ttest(df,annotation,FDR,jobDir):
-    annotationFile = processAnnotation(annotation)
-    groups = annotationFile["group"].values.tolist()
-    diffGroups = list(set(groups))
 
-    outputdf = {}
-    for subset in itertools.combinations(diffGroups, 2):
+    return output
+
+def ttest(df,combinations,annotation_df,FDR,output_de,jobDir,error,log,status):
+
+    log.write("### T test DE analysis in progress\n")
+    status.write("<p>Differential expression analysis with T test in progress</p>")
+    for subset in combinations:
 
         group1 = subset[0]
         group2 = subset[1]
         output = open(os.path.join(jobDir,"DE","ttest_"+group1+"_"+group2+".txt"),'a')
         cabecera = "name\t"+group1+"_mean\t"+group2+"_mean\tlogFC\tPValue\n"
         output.write(cabecera)
-        samples_group1 = annotationFile[annotationFile['group'] ==group1].index.tolist()
-        samples_group2 = annotationFile[annotationFile['group'] ==group2].index.tolist()
+        samples_group1 = annotation_df[annotation_df['group'] ==group1].index.tolist()
+        samples_group2 = annotation_df[annotation_df['group'] ==group2].index.tolist()
         output_this = {'name':[],'logFC':[],'PValue':[]}
 
 
@@ -128,32 +139,62 @@ def ttest(df,annotation,FDR,jobDir):
                 output_this[group2+"_mean"] = mean_group2
         output.close()
         output_this = pd.DataFrame(output_this)
-        outputdf[group1,group2] = output_this
-    return outputdf
-def consensus(df1,df2,df3,df4,jobDir):
-    out = {}
-    for comparison in df4:
-        edgeR = df1[comparison]
-        deseq = df2[comparison]
-        noiseq = df3[comparison]
-        ttest = df4[comparison]
+        output_de[subset[0]+"-"+subset[1]]["ttest"] = output_this
+
+    if output_de:
+        log.write("### T test DE analysis finalized\n")
+        status.write("<p>Differential expression analysis with T test finalized</p>")
+    else:
+        log.write("### T test DE analysis finalized with errors\n")
+        error.write("### T test DE analysis finalized with errors\n")
+        status.write("<p>Differential expression analysis with T test finalized with errors</p>")
+    return output_de
+
+def consensus(df_output,jobDir):
+    for comparison in df_output:
+        sample1 = comparison.split("-")[0]
+        sample2 = comparison.split("-")[1]
+        edgeR = df_output[comparison]["edgeR"].name.tolist()
+        deseq = df_output[comparison]["deseq"].name.tolist()
+        noiseq = df_output[comparison]["noiseq"].name.tolist()
+        ttest = df_output[comparison]["ttest"].name.tolist()
+        methods = from_contents({'edgeR': edgeR, 'DESeq': deseq, 'NOISeq': noiseq,'T-test': ttest })
+        upset = UpSet(methods, subset_size='count', show_counts=True,facecolor="#041C34")
+        upset.style_subsets(present=["edgeR", "DESeq","NOISeq"],
+                    facecolor="#184b7e",
+                    label="Consensus 3 methods")
+        upset.style_subsets(present=["T-test", "DESeq","NOISeq"],
+                    facecolor="#184b7e",
+                    label="Consensus 3 methods")
+        upset.style_subsets(present=["edgeR", "T-test","NOISeq"],
+                    facecolor="#184b7e",
+                    label="Consensus 3 methods")
+        upset.style_subsets(present=["edgeR", "T-test","DESeq"],
+                    facecolor="#184b7e",
+                    label="Consensus 3 methods")
+        upset.plot()
+        plt.savefig(os.path.join(jobDir,"DE","consensus_upset.png"))
+
+
+        edgeR = df_output[comparison]["edgeR"]
+        deseq = df_output[comparison]["deseq"]
+        noiseq = df_output[comparison]["noiseq"]
+        ttest = df_output[comparison]["ttest"]
+
         result = pd.merge(edgeR, deseq, on="name",how="outer")
-        result = result[['logFC_x','logFC_y']]
-        result.rename(columns = {'logFC_x':'edgeR','logFC_y':'deseq'}, inplace = True)
-        result["edgeR"].fillna(False,inplace=True)
-        result["deseq"].fillna(False,inplace=True)
-        result.edgeR = result.edgeR.astype('bool')
-        result.deseq = result.deseq.astype('bool')
-        plotUpset(result)
-        print (result)
-        sys.exit(1)
-        result = pd.merge(result, ttest, on="name",how="outer", suffixes= ["","_ttest"])
+        result.rename(columns = {'FDR_x':'edgeR','FDR_y':'DESeq'}, inplace = True)
+        result = result[['name','edgeR','DESeq']]
         result = pd.merge(result, noiseq, on="name",how="outer", suffixes= ["","_noiseq"])
-        result_filtered = result[['PValue_edgeR', 'PValue_deseq',"PValue","PValue_noiseq"]]
-        result_filtered.rename(columns = {'PValue_edgeR':'edgeR','PValue_deseq':'deseq','PValue':'ttest','PValue_noiseq':'noiseq'}, inplace = True)
-        result_filtered.edgeR_2 = result_filtered.edgeR.astype('bool')
-        print (result_filtered)
-#        out[comparison] = result
+        result.rename(columns = {'PValue':'NOISeq'}, inplace = True)
+        result = result[['name','edgeR','DESeq','NOISeq']]
+        result = pd.merge(result, ttest, on="name",how="outer", suffixes= ["","_ttest"])
+        result.rename(columns = {'PValue':'T-Test','logFC':'log2FC',}, inplace = True)
 
-#        plotUpset(result)
-
+        result["edgeR"].fillna("Non-DE",inplace=True)
+        result["DESeq"].fillna("Non-DE",inplace=True)
+        result["NOISeq"].fillna("Non-DE",inplace=True)
+        result["T-Test"].fillna("Non-DE",inplace=True)
+        result_filtered = result[['name','edgeR','DESeq','NOISeq','T-Test','log2FC',sample1+"_mean",sample2+"_mean"]]
+        result_filtered = result_filtered.set_index('name')
+        outfile_consensus = os.path.join(jobDir,"DE","consensus_comparison.txt") 
+        result_filtered.to_csv(outfile_consensus,sep="\t")

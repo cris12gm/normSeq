@@ -3,12 +3,14 @@
 import os,sys
 import json
 from plots import createplots
-from miRNAnorm import processInput,norm
+from miRNAnorm import processInput,norm,norm_r,processAnnotation
 from summary import createsummary
 from correctBatch import combat,plotsBatch
-from de import createGroupFile,edgeR,deseq,noiseq,ttest,consensus
+from de import de_R,createGroupFile,ttest,consensus
 from infoGain import calculate_infoGain,plotInfo
 import pandas as pd
+
+from subprocess import Popen
 
 
 #Error = False
@@ -18,10 +20,44 @@ config = json.load(configFile)
 
 jobDir = config['jobDir']
 
+#Error, status and log Files
+logFile = os.path.join(jobDir,"Log.txt")
+errorFile = os.path.join(jobDir,"Error.txt")
+statusFile = os.path.join(jobDir,"status.txt")
+
+log = open(logFile, 'w')
+error = open(errorFile, 'w')
+status = open(statusFile, 'w')
+
 #Get df
 df = processInput(os.path.join(jobDir,"matrix.txt"))
-infile = os.path.join(jobDir,"matrix.txt")
+
+#Create directories
+
+##Normalized
+if not os.path.exists(os.path.join(jobDir,"normalized")):
+    os.mkdir(os.path.join(jobDir,"normalized"))
+
+#Save df in normalized
+outfile_NN = os.path.join(jobDir,"normalized","matrix_NN.txt") 
+df.to_csv(outfile_NN,sep="\t")
+if os.path.isfile(outfile_NN):
+    log.write("1. No normalized file saved\n")
+else:
+    error.write("Normalized file couldn't be safe\n")
+
+#Define files for the following steps
+infile = os.path.join(jobDir,"normalized","matrix_NN.txt")
+
 annotation = os.path.join(jobDir,"annotation.txt")
+try:
+    annotation_df=processAnnotation(annotation)
+    log.write("2. Annotation processed\n")
+    status.write("<p>Input matrix and annotation has been processed</p>")
+except:
+    error.write("There is an error in the annotation file format. Please, check the format guidelines <a href='https://arn.ugr.es/normseq_doc/annotation/'>https://arn.ugr.es/normseq_doc/annotation/>here</a>")
+    status.write("<p>There is an error in the annotation file format. Please, check the format guidelines <a href='https://arn.ugr.es/normseq_doc/annotation/'>https://arn.ugr.es/normseq_doc/annotation/>here</a></p>")
+    sys.exit(0)
 
 #Correct batch effect
 if config['batchEffect'] == 'True':
@@ -41,42 +77,60 @@ if config['batchEffect'] == 'True':
 
 # Make normalization and plots
 methods = config['methods']
-
 infoGain = {}
 
 #Differential Expression
 
-if config['diffExpr']=="true":
+if config['diffExpr']=="True":
     FDR = config['pval']
     min_t = str(0)
     method = "TMM" #Change in input
-    os.mkdir(os.path.join(jobDir,"DE"))
-    combinations = createGroupFile(annotation,jobDir)
-    edgeR = edgeR(infile,method,annotation,FDR,jobDir)
-    deseq = deseq(infile,annotation,FDR,min_t,jobDir)
-    noiseq = noiseq(infile,method,annotation,FDR,min_t,jobDir)
-    ttest = ttest(df,annotation,FDR,jobDir)
-    consensus(edgeR,deseq,noiseq,ttest,jobDir)
+    if not os.path.exists(os.path.join(jobDir,"DE")):
+        os.mkdir(os.path.join(jobDir,"DE"))
+    combinations = createGroupFile(annotation_df,jobDir)
 
+    output_de = de_R(infile,annotation,combinations,method,FDR,min_t,jobDir,error,log,status)
+    output_de = ttest(df,combinations,annotation_df,FDR,output_de,jobDir,error,log,status)
+    consensus(output_de,jobDir)
 
+cmds_r = []
+
+#Normalization
+methods_r = ["UQ","TMM","RLE","DESEQ","QN","RUV"]
+
+normalized = {}
+r_files = []
 for method in methods:
-
     #Normalization
-    outdf,normfile = norm(infile,df,method,jobDir)
+    if method in methods_r:
+        cmds_r,outfile = norm_r(infile,method,jobDir,cmds_r)
+        r_files.append([outfile,method])
+    else:
+        outdf,normfile = norm(infile,df,method,jobDir)
+        normalized[method] = [outdf,normfile]
 
-    #Read annotation
-    annotation_df = pd.read_csv(annotation,sep="\t")
-    annotation_df = annotation_df.set_index('sample') ##To change
+#Launch the Rs
+procs = [ Popen(i) for i in cmds_r ]
+for p in procs:
+    p.wait()
 
-    #Information Gain
-    criterion='entropy'
+#Create the matrix from the Rs
+for file,method in r_files:
+    normfile = file
+    outdf = processInput(normfile)
+    normalized[method] = [outdf,normfile]
+
+
+for method in normalized:
+#Information Gain
+    criterion=config["infoGain"]
     info_method = calculate_infoGain(normfile,annotation,criterion)
     infoGain[method] = info_method
 
-    #Summary
+#Summary
     createsummary(normfile,outdf,method,jobDir,annotation_df)
 
-    #Plots
+#Plots
     createplots(normfile,outdf,method,jobDir,annotation,annotation_df)
 
 #Plot Info Gain
@@ -86,6 +140,8 @@ plotInfo(infoGain,outfileImage,outfile)
 
 
 #Check and create results.txt
+log.close()
+error.close()
 
 resultsFile = os.path.join(jobDir,"results.txt")
 os.system("touch "+resultsFile)

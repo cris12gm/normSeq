@@ -34,7 +34,14 @@ class statusJob(TemplateView):
         #Check if the job has finished
         pid = jobDB.getPid()
         resultsFile = os.path.join(settings.BASE_DIR,settings.MEDIA_ROOT+jobID,"results.txt")
-
+        statusFile = os.path.join(settings.BASE_DIR,settings.MEDIA_ROOT+jobID,"status.txt")
+        errorFile = os.path.join(settings.BASE_DIR,settings.MEDIA_ROOT+jobID,"Error.txt")
+        
+        messages = {}
+        try:
+            messages = open(statusFile,'r').readlines()
+        except:
+            pass
         try:
             p = psutil.Process(pid)
             statusPid = (p.status() if hasattr(p.status, '__call__'
@@ -55,9 +62,13 @@ class statusJob(TemplateView):
         elif status=="Running":
             configFile = jobDB.getConfig()
             config = json.load(open(configFile,'r'))
-            return render(request, self.template, {"jobID":jobID,"status":status,"typeJob":typeJob,"config":config})
+            return render(request, self.template, {"jobID":jobID,"status":status,"typeJob":typeJob,"messages":messages,"config":config})
         else:
-            return render(request, self.template, {"jobID":jobID,"status":status,"typeJob":typeJob}) ##Poner error aqui
+            try:
+                messages = open(errorFile,'r').readlines()[0]
+            except:
+                messages = "There is an error with your job, please report it <a target='_blank' href='https://github.com/cris12gm/normSeq/issues'>here</a> with the following ID <b>"+jobID+"</b>"
+            return render(request, self.template, {"jobID":jobID,"status":status,"error":messages,"typeJob":typeJob})
             
 
     def post(self, request):
