@@ -79,8 +79,18 @@ result <- as.data.frame(ncounts_selected[selected, ])
 try(result$group1Mean <- rowMeans(subset(result, select = group1Element)))
 try(result$group2Mean <- rowMeans(subset(result, select = group2Element)))
 
-names(result)[names(result) == 'group1Mean'] <- gsub(" ","",paste(group1,"_mean"))
-names(result)[names(result) == 'group2Mean'] <- gsub(" ","",paste(group2,"_mean"))
+if (result$group1Mean ) {
+    names(result)[names(result) == 'group1Mean'] <- gsub(" ","",paste(group1,"_mean"))
+}else{
+    results$group1Mean <- c("NA")
+    names(result)[names(result) == 'group1Mean'] <- gsub(" ","",paste(group1,"_mean"))
+}
+if (result$group2Mean ) {
+    names(result)[names(result) == 'group2Mean'] <- gsub(" ","",paste(group2,"_mean"))
+}else{
+    results$group2Mean <- c("NA")
+    names(result)[names(result) == 'group2Mean'] <- gsub(" ","",paste(group2,"_mean"))
+}
 
 
 output <- args[7]

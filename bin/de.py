@@ -59,7 +59,7 @@ def de_R(infile,annotation,combinations,method,FDR,min_t,jobDir,error,log,status
     procs = [ Popen(i,shell=True) for i in commands ]
     for p in procs:
         p.wait()
-    
+        
     #Read into df
     output={}
     
