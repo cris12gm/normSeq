@@ -12,6 +12,7 @@ def processInput(infile):
     df.rename(columns = {cabecera:'name'}, inplace = True)
     df = df.set_index('name')
     df = df.dropna()
+    df = df.dropna(how='all', axis=1, inplace=True)
 
     return(df)
 
@@ -20,7 +21,7 @@ def processAnnotation(infile):
     df = pd.read_table(infile)
     df.rename(columns = {cabecera:'sample'}, inplace = True)
     df = df.set_index('sample')
-    df = df.dropna()
+    df.dropna(how='all', axis=1, inplace=True)
 
     return(df)
 
