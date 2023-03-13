@@ -76,16 +76,16 @@ colnames(ncounts_selected) <- c(head(colnames(ncounts_selected), n=-3), "logFC",
 # Obtaining the final matrix of selected features
 result <- as.data.frame(ncounts_selected[selected, ])
 
-try(result$group1Mean <- rowMeans(subset(result, select = group1Element)))
-try(result$group2Mean <- rowMeans(subset(result, select = group2Element)))
-
-if (result$group1Mean ) {
+if (nrow(result)>0) {
+    result$group1Mean <- rowMeans(subset(result, select = group1Element)
     names(result)[names(result) == 'group1Mean'] <- gsub(" ","",paste(group1,"_mean"))
 }else{
     results$group1Mean <- c("NA")
     names(result)[names(result) == 'group1Mean'] <- gsub(" ","",paste(group1,"_mean"))
 }
-if (result$group2Mean ) {
+
+if (nrow(df)>0) {
+    result$group2Mean <- rowMeans(subset(result, select = group2Element)
     names(result)[names(result) == 'group2Mean'] <- gsub(" ","",paste(group2,"_mean"))
 }else{
     results$group2Mean <- c("NA")
