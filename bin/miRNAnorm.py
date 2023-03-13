@@ -12,7 +12,6 @@ def processInput(infile):
     df.rename(columns = {cabecera:'name'}, inplace = True)
     df = df.set_index('name')
     df = df.dropna()
-    df = df.dropna(how='all', axis=1, inplace=True)
 
     return(df)
 
