@@ -84,14 +84,13 @@ if (nrow(result)>0) {
     names(result)[names(result) == 'group1Mean'] <- gsub(" ","",paste(group1,"_mean"))
 }
 
-if (nrow(df)>0) {
+if (nrow(result)>0) {
     result$group2Mean <- rowMeans(subset(result, select = group2Element))
     names(result)[names(result) == 'group2Mean'] <- gsub(" ","",paste(group2,"_mean"))
 }else{
     results$group2Mean <- c("NA")
     names(result)[names(result) == 'group2Mean'] <- gsub(" ","",paste(group2,"_mean"))
 }
-
 
 output <- args[7]
 result <- tibble::rownames_to_column(as.data.frame(result), "name")
