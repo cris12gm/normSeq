@@ -34,7 +34,7 @@ def heatmap(infile,outfile,annotation):
 
     #Execute in R
     cmd_heatmap = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"heatmap.R "+infile+" "+annotation+" "+outfile
-
+    subprocess.call (R_PATH+" --vanilla "+R_SCRIPTS_PATH+"heatmap.R "+infile+" "+annotation+" "+outfile,shell=True)
     return(cmd_heatmap)
 
 def pca(df,annotation_df,outfile,outfileImage):
