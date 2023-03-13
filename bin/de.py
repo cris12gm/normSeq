@@ -47,6 +47,8 @@ def de_R(infile,annotation,combinations,method,FDR,min_t,jobDir,error,log,status
         output_noiseq = os.path.join(jobDir,"DE","noiseq_"+group1+"_"+group2+".txt")
         cmd_noiseq = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"noiseq_de.R "+infile+" "+method+" "+annotation+" "+FDR+" "+min_t+" "+group1+" "+group2+" "+output_noiseq+" >"+jobDir+"/Log.txt"
         commands.append(cmd_noiseq)
+        print(cmd_noiseq)
+        sys.exit(1)
 
     status.write("<p>2. Differential expression analysis has started</p>")
     log.write("2. Differential expression analysis \n")    
@@ -164,7 +166,7 @@ def consensus(df_output,jobDir):
         sample2 = comparison.split("-")[1]
         edgeR = df_output[comparison]["edgeR"].name.tolist()
         deseq = df_output[comparison]["deseq"].name.tolist()
-        
+
         noiseq = df_output[comparison]["noiseq"].name.tolist()
         ttest = df_output[comparison]["ttest"].name.tolist()
         methods = from_contents({'edgeR': edgeR, 'DESeq': deseq, 'NOISeq': noiseq,'T-test': ttest })

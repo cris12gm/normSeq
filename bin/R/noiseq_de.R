@@ -24,9 +24,14 @@ group1 <- args[6]
 group2 <- args[7]
 
 sampleSheet <- read.table(annotation,header=T,sep="\t")
-groups <- c(group1,group2)
+sampleSheet <- sampleSheet[sampleSheet$group==group1 | sampleSheet$group==group2,]
+
+groups <- sampleSheet$group
+samplesAnalysis <- sampleSheet$sample
 sampletypevalues <- groups[!duplicated(groups)]  # Getting the group levels
 
+#Filter df
+matfile <- t(t(matfile)[samplesAnalysis,])
 
 # Designing the data's factors which indicate the experimental group for each sample
 samplefactors <- data.frame(row.names=colnames(matfile), condition = factor(groups, levels=sampletypevalues))
