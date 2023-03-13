@@ -82,8 +82,6 @@ if (nrow(result)>0){
     result$group2Mean <- rowMeans(subset(result, select = group2Element))
     names(result)[names(result) == 'group1Mean'] <- gsub(" ","",paste(group1,"_mean"))
     names(result)[names(result) == 'group2Mean'] <- gsub(" ","",paste(group2,"_mean"))
-}else{
-    colnames(result) <- c(colnames(result),group1,"_mean",group2,"_mean"))
 }
 
 
