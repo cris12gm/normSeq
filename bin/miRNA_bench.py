@@ -53,6 +53,8 @@ infile = os.path.join(jobDir,"normalized","matrix_NN.txt")
 annotation = os.path.join(jobDir,"annotation.txt")
 try:
     annotation_df=processAnnotation(annotation)
+    os.system("mv "+annotation+" "+jobDir+"/annotation_old.txt")
+    annotation_df.to_csv(annotation,sep="\t")
     log.write("1. Annotation processed\n")
     status.write("<p>1. Input matrix and annotation has been processed</p>")
     status.flush()
