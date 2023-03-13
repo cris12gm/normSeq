@@ -40,9 +40,9 @@ if not os.path.exists(os.path.join(jobDir,"normalized")):
 
 #Save df in normalized
 outfile_NN = os.path.join(jobDir,"normalized","matrix_NN.txt") 
+df.to_csv(outfile_NN,sep="\t")
 
 if os.path.isfile(outfile_NN):
-    df.to_csv(outfile_NN,sep="\t")
     log.write("0. No normalized file saved\n")
 else:
     error.write("Normalized file couldn't be safe\n")
