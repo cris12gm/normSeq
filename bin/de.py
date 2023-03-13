@@ -71,9 +71,20 @@ def de_R(infile,annotation,combinations,method,FDR,min_t,jobDir,error,log,status
         output_deseq = os.path.join(jobDir,"DE","deseq_"+group1+"_"+group2+".txt")
         output_noiseq = os.path.join(jobDir,"DE","noiseq_"+group1+"_"+group2+".txt")
 
-        edgeR = pd.read_table(output_edgeR)[["name","logFC","PValue","FDR"]]  
-        deseq = pd.read_table(output_deseq)[["name","logFC","PValue","FDR"]]
-        noiseq = pd.read_table(output_noiseq)[["name","logFC","PValue"]]
+        try:
+            edgeR = pd.read_table(output_edgeR)[["name","logFC","PValue","FDR"]] 
+        except:
+            edgeR = pd.DataFrame(columns = ["name","logFC","PValue","FDR"])
+        
+        try:
+            deseq = pd.read_table(output_deseq)[["name","logFC","PValue","FDR"]]
+        except:
+            deseq = pd.DataFrame(columns = ["name","logFC","PValue","FDR"])
+        
+        try:
+            noiseq = pd.read_table(output_noiseq)[["name","logFC","PValue"]]
+        except:
+            noiseq =  pd.DataFrame(["name","logFC","PValue"])
 
         if not edgeR.empty:
             log.write("### EdgeR DE analysis finalized\n")
