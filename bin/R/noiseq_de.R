@@ -24,7 +24,7 @@ group1 <- args[6]
 group2 <- args[7]
 
 sampleSheet <- read.table(annotation,header=T,sep="\t")
-groups <- sampleSheet$group
+groups <- c(group1,group2)
 sampletypevalues <- groups[!duplicated(groups)]  # Getting the group levels
 
 

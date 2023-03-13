@@ -164,6 +164,7 @@ def consensus(df_output,jobDir):
         sample2 = comparison.split("-")[1]
         edgeR = df_output[comparison]["edgeR"].name.tolist()
         deseq = df_output[comparison]["deseq"].name.tolist()
+        
         noiseq = df_output[comparison]["noiseq"].name.tolist()
         ttest = df_output[comparison]["ttest"].name.tolist()
         methods = from_contents({'edgeR': edgeR, 'DESeq': deseq, 'NOISeq': noiseq,'T-test': ttest })
