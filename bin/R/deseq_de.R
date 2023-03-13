@@ -77,7 +77,7 @@ colnames(ncounts_selected) <- c(head(colnames(ncounts_selected), n=-3), "logFC",
 result <- as.data.frame(ncounts_selected[selected, ])
 
 if (nrow(result)>0) {
-    result$group1Mean <- rowMeans(subset(result, select = group1Element)
+    result$group1Mean <- rowMeans(subset(result, select = group1Element))
     names(result)[names(result) == 'group1Mean'] <- gsub(" ","",paste(group1,"_mean"))
 }else{
     results$group1Mean <- c("NA")
@@ -85,7 +85,7 @@ if (nrow(result)>0) {
 }
 
 if (nrow(df)>0) {
-    result$group2Mean <- rowMeans(subset(result, select = group2Element)
+    result$group2Mean <- rowMeans(subset(result, select = group2Element))
     names(result)[names(result) == 'group2Mean'] <- gsub(" ","",paste(group2,"_mean"))
 }else{
     results$group2Mean <- c("NA")
