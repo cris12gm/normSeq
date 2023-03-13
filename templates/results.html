@@ -114,9 +114,14 @@
         valor = document.getElementById("select_de_method").value;
         text  = "<b>Method:</b> "+valor+"<br><b>Comparison:</b> "+comparison;
         $("#selectionDE").html(text);
+        newDiv = document.getElementById(valor+"_"+comparison);
+        newDiv.style.display="block";
 
         comparisonSummary = document.getElementById("select_de_summary").value;
         $("#comparisonSummaryDE").html(comparisonSummary);
+        newDiv = document.getElementById("summaryDE_"+comparison);
+        newDiv.style.display="block";
+        
     });
   
 </script>
@@ -362,10 +367,10 @@
 
     $('#select_de_summary').change(function(){ 
         comparison = this.value;
-        valor = document.getElementById("select_de_summary").value;
+        text  = "<b>"+comparison+"</b>";
         $("#comparisonSummaryDE").html(text);
 
-        newDiv = document.getElementById("summary_"+comparison);
+        newDiv = document.getElementById("summaryDE_"+comparison);
         const allDivs = document.getElementsByClassName('summaryDETable');
         for (const div of allDivs) {
         // 👇️ Remove element from DOM

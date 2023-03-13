@@ -86,7 +86,6 @@ class Results(TemplateView):
                 summaryDE,resultsGroup = de_prepare(jobID,group,group1,group2)
                 group = group.replace("_","-")
                 diffExpr[group]= summaryDE,resultsGroup
-                
         #Visualization
         for method in methods:
 

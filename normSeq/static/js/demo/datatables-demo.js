@@ -4,25 +4,20 @@ $(document).ready(function() {
   $('#dataTableMethods').DataTable({
     "order":[[1, "desc"]]
   });
-  $('#dataTableEdgeR').DataTable({
+  $('.dataTableEdgeR').DataTable({
     "order":[[5, "asc"]]
   });
-  $('#dataTableDeseq').DataTable({
+  $('.dataTableDeseq').DataTable({
     "order":[[5, "asc"]]
   });
-  $('#dataTableNoiseq').DataTable({
+  $('.dataTableNoiseq').DataTable({
     "order":[[4, "asc"]]
   });
-  $('#dataTableTtest').DataTable({
+  $('.dataTableTtest').DataTable({
     "order":[[4, "asc"]]
   });
-  $('#dataTableSummaryDE').DataTable({
-    "columns": [
-      { "width": "20%" },
-      null,
-      null,
-      null
-    ]
+  $('.dataTableSummaryDE').DataTable({
+    
   });
   
 }); 
