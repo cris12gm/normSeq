@@ -86,6 +86,7 @@ if (nrow(result)>0){
     colnames(result) <- c(colnames(result),group1,"_mean",group2,"_mean"))
 }
 
+
 output <- args[7]
 result <- tibble::rownames_to_column(as.data.frame(result), "name")
 write.table(result,output,sep="\t",row.names=FALSE, quote=FALSE,col.names=TRUE)
