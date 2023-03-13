@@ -129,6 +129,8 @@ for file,method in r_files:
 
 cmd_plots = []
 for method in normalized:
+    outdf = normalized[method][0]
+    normfile = normalized[method][1]
 #Information Gain
     log.write("5. Information Gain analysis\n")
     status.write("<p>5. Information Gain analysis</p>")
@@ -144,7 +146,6 @@ for method in normalized:
     status.write("<p>6. Visualization</p>")
     status.flush()
     cmd_plots = createplots(normfile,outdf,method,jobDir,annotation,annotation_df,cmd_plots)
-
 #Launch the Rs from plots
 procs = [ Popen(i,shell=True) for i in cmd_plots ]
 for p in procs:
