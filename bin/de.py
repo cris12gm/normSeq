@@ -47,8 +47,6 @@ def de_R(infile,annotation,combinations,method,FDR,min_t,jobDir,error,log,status
         output_noiseq = os.path.join(jobDir,"DE","noiseq_"+group1+"_"+group2+".txt")
         cmd_noiseq = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"noiseq_de.R "+infile+" "+method+" "+annotation+" "+FDR+" "+min_t+" "+group1+" "+group2+" "+output_noiseq+" >"+jobDir+"/Log.txt"
         commands.append(cmd_noiseq)
-        print(cmd_noiseq)
-        sys.exit(1)
 
     status.write("<p>2. Differential expression analysis has started</p>")
     log.write("2. Differential expression analysis \n")    
