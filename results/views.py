@@ -197,8 +197,8 @@ def de_prepare(jobID,group,group1,group2):
     resultsGroup = {}
     #edgeR
     edgeRFile = os.path.join(settings.MEDIA_ROOT,jobID,"DE","edgeR_"+group+".txt")
-    edgeRdf = pd.read_table(edgeRFile)
-    if len(edgeRdf)>0:
+    try:
+        edgeRdf = pd.read_table(edgeRFile)
         edgeR = edgeRdf[["name",group1+"_mean", group2+"_mean","logFC","PValue","FDR"]]
         edgeR = edgeR.set_index("name")
         edgeR = edgeR.round(decimals=3)
@@ -208,11 +208,13 @@ def de_prepare(jobID,group,group1,group2):
         edgeR = edgeR.T.to_dict()
         resultsGroup['edgeR_header'] = edgeR_header
         resultsGroup['edgeR'] = edgeR
-
+    except:
+        pass
+        
     #deseq
     deseqFile = os.path.join(settings.MEDIA_ROOT,jobID,"DE","deseq_"+group+".txt")
-    deseqdf = pd.read_table(deseqFile)
-    if len(deseqdf)>0:
+    try:
+        deseqdf = pd.read_table(deseqFile)
         deseq = deseqdf[["name",group1+"_mean", group2+"_mean","logFC","PValue","FDR"]]
         deseq = deseq.set_index("name")
         deseq = deseq.round(decimals=3)
@@ -221,11 +223,13 @@ def de_prepare(jobID,group,group1,group2):
         deseq = deseq.T.to_dict()
         resultsGroup['deseq_header'] = deseq_header
         resultsGroup['deseq'] = deseq
+    except:
+        pass
     
     #noiseq
     noiseqFile = os.path.join(settings.MEDIA_ROOT,jobID,"DE","noiseq_"+group+".txt")
-    noiseqdf = pd.read_table(noiseqFile)
-    if len(noiseqdf)>0:
+    try:
+        noiseqdf = pd.read_table(noiseqFile)
         noiseq = noiseqdf[["name",group1+"_mean", group2+"_mean","logFC","PValue"]]
         noiseq = noiseq.set_index("name")
         noiseq = noiseq.round(decimals=3)
@@ -234,11 +238,12 @@ def de_prepare(jobID,group,group1,group2):
         noiseq = noiseq.T.to_dict()
         resultsGroup['noiseq_header'] = noiseq_header
         resultsGroup['noiseq'] = noiseq
-
+    except:
+        pass
     #ttest
     ttestFile = os.path.join(settings.MEDIA_ROOT,jobID,"DE","ttest_"+group+".txt")
-    ttestdf = pd.read_table(ttestFile)
-    if len(ttestdf)>0:
+    try:
+        ttestdf = pd.read_table(ttestFile)
         ttest = ttestdf[["name",group1+"_mean", group2+"_mean","logFC","PValue"]]
         ttest = ttest.set_index("name")
         summary['T Test'] = getInfraOver(ttest)
@@ -246,7 +251,8 @@ def de_prepare(jobID,group,group1,group2):
         ttest = ttest.T.to_dict()
         resultsGroup['ttest_header'] = ttest_header
         resultsGroup['ttest'] = ttest
-
+    except:
+        pass
     return summary,resultsGroup
 
 def getInfraOver(df):
