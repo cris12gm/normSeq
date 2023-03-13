@@ -58,10 +58,11 @@ selected <- NULL
 
 
 # Selecting the samples
-selected_samples <- (which(groups==sampletypevalues[1] | groups==sampletypevalues[2]))
+selected_samples <- (which(groups==group1 | groups==group2))
+group1Element <- sampleSheet[sampleSheet$group==group1,]$sample
+group2Element <- sampleSheet[sampleSheet$group==group2,]$sample
 
-group1Element <- (which(groups==group1))
-group2Element <- (which(groups==group2))
+
 
 # Obtaining the list of features with absolute log2FoldChange greater than 1 and p adjusted value lower than the user-input value
 selected <- row.names(curresult)[(abs(curresult$log2FoldChange)>=1) & (curresult$padj<=pvalue)]
@@ -76,20 +77,13 @@ colnames(ncounts_selected) <- c(head(colnames(ncounts_selected), n=-3), "logFC",
 # Obtaining the final matrix of selected features
 result <- as.data.frame(ncounts_selected[selected, ])
 
-if (nrow(result)>0) {
+if (nrow(result)>0){
     result$group1Mean <- rowMeans(subset(result, select = group1Element))
-    names(result)[names(result) == 'group1Mean'] <- gsub(" ","",paste(group1,"_mean"))
-}else{
-    results$group1Mean <- c("NA")
-    names(result)[names(result) == 'group1Mean'] <- gsub(" ","",paste(group1,"_mean"))
-}
-
-if (nrow(result)>0) {
     result$group2Mean <- rowMeans(subset(result, select = group2Element))
+    names(result)[names(result) == 'group1Mean'] <- gsub(" ","",paste(group1,"_mean"))
     names(result)[names(result) == 'group2Mean'] <- gsub(" ","",paste(group2,"_mean"))
 }else{
-    results$group2Mean <- c("NA")
-    names(result)[names(result) == 'group2Mean'] <- gsub(" ","",paste(group2,"_mean"))
+    colnames(result) <- c(colnames(result),group1,"_mean",group2,"_mean"))
 }
 
 output <- args[7]
