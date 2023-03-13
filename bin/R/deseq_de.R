@@ -76,8 +76,8 @@ colnames(ncounts_selected) <- c(head(colnames(ncounts_selected), n=-3), "logFC",
 # Obtaining the final matrix of selected features
 result <- as.data.frame(ncounts_selected[selected, ])
 
-result$group1Mean <- rowMeans(subset(result, select = group1Element))
-result$group2Mean <- rowMeans(subset(result, select = group2Element))
+try(result$group1Mean <- rowMeans(subset(result, select = group1Element)))
+try(result$group2Mean <- rowMeans(subset(result, select = group2Element)))
 
 names(result)[names(result) == 'group1Mean'] <- gsub(" ","",paste(group1,"_mean"))
 names(result)[names(result) == 'group2Mean'] <- gsub(" ","",paste(group2,"_mean"))

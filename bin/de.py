@@ -35,7 +35,7 @@ def de_R(infile,annotation,combinations,method,FDR,min_t,jobDir,error,log,status
 
         #edgeR
         output_edgeR = os.path.join(jobDir,"DE","edgeR_"+group1+"_"+group2+".txt")
-        cmd_edgeR = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"edgeR_de.R "+infile+" "+method+" "+annotation+" "+FDR+" "+group1+" "+group2+" "+output_edgeR+" >"+jobDir+"/Log.txt"
+        cmd_edgeR = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"edgeR_de.R "+infile+" "+method+" "+annotation+" "+FDR+" "+group1+" "+group2+" "+output_edgeR+" 2>"+jobDir+"/Log.txt"
         commands.append(cmd_edgeR)      
 
         #deseq
