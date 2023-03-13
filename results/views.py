@@ -198,50 +198,54 @@ def de_prepare(jobID,group,group1,group2):
     #edgeR
     edgeRFile = os.path.join(settings.MEDIA_ROOT,jobID,"DE","edgeR_"+group+".txt")
     edgeRdf = pd.read_table(edgeRFile)
-    edgeR = edgeRdf[["name",group1+"_mean", group2+"_mean","logFC","PValue","FDR"]]
-    edgeR = edgeR.set_index("name")
-    edgeR = edgeR.round(decimals=3)
-    summary['edgeR'] = getInfraOver(edgeR)
+    if len(edgeRdf)>0:
+        edgeR = edgeRdf[["name",group1+"_mean", group2+"_mean","logFC","PValue","FDR"]]
+        edgeR = edgeR.set_index("name")
+        edgeR = edgeR.round(decimals=3)
+        summary['edgeR'] = getInfraOver(edgeR)
 
-    edgeR_header = list(edgeR.columns)
-    edgeR = edgeR.T.to_dict()
-    resultsGroup['edgeR_header'] = edgeR_header
-    resultsGroup['edgeR'] = edgeR
+        edgeR_header = list(edgeR.columns)
+        edgeR = edgeR.T.to_dict()
+        resultsGroup['edgeR_header'] = edgeR_header
+        resultsGroup['edgeR'] = edgeR
 
     #deseq
     deseqFile = os.path.join(settings.MEDIA_ROOT,jobID,"DE","deseq_"+group+".txt")
     deseqdf = pd.read_table(deseqFile)
-    deseq = deseqdf[["name",group1+"_mean", group2+"_mean","logFC","PValue","FDR"]]
-    deseq = deseq.set_index("name")
-    deseq = deseq.round(decimals=3)
-    summary['DESeq2'] = getInfraOver(deseq)
-    deseq_header = list(deseq.columns)
-    deseq = deseq.T.to_dict()
-    resultsGroup['deseq_header'] = deseq_header
-    resultsGroup['deseq'] = deseq
+    if len(deseqdf)>0:
+        deseq = deseqdf[["name",group1+"_mean", group2+"_mean","logFC","PValue","FDR"]]
+        deseq = deseq.set_index("name")
+        deseq = deseq.round(decimals=3)
+        summary['DESeq2'] = getInfraOver(deseq)
+        deseq_header = list(deseq.columns)
+        deseq = deseq.T.to_dict()
+        resultsGroup['deseq_header'] = deseq_header
+        resultsGroup['deseq'] = deseq
     
     #noiseq
     noiseqFile = os.path.join(settings.MEDIA_ROOT,jobID,"DE","noiseq_"+group+".txt")
     noiseqdf = pd.read_table(noiseqFile)
-    noiseq = noiseqdf[["name",group1+"_mean", group2+"_mean","logFC","PValue"]]
-    noiseq = noiseq.set_index("name")
-    noiseq = noiseq.round(decimals=3)
-    summary['NOISeq'] = getInfraOver(noiseq)
-    noiseq_header = list(noiseq.columns)
-    noiseq = noiseq.T.to_dict()
-    resultsGroup['noiseq_header'] = noiseq_header
-    resultsGroup['noiseq'] = noiseq
+    if len(noiseqdf)>0:
+        noiseq = noiseqdf[["name",group1+"_mean", group2+"_mean","logFC","PValue"]]
+        noiseq = noiseq.set_index("name")
+        noiseq = noiseq.round(decimals=3)
+        summary['NOISeq'] = getInfraOver(noiseq)
+        noiseq_header = list(noiseq.columns)
+        noiseq = noiseq.T.to_dict()
+        resultsGroup['noiseq_header'] = noiseq_header
+        resultsGroup['noiseq'] = noiseq
 
     #ttest
     ttestFile = os.path.join(settings.MEDIA_ROOT,jobID,"DE","ttest_"+group+".txt")
     ttestdf = pd.read_table(ttestFile)
-    ttest = ttestdf[["name",group1+"_mean", group2+"_mean","logFC","PValue"]]
-    ttest = ttest.set_index("name")
-    summary['T Test'] = getInfraOver(ttest)
-    ttest_header = list(ttest.columns)
-    ttest = ttest.T.to_dict()
-    resultsGroup['ttest_header'] = ttest_header
-    resultsGroup['ttest'] = ttest
+    if len(ttestdf)>0:
+        ttest = ttestdf[["name",group1+"_mean", group2+"_mean","logFC","PValue"]]
+        ttest = ttest.set_index("name")
+        summary['T Test'] = getInfraOver(ttest)
+        ttest_header = list(ttest.columns)
+        ttest = ttest.T.to_dict()
+        resultsGroup['ttest_header'] = ttest_header
+        resultsGroup['ttest'] = ttest
 
     return summary,resultsGroup
 
