@@ -39,7 +39,7 @@ class statusJob(TemplateView):
         
         messages = {}
         try:
-            messages = open(statusFile,'r').readlines()
+            messages = open(statusFile,'r').readlines()[0]
         except:
             pass
         try:
@@ -62,6 +62,7 @@ class statusJob(TemplateView):
         elif status=="Running":
             configFile = jobDB.getConfig()
             config = json.load(open(configFile,'r'))
+            print(messages)
             return render(request, self.template, {"jobID":jobID,"status":status,"typeJob":typeJob,"messages":messages,"config":config})
         else:
             try:

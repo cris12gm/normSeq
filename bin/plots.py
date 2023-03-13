@@ -10,7 +10,7 @@ from sklearn.preprocessing import MinMaxScaler
 from config import METHODS,R_PATH,R_SCRIPTS_PATH
 import subprocess
 
-def createplots(infile,df,method,jobDir,annotation,annotation_df):
+def createplots(infile,df,method,jobDir,annotation,annotation_df,cmds):
     outDir = os.path.join(jobDir,"graphs")
 
     if not os.path.exists(outDir):
@@ -24,45 +24,18 @@ def createplots(infile,df,method,jobDir,annotation,annotation_df):
     # Heatmap
     outfile = os.path.join(outDir,"heatmap_"+method+".png")
     outfileImage = os.path.join(outDir,"heatmap_"+method+".png")
-    title = METHODS[method]
-    heatmap(infile,outfile,annotation)
+    cmd_heatmap = heatmap(infile,outfile,annotation)
 
+    cmds.append(cmd_heatmap)
 
-def heatmap_old(df,outfile,outfileImage,title):
-    pd.options.plotting.backend = "plotly"
-    rpm = df.values.T
-#    sumrpm =  np.array(pd.DataFrame(np.sum(rpm,axis=0)).T)
-
-#   normalized = np.divide(rpm, sumrpm).T
-    original = rpm.T
-
-    samples = df.columns.tolist()
-    mirnas = df.index.tolist()
-
-
-    fig = go.Figure(data=go.Heatmap(
-#        z = normalized,
-        z = original,
-        x = samples,
-        y = mirnas,
-        text = original,
-        hoverinfo = 'x+y+text',
-        colorscale='Viridis')
-    )
-
-    fig.update_layout(title={'text':title}) 
-
-    plotCode = plot(fig, show_link=False, auto_open=False, output_type = 'div')
-    outfile_W = open(outfile,'a')
-    outfile_W.write(plotCode)
-    outfile_W.close()
-
-    fig.write_image(outfileImage)
-
+    return(cmds)
+    
 def heatmap(infile,outfile,annotation):
 
     #Execute in R
-    subprocess.call (R_PATH+" --vanilla "+R_SCRIPTS_PATH+"heatmap.R "+infile+" "+annotation+" "+outfile,shell=True)
+    cmd_heatmap = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"heatmap.R "+infile+" "+annotation+" "+outfile
+
+    return(cmd_heatmap)
 
 def pca(df,annotation_df,outfile,outfileImage):
 

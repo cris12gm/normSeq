@@ -15,10 +15,13 @@
                 <hr>
                 <p> You can <a id="bookmarkt" href="{% url 'status' %}/?jobID={{ jobID }}"><i class="fas fa-fw fa-bookmark"></i>bookmark this page</a> to access the results later.</p>
                 {% if error %}
-                    <div class="alert alert-danger">{{messages | safe}}</div>
+                    <div class="alert alert-danger">{{error | safe}}</div>
                 {% else %}
                     <div class="alert alert-primary">Your job with ID {{ jobID }} with {{ typeJob }} data is now {{ status }}</div>
-                    <div class="alert alert-secondary">{{messages | safe }}</div>
+                    {% if messages %}
+                        <p>Process log:</p>
+                        <div class="alert alert-success">{{messages | safe }}</div>
+                    {% endif %}
                 {% endif %}
             </div>
         </div>

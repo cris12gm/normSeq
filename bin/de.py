@@ -47,14 +47,15 @@ def de_R(infile,annotation,combinations,method,FDR,min_t,jobDir,error,log,status
         output_noiseq = os.path.join(jobDir,"DE","noiseq_"+group1+"_"+group2+".txt")
         cmd_noiseq = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"noiseq_de.R "+infile+" "+method+" "+annotation+" "+FDR+" "+min_t+" "+group1+" "+group2+" "+output_noiseq+" >"+jobDir+"/Log.txt"
         commands.append(cmd_noiseq)
-        
-        log.write("### EdgeR test DE analysis in progress\n")
-        status.write("<p>Differential expression analysis with EdgeR in progress</p>")
-        log.write("### DESeq DE analysis in progress\n")
-        status.write("<p>Differential expression analysis with DESeq in progress</p>")
-        log.write("### NOISeq DE analysis in progress\n")
-        status.write("<p>Differential expression analysis with NOISeq in progress</p>")
 
+    status.write("<p>2. Differential expression analysis has started</p>")
+    log.write("2. Differential expression analysis \n")    
+    log.write("### EdgeR test DE analysis in progress\n")
+    log.write("### DESeq DE analysis in progress\n")
+    log.write("### NOISeq DE analysis in progress\n")
+    status.flush()
+
+    
     procs = [ Popen(i,shell=True) for i in commands ]
     for p in procs:
         p.wait()
@@ -76,7 +77,6 @@ def de_R(infile,annotation,combinations,method,FDR,min_t,jobDir,error,log,status
 
         if not edgeR.empty:
             log.write("### EdgeR DE analysis finalized\n")
-            status.write("<p>Differential expression analysis with EdgeR finalized</p>")
         else:
             log.write("### EdgeR DE analysis finalized with errors\n")
             error.write("### EdgeR DE analysis finalized with errors\n")
@@ -84,7 +84,6 @@ def de_R(infile,annotation,combinations,method,FDR,min_t,jobDir,error,log,status
 
         if not deseq.empty:
             log.write("### DESeq DE analysis finalized\n")
-            status.write("<p>Differential expression analysis with DESeq finalized</p>")
         else:
             log.write("### DESeq DE analysis finalized with errors\n")
             error.write("### DESeq DE analysis finalized with errors\n")
@@ -92,12 +91,11 @@ def de_R(infile,annotation,combinations,method,FDR,min_t,jobDir,error,log,status
 
         if not noiseq.empty:
             log.write("### NOISeq DE analysis finalized\n")
-            status.write("<p>Differential expression analysis with NOISeq finalized</p>")
         else:
             log.write("### NOISeq DE analysis finalized with errors\n")
             error.write("### NOISeq DE analysis finalized with errors\n")
             status.write("<p>Differential expression analysis with EdgNOISeqeR finalized with errors</p>")
-        
+        status.flush()
         output[subset[0]+"-"+subset[1]] = {"edgeR":edgeR,"deseq":deseq,"noiseq":noiseq}
 
 
@@ -106,7 +104,6 @@ def de_R(infile,annotation,combinations,method,FDR,min_t,jobDir,error,log,status
 def ttest(df,combinations,annotation_df,FDR,output_de,jobDir,error,log,status):
 
     log.write("### T test DE analysis in progress\n")
-    status.write("<p>Differential expression analysis with T test in progress</p>")
     for subset in combinations:
 
         group1 = subset[0]
@@ -143,11 +140,11 @@ def ttest(df,combinations,annotation_df,FDR,output_de,jobDir,error,log,status):
 
     if output_de:
         log.write("### T test DE analysis finalized\n")
-        status.write("<p>Differential expression analysis with T test finalized</p>")
     else:
         log.write("### T test DE analysis finalized with errors\n")
         error.write("### T test DE analysis finalized with errors\n")
         status.write("<p>Differential expression analysis with T test finalized with errors</p>")
+    status.flush()
     return output_de
 
 def consensus(df_output,jobDir):

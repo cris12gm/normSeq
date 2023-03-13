@@ -42,7 +42,7 @@ if not os.path.exists(os.path.join(jobDir,"normalized")):
 outfile_NN = os.path.join(jobDir,"normalized","matrix_NN.txt") 
 df.to_csv(outfile_NN,sep="\t")
 if os.path.isfile(outfile_NN):
-    log.write("1. No normalized file saved\n")
+    log.write("0. No normalized file saved\n")
 else:
     error.write("Normalized file couldn't be safe\n")
 
@@ -52,11 +52,13 @@ infile = os.path.join(jobDir,"normalized","matrix_NN.txt")
 annotation = os.path.join(jobDir,"annotation.txt")
 try:
     annotation_df=processAnnotation(annotation)
-    log.write("2. Annotation processed\n")
-    status.write("<p>Input matrix and annotation has been processed</p>")
+    log.write("1. Annotation processed\n")
+    status.write("<p>1. Input matrix and annotation has been processed</p>")
+    status.flush()
 except:
     error.write("There is an error in the annotation file format. Please, check the format guidelines <a href='https://arn.ugr.es/normseq_doc/annotation/'>https://arn.ugr.es/normseq_doc/annotation/>here</a>")
     status.write("<p>There is an error in the annotation file format. Please, check the format guidelines <a href='https://arn.ugr.es/normseq_doc/annotation/'>https://arn.ugr.es/normseq_doc/annotation/>here</a></p>")
+    status.flush()
     sys.exit(0)
 
 #Correct batch effect
@@ -100,6 +102,11 @@ methods_r = ["UQ","TMM","RLE","DESEQ","QN","RUV"]
 
 normalized = {}
 r_files = []
+
+log.write("4. Normalization\n")
+status.write("<p>4. Normalization</p>")
+status.flush()
+
 for method in methods:
     #Normalization
     if method in methods_r:
@@ -120,9 +127,11 @@ for file,method in r_files:
     outdf = processInput(normfile)
     normalized[method] = [outdf,normfile]
 
-
+cmd_plots = []
 for method in normalized:
 #Information Gain
+    log.write("5. Information Gain analysis\n")
+    status.write("<p>5. Information Gain analysis</p>")
     criterion=config["infoGain"]
     info_method = calculate_infoGain(normfile,annotation,criterion)
     infoGain[method] = info_method
@@ -131,7 +140,16 @@ for method in normalized:
     createsummary(normfile,outdf,method,jobDir,annotation_df)
 
 #Plots
-    createplots(normfile,outdf,method,jobDir,annotation,annotation_df)
+    log.write("6. Visualization\n")
+    status.write("<p>6. Visualization</p>")
+    status.flush()
+    cmd_plots = createplots(normfile,outdf,method,jobDir,annotation,annotation_df,cmd_plots)
+
+#Launch the Rs from plots
+procs = [ Popen(i,shell=True) for i in cmd_plots ]
+for p in procs:
+    p.wait()
+
 
 #Plot Info Gain
 outfileImage = os.path.join(jobDir,"graphs","summary","infoGain.png")
