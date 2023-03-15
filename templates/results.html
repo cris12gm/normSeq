@@ -328,6 +328,28 @@
         }
         newDiv.style.display="block";
     });
+    $('#selectTopMethod').change(function(){ 
+        valor = this.value;
+        comparison = document.getElementById("selectTopComparison").value;
+        newDiv = document.getElementById("top10FC_"+valor+"_"+comparison);
+        const allDivs = document.getElementsByClassName('topFCPlot');
+        for (const div of allDivs) {
+        // 👇️ Remove element from DOM
+            div.style.display = 'none';
+        }
+        newDiv.style.display="block";
+    });
+    $('#selectTopComparison').change(function(){ 
+        valor = this.value;
+        method = document.getElementById("selectTopMethod").value;
+        newDiv = document.getElementById("top10FC_"+method+"_"+valor);
+        const allDivs = document.getElementsByClassName('topFCPlot');
+        for (const div of allDivs) {
+        // 👇️ Remove element from DOM
+            div.style.display = 'none';
+        }
+        newDiv.style.display="block";
+    });
 </script>
 <script>
     $(function () {

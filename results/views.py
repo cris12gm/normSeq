@@ -57,10 +57,12 @@ class Results(TemplateView):
         downloads = {}
         distribution = {}
         top10 = {}
+        top10FC = {}
         de_groups={}
         features = {}
 
         i = 0
+        j = 0
 
         #InfoGain
         infoGain = {}
@@ -86,6 +88,12 @@ class Results(TemplateView):
                 summaryDE,resultsGroup = de_prepare(jobID,group,group1,group2)
                 group = group.replace("_","-")
                 diffExpr[group]= summaryDE,resultsGroup
+
+        groupsFile = open(os.path.join(settings.MEDIA_ROOT,jobID,"graphs","summary","groups.txt"),'r')
+        groupsFC = []
+        for line in groupsFile:
+            groupsFC.append(line.strip())
+        FC_groups = groupsFC
         #Visualization
         for method in methods:
 
@@ -131,6 +139,29 @@ class Results(TemplateView):
             else:
                 top10[method]['active'] = "none;"
 
+            #Top miRNAS FC
+            top10FC[method] = {}
+            
+
+            top10FC[method]['name'] = METHODS[method]
+            top10FC[method]["comparisons"] = FC_groups
+            top10FC[method]["data"] = {}
+
+            for element in FC_groups:
+                topFC = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","top10FC_"+method+"_"+element+".html")
+                topFCPNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","top10FC_"+method+"_"+element+".png")
+                try:
+                    value = top10FC[method]["data"][element]
+                except:
+                    top10FC[method]["data"][element] = {}
+                top10FC[method]["data"][element]['HTML'] = topFC
+                top10FC[method]["data"][element]['PNG'] = topFCPNG
+                top10FC[method]["data"][element]['name'] = METHODS[method]
+                if j==0:
+                    top10FC[method]["data"][element]['active'] = "block;"
+                else:
+                    top10FC[method]["data"][element]['active'] = "none;"
+                j = 1
             if config['batchEffect'] == 'True':
                 #Batch effect Plots
                 batchEffect = {}
@@ -153,7 +184,7 @@ class Results(TemplateView):
             downloads[METHODS[method]] = [downloadLink,"matrix_"+method+".txt"]
             i = i + 1 
 
-        summary = {'distribution':distribution,'top10':top10,'info':infoGain}
+        summary = {'distribution':distribution,'top10':top10,'top10FC':top10FC,'FC_groups':FC_groups,'info':infoGain}
 
         if heatmap or pca:
             visualization=True
@@ -257,12 +288,12 @@ def de_prepare(jobID,group,group1,group2):
 def getInfraOver(df):
     output = {}
 
-    overExpressed = df.query("logFC >= 0")
+    overExpressed = df.query("logFC <= 0")
     overExpressed_number = overExpressed.shape[0]
     overExpressed_names = overExpressed.index.tolist()
     overExpressed_names = ','.join(overExpressed_names)
 
-    infraExpressed = df.query("logFC < 0")
+    infraExpressed = df.query("logFC > 0")
     infraExpressed_number = infraExpressed.shape[0]
     infraExpressed_names = infraExpressed.index.tolist()
     infraExpressed_names = ','.join(infraExpressed_names)

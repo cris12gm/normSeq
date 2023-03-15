@@ -91,21 +91,21 @@ def de_R(infile,annotation,combinations,method,FDR,min_t,jobDir,error,log,status
         else:
             log.write("### EdgeR DE analysis finalized with errors\n")
             error.write("### EdgeR DE analysis finalized with errors\n")
-            status.write("<p>Differential expression analysis with EdgeR finalized with errors</p>")
+            #status.write("<p>Differential expression analysis with EdgeR finalized with errors</p>")
 
         if not deseq.empty:
             log.write("### DESeq DE analysis finalized\n")
         else:
             log.write("### DESeq DE analysis finalized with errors\n")
             error.write("### DESeq DE analysis finalized with errors\n")
-            status.write("<p>Differential expression analysis with DESeq finalized with errors</p>")
+            #status.write("<p>Differential expression analysis with DESeq finalized with errors</p>")
 
         if not noiseq.empty:
             log.write("### NOISeq DE analysis finalized\n")
         else:
             log.write("### NOISeq DE analysis finalized with errors\n")
             error.write("### NOISeq DE analysis finalized with errors\n")
-            status.write("<p>Differential expression analysis with EdgNOISeqeR finalized with errors</p>")
+            #status.write("<p>Differential expression analysis with NOISeq finalized with errors</p>")
         status.flush()
         output[subset[0]+"-"+subset[1]] = {"edgeR":edgeR,"deseq":deseq,"noiseq":noiseq}
 

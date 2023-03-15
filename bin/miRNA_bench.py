@@ -9,6 +9,7 @@ from correctBatch import combat,plotsBatch
 from de import de_R,createGroupFile,ttest,consensus
 from infoGain import calculate_infoGain,plotInfo
 import pandas as pd
+import itertools
 
 from subprocess import Popen
 
@@ -25,9 +26,9 @@ logFile = os.path.join(jobDir,"Log.txt")
 errorFile = os.path.join(jobDir,"Error.txt")
 statusFile = os.path.join(jobDir,"status.txt")
 
-log = open(logFile, 'w')
-error = open(errorFile, 'w')
-status = open(statusFile, 'w')
+log = open(logFile, 'a')
+error = open(errorFile, 'a')
+status = open(statusFile, 'a')
 
 #Get df
 df = processInput(os.path.join(jobDir,"matrix.txt"))
@@ -106,8 +107,8 @@ methods_r = ["UQ","TMM","RLE","DESEQ","QN","RUV"]
 normalized = {}
 r_files = []
 
-log.write("4. Normalization\n")
-status.write("<p>4. Normalization</p>")
+log.write("3. Normalization\n")
+status.write("<p>3. Normalization</p>")
 status.flush()
 
 for method in methods:
@@ -131,22 +132,44 @@ for file,method in r_files:
     normalized[method] = [outdf,normfile]
 
 cmd_plots = []
+
+status.write("<p>4. Information Gain analysis</p>")
+status.write("<p>5. Visualization</p>")
+status.flush()
+
+#Make groups for plots
+
+graphsDir = os.path.join(jobDir,"graphs")
+summaryDir = os.path.join(jobDir,"graphs","summary")
+if not os.path.exists(graphsDir):
+    os.mkdir(graphsDir)
+if not os.path.exists(summaryDir):
+    os.mkdir(summaryDir)
+
+
+groups = annotation_df["group"].values.tolist()
+diffGroups = list(set(groups))
+combinations = []
+output = open(os.path.join(summaryDir,"groups.txt"),'w')
+for subset in itertools.combinations(diffGroups, 2):
+    combinations.append([subset[0],subset[1]])
+    element = subset[0]+"-"+subset[1]
+    output.write(element+"\n")
+output.close()
+
 for method in normalized:
     outdf = normalized[method][0]
     normfile = normalized[method][1]
+    log.write("4. Information Gain analysis\n")
 #Information Gain
-    log.write("5. Information Gain analysis\n")
-    status.write("<p>5. Information Gain analysis</p>")
     criterion=config["infoGain"]
     info_method = calculate_infoGain(normfile,annotation,criterion)
     infoGain[method] = info_method
 
 #Summary
-    createsummary(normfile,outdf,method,jobDir,annotation_df)
-
+    createsummary(normfile,outdf,method,jobDir,annotation_df,combinations)
+    log.write("5. Visualization\n")
 #Plots
-    log.write("6. Visualization\n")
-    status.write("<p>6. Visualization</p>")
     status.flush()
     cmd_plots = createplots(normfile,outdf,method,jobDir,annotation,annotation_df,cmd_plots)
 #Launch the Rs from plots

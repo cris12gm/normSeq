@@ -1,62 +1,78 @@
-{% if summary.top10 %}
-    <div class="card">
-        <div class="card-header">
-            <h5>
-                Top 10 {{typeJob}}s
-            </h5>
-        </div>
-        <div id='topCard' class='collapse show'>
-            <div class="card-body">
-            <div>
-                <div class="form-group">
-                    <label for="selectTop">Select normalization method:</label>
-                    <select class="form-control" id="selectTop">
-                        {% for key,value in summary.top10.items %}
-                                <option value="{{ key }}">{{ value.name }}</option>
-                        {% endfor %}
-                    </select>
-                  </div>
+    {% if summary.top10 %}
+<div class="row">
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>
+                    Top 10 {{typeJob}}s
+                </h5>
             </div>
-            {% for key, value in summary.top10.items %}
-                <div id="top10_{{key}}" class="topPlot" style="display:{{value.active}}">
-                    <a title="{{ value.name }}" name="{{ value.HTML }}" class="modalPlotTop" data-toggle="modal" data-target="#modalTargetTop" onmouseover="this.style.cursor='pointer'">
-                        <img class="img-fluid" src="{{ value.PNG }}">
-                        </a>
+            <div id='topCard' class='collapse show'>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="selectTop">Select normalization method:</label>
+                        <select class="form-control" id="selectTop">
+                            {% for key,value in summary.top10.items %}
+                                    <option value="{{ key }}">{{ value.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                 </div>
-            {% endfor %}
+                {% for key, value in summary.top10.items %}
+                    <div id="top10_{{key}}" class="topPlot" style="display:{{value.active}}">
+                        <a title="{{ value.name }}" name="{{ value.HTML }}" class="modalPlotTop" data-toggle="modal" data-target="#modalTargetTop" onmouseover="this.style.cursor='pointer'">
+                            <img class="img-fluid" src="{{ value.PNG }}">
+                            </a>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
-    
-</div>
-{% endif %}
-{% if summary.top10FC %}
-    <div class="card">
-        <div class="card-header">
-            <h5>
-                Top 10 {{typeJob}}s
-            </h5>
-        </div>
-        <div id='topCard' class='collapse show'>
-            <div class="card-body">
-            <div>
-                <div class="form-group">
-                    <label for="selectTop">Select normalization method:</label>
-                    <select class="form-control" id="selectTop">
-                        {% for key,value in summary.top10FC.items %}
-                                <option value="{{ key }}">{{ value.name }}</option>
-                        {% endfor %}
-                    </select>
-                  </div>
+    {% endif %}
+    {% if summary.top10FC %}
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>
+                    Top 10 highest FC {{typeJob}}s
+                </h5>
             </div>
-            {% for key, value in summary.top10FC.items %}
-                <div id="top10_{{key}}" class="topPlot" style="display:{{value.active}}">
-                    <a title="{{ value.name }}" name="{{ value.HTML }}" class="modalPlotTop" data-toggle="modal" data-target="#modalTargetTop" onmouseover="this.style.cursor='pointer'">
-                        <img class="img-fluid" src="{{ value.PNG }}">
-                        </a>
+            <div id='topCard' class='collapse show'>
+                <div class="card-body">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="selectTopMethod">Select normalization method:</label>
+                                <select class="form-control" id="selectTopMethod">
+                                {% for key,value in summary.top10FC.items %}
+                                        <option value="{{ key }}">{{ value.name }}</option>
+                                {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label for="selectTopComparison">Select comparison:</label>
+                                <select class="form-control" id="selectTopComparison">
+                                    {% for key in summary.FC_groups %}
+                                        <option value="{{ key }}">{{ key }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            {% endfor %}
+                {% for key, value in summary.top10FC.items %}
+                    {% for group,plot in value.data.items %}
+                    <!-- {{plot}} -->
+                    <!-- {{plot}} -->
+                    <div id="top10FC_{{key}}_{{group}}" class="topFCPlot" style="display:{{plot.active}}">
+                        <a title="{{ value.name }}" name="{{ plot.HTML }}" class="modalPlotTop" data-toggle="modal" data-target="#modalTargetTop" onmouseover="this.style.cursor='pointer'">
+                            <img class="img-fluid" src="{{ plot.PNG }}">
+                            </a>
+                    </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
         </div>
     </div>
-    
+    {% endif %}
 </div>
-{% endif %}
