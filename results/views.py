@@ -89,12 +89,12 @@ class Results(TemplateView):
                 group = group.replace("_","-")
                 diffExpr[group]= summaryDE,resultsGroup
 
-        groupsFC = []
+        FC_groups = []
         try:
             groupsFile = open(os.path.join(settings.MEDIA_ROOT,jobID,"graphs","summary","groups.txt"),'r')
             for line in groupsFile:
-                groupsFC.append(line.strip())
-            FC_groups = groupsFC
+                FC_groups.append(line.strip())
+
         except:
             pass
         #Visualization
@@ -144,7 +144,7 @@ class Results(TemplateView):
 
             #Top miRNAS FC
             top10FC[method] = {}
-            if groupsFC:
+            if FC_groups:
 
                 top10FC[method]['name'] = METHODS[method]
                 top10FC[method]["comparisons"] = FC_groups
