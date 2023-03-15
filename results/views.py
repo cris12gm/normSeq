@@ -89,11 +89,14 @@ class Results(TemplateView):
                 group = group.replace("_","-")
                 diffExpr[group]= summaryDE,resultsGroup
 
-        groupsFile = open(os.path.join(settings.MEDIA_ROOT,jobID,"graphs","summary","groups.txt"),'r')
         groupsFC = []
-        for line in groupsFile:
-            groupsFC.append(line.strip())
-        FC_groups = groupsFC
+        try:
+            groupsFile = open(os.path.join(settings.MEDIA_ROOT,jobID,"graphs","summary","groups.txt"),'r')
+            for line in groupsFile:
+                groupsFC.append(line.strip())
+            FC_groups = groupsFC
+        except:
+            pass
         #Visualization
         for method in methods:
 
@@ -141,27 +144,27 @@ class Results(TemplateView):
 
             #Top miRNAS FC
             top10FC[method] = {}
-            
+            if groupsFC:
 
-            top10FC[method]['name'] = METHODS[method]
-            top10FC[method]["comparisons"] = FC_groups
-            top10FC[method]["data"] = {}
+                top10FC[method]['name'] = METHODS[method]
+                top10FC[method]["comparisons"] = FC_groups
+                top10FC[method]["data"] = {}
 
-            for element in FC_groups:
-                topFC = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","top10FC_"+method+"_"+element+".html")
-                topFCPNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","top10FC_"+method+"_"+element+".png")
-                try:
-                    value = top10FC[method]["data"][element]
-                except:
-                    top10FC[method]["data"][element] = {}
-                top10FC[method]["data"][element]['HTML'] = topFC
-                top10FC[method]["data"][element]['PNG'] = topFCPNG
-                top10FC[method]["data"][element]['name'] = METHODS[method]
-                if j==0:
-                    top10FC[method]["data"][element]['active'] = "block;"
-                else:
-                    top10FC[method]["data"][element]['active'] = "none;"
-                j = 1
+                for element in FC_groups:
+                    topFC = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","top10FC_"+method+"_"+element+".html")
+                    topFCPNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","top10FC_"+method+"_"+element+".png")
+                    try:
+                        value = top10FC[method]["data"][element]
+                    except:
+                        top10FC[method]["data"][element] = {}
+                    top10FC[method]["data"][element]['HTML'] = topFC
+                    top10FC[method]["data"][element]['PNG'] = topFCPNG
+                    top10FC[method]["data"][element]['name'] = METHODS[method]
+                    if j==0:
+                        top10FC[method]["data"][element]['active'] = "block;"
+                    else:
+                        top10FC[method]["data"][element]['active'] = "none;"
+                    j = 1
             if config['batchEffect'] == 'True':
                 #Batch effect Plots
                 batchEffect = {}
