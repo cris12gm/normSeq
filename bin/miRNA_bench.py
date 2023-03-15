@@ -121,7 +121,7 @@ for method in methods:
         normalized[method] = [outdf,normfile]
 
 #Launch the Rs
-procs = [ Popen(i,shell=False) for i in cmds_r ]
+procs = [ Popen(i,shell=True) for i in cmds_r ]
 for p in procs:
     p.wait()
 
@@ -173,7 +173,7 @@ for method in normalized:
     status.flush()
     cmd_plots = createplots(normfile,outdf,method,jobDir,annotation,annotation_df,cmd_plots)
 #Launch the Rs from plots
-procs = [ Popen(i,shell=False) for i in cmd_plots ]
+procs = [ Popen(i,shell=True) for i in cmd_plots ]
 for p in procs:
     p.wait()
 
