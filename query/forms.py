@@ -36,8 +36,6 @@ class Query(forms.Form):
     diffExpr = forms.TypedChoiceField(coerce=lambda x: x =='True', 
                                    choices=((True, 'Yes'),(False, 'No')),label="Differential expression:")
     pval = forms.FloatField(label="FDR:",validators=[MaxValueValidator(1)],initial=0.05,required=True)
-    infoGain = forms.TypedChoiceField(coerce=lambda x: x =='True', 
-                                   choices=((True, 'Entropy'),(False, 'Gini index')),label="Information gain impurity method:")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
