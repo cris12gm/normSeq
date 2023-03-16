@@ -84,7 +84,7 @@ def de_R(infile,annotation,combinations,method,FDR,min_t,jobDir,error,log,status
         try:
             noiseq = pd.read_table(output_noiseq)[["name","logFC","PValue"]]
         except:
-            noiseq =  pd.DataFrame(["name","logFC","PValue"])
+            noiseq =  pd.DataFrame(columns=["name","logFC","PValue"])
 
         if not edgeR.empty:
             log.write("### EdgeR DE analysis finalized\n")
@@ -204,20 +204,23 @@ def consensus(df_output,jobDir):
         noiseq = df_output[comparison]["noiseq"]
         ttest = df_output[comparison]["ttest"]
 
-        result = pd.merge(edgeR, deseq, on="name",how="outer")
-        result.rename(columns = {'FDR_x':'edgeR','FDR_y':'DESeq'}, inplace = True)
-        result = result[['name','edgeR','DESeq']]
-        result = pd.merge(result, noiseq, on="name",how="outer", suffixes= ["","_noiseq"])
-        result.rename(columns = {'PValue':'NOISeq'}, inplace = True)
-        result = result[['name','edgeR','DESeq','NOISeq']]
-        result = pd.merge(result, ttest, on="name",how="outer", suffixes= ["","_ttest"])
-        result.rename(columns = {'PValue':'T-Test','logFC':'log2FC',}, inplace = True)
+        try:
+            result = pd.merge(edgeR, deseq, on="name",how="outer")
+            result.rename(columns = {'FDR_x':'edgeR','FDR_y':'DESeq'}, inplace = True)
+            result = result[['name','edgeR','DESeq']]
+            result = pd.merge(result, noiseq, on="name",how="outer", suffixes= ["","_noiseq"])
+            result.rename(columns = {'PValue':'NOISeq'}, inplace = True)
+            result = result[['name','edgeR','DESeq','NOISeq']]
+            result = pd.merge(result, ttest, on="name",how="outer", suffixes= ["","_ttest"])
+            result.rename(columns = {'PValue':'T-Test','logFC':'log2FC',}, inplace = True)
 
-        result["edgeR"].fillna("Non-DE",inplace=True)
-        result["DESeq"].fillna("Non-DE",inplace=True)
-        result["NOISeq"].fillna("Non-DE",inplace=True)
-        result["T-Test"].fillna("Non-DE",inplace=True)
-        result_filtered = result[['name','edgeR','DESeq','NOISeq','T-Test','log2FC',sample1+"_mean",sample2+"_mean"]]
-        result_filtered = result_filtered.set_index('name')
-        outfile_consensus = os.path.join(jobDir,"DE","consensus_"+sample1+"-"+sample2+".txt") 
-        result_filtered.to_csv(outfile_consensus,sep="\t")
+            result["edgeR"].fillna("Non-DE",inplace=True)
+            result["DESeq"].fillna("Non-DE",inplace=True)
+            result["NOISeq"].fillna("Non-DE",inplace=True)
+            result["T-Test"].fillna("Non-DE",inplace=True)
+            result_filtered = result[['name','edgeR','DESeq','NOISeq','T-Test','log2FC',sample1+"_mean",sample2+"_mean"]]
+            result_filtered = result_filtered.set_index('name')
+            outfile_consensus = os.path.join(jobDir,"DE","consensus_"+sample1+"-"+sample2+".txt") 
+            result_filtered.to_csv(outfile_consensus,sep="\t")
+        except:
+            pass
