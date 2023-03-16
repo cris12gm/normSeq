@@ -162,11 +162,25 @@ def consensus(df_output,jobDir):
     for comparison in df_output:
         sample1 = comparison.split("-")[0]
         sample2 = comparison.split("-")[1]
-        edgeR = df_output[comparison]["edgeR"].name.tolist()
-        deseq = df_output[comparison]["deseq"].name.tolist()
+        try:
+            edgeR = df_output[comparison]["edgeR"].name.tolist()
+        except:
+            edgeR = []
 
-        noiseq = df_output[comparison]["noiseq"].name.tolist()
-        ttest = df_output[comparison]["ttest"].name.tolist()
+        try:
+            deseq = df_output[comparison]["deseq"].name.tolist()
+        except:
+            deseq=[]
+
+        try:
+            noiseq = df_output[comparison]["noiseq"].name.tolist()
+        except:
+            noiseq = []
+
+        try:
+            ttest = df_output[comparison]["ttest"].name.tolist()
+        except:
+            ttest = []
         methods = from_contents({'edgeR': edgeR, 'DESeq': deseq, 'NOISeq': noiseq,'T-test': ttest })
         upset = UpSet(methods, subset_size='count', show_counts=True,facecolor="#041C34")
         upset.style_subsets(present=["edgeR", "DESeq","NOISeq"],
