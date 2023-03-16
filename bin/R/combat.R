@@ -4,7 +4,7 @@ library(stringr)
 library(RColorBrewer)
 library(ggplot2)
 
-matrix <- read.table(args[1],header=TRUE,sep="\t")
+matrix <- read.table(args[1],header=TRUE,sep="\t",check.names=FALSE)
 
 #Remove empty and 0s
 

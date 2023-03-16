@@ -4,7 +4,7 @@ library(stringr)
 library(RColorBrewer)
 library(ggplot2)
 
-matrix <- read.table(args[1],header=TRUE,sep="\t")
+matrix <- read.table(args[1],header=TRUE,sep="\t",check.names=FALSE)
 
 #Remove empty and 0s
 
@@ -15,7 +15,7 @@ matrix = subset(matrix, select = -c(name) )
 keep <- rowSums(matrix>0) > 0
 df <- matrix[keep, ]
 
-samplesheet <- read.table(args[2],header=T,sep="\t")
+samplesheet <- read.table(args[2],header=T,sep="\t",check.names=FALSE)
 samplesheet$sample <- make.names(samplesheet$sample)
 
 row.names(samplesheet) <- samplesheet$sample
