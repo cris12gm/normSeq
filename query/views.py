@@ -183,14 +183,8 @@ class QueryElement(TemplateView):
             parameters['diffExpr'] = request.POST['diffExpr']
             parameters['pval'] = request.POST['pval']
 
-            if request.POST['infoGain']=='True':
-                parameters['infoGain'] = "entropy"
-            else:
-                parameters['infoGain'] = "gini"
-
             # Save parameters and Launch
-          
-           
+            
             with open(settings.MEDIA_ROOT+jobID+'/config.json', 'w') as fp:
                 json.dump(parameters, fp)
             script = os.path.join(settings.BASE_DIR,"bin","miRNA_bench.py")

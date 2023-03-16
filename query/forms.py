@@ -116,14 +116,6 @@ class Query(forms.Form):
                             Div(Field('pval',css_class='form-control',css_id='pval'),css_class='col-md-6'),
                         css_class='row'
                         ),
-                        Div(
-                            HTML("<h5>Information gain:</h5>"),
-                            css_class="row ml-1 mt-1"
-                        ),
-                        Div(
-                            Div(Field('infoGain',css_class='form-control',css_id='infoGain'),css_class='col-md-12'),
-                        css_class='row'
-                        ),
                         css_class='col-4'
                     ),
                     Div(

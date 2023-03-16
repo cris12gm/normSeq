@@ -75,34 +75,13 @@
                           </a>
                           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <a class="dropdown-item" target="_blank" href="https://arn.ugr.es/normseq_doc">Manual</a>
-                            <a class="dropdown-item" href="#">Tutorial</a>
-                            <a class="dropdown-item" href="#">FAQ</a>
                           </div>
                     </li>
                     <li class="nav-item ml-2 mr-2 mt-1 ">
-                        <a class="nav-link" href="" data-toggle="modal" data-target="#modalAbout">
+                        <a class="nav-link" href="" data-toggle="modal" data-target="#modalAboutServer">
                             <i class="fas fa-solid fa-question iconsMenu"></i>
                             About
                         </a>
-                        <div class="modal fade" id="modalAbout" role="dialog">
-                            <div class="modal-dialog modal-lg">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h4 class="modal-title">
-                                            About
-                                        </h4>
-                                    </div>
-                                    <div class="modal-body">
-                                        <h5 class="align-center">This website is free and open to all users and there is no login requirement. </h5>
-                                        <p>NormSeq is is a freely accessible web-server tool for data normalization, batch-effect correction and differential expression analysis obtained from next generation sequencing platforms such as Illumina or SOLiD. The platform offers multiple visualization options and downloadable output plots and tables.</p>
-                                        <p>Developed by the <a href="http://exosomes.nl">Exosomes Research Group</a> at Cancer Center Amsterdam</p>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </li>
                     <li class="nav-item mt-1 mr-2">
                         <form action="{% url 'status' %}"> 
@@ -116,18 +95,38 @@
             </div>
         </nav>
 
-            <div id="page-content-wrapper">
-    
-                <div class="container-fluid">
+        <div id="page-content-wrapper">
 
-                    <!-- Page Content -->
-        
-                    {% block content %}{% endblock %}
-                    {% block modals %}{% endblock %}
-                    
-                    
+            <div class="modal fade" id="modalAboutServer" tabindex="-1" role="dialog" aria-labelledby="modalAboutServer" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <h5 class="modal-title" id="aboutModalLabel">About</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>
+                        <div class="modal-body">
+                            <h5 class="align-center">This website is free and open to all users and there is no login requirement. </h5>
+                            <p>NormSeq is is a freely accessible web-server tool for data normalization, batch-effect correction and differential expression analysis obtained from next generation sequencing platforms such as Illumina or SOLiD. The platform offers multiple visualization options and downloadable output plots and tables.</p>
+                            <p>Developed by the <a href="http://exosomes.nl">Exosomes Research Group</a> at Cancer Center Amsterdam</p>
+                        </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
                 </div>
             </div>
+    
+            <div class="container-fluid">
+                <!-- Page Content -->
+        
+                {% block content %}{% endblock %}
+                {% block modals %}{% endblock %}
+                    
+                    
+            </div>
+        </div>
 
         <!-- Bootstrap core JavaScript -->
 
