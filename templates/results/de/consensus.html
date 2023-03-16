@@ -1,0 +1,69 @@
+<div class="row">
+    <div class="col-4">
+      <select id='select_de_consensus' class="custom-select">
+        {% for element in de_groups %}
+        <option value="{{ element }}">{{ element }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-6">
+      Differentially Expressed {{typeJob}}s for <b><div id="comparisonConsensusDE"></div></b> 
+    </div>
+    {% for element in de_groups %}
+      <div class="btnConsensus" id="btnConsensus_{{element}}" style="display:none;float:right;">
+        <button type="button" class="btn btn-warning btn-lg modalPlotConsensus" data-toggle="modal" data-target="#modalTargetConsensus_{{element}}">Upset Plot</button>
+      </div>
+    {% endfor %}
+
+</div>
+
+
+
+
+<div class="row mr-2 ml-2">
+  {% for key,element in consensus.items %}
+  <div class="modal fade" id="modalTargetConsensus_{{key}}" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                  Upset plot DEGs {{key}}
+                </h4>
+            </div>
+            <div class="modal-body">
+              <img class="img-fluid" src="{{element.plot}}">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+  </div>
+  <div class="table-responsive resultsTable consensusDETable" style="display:none;" id="consensusDE_{{key}}">
+    <table class="table table-hover table-sm dataTableConsensus" width="100%" cellspacing="3">
+        <thead>
+            <tr>
+              <th class="titleTable"><span class="table_tooltip">Name</span></th>
+              {% for head in element.header %}
+                <th class="titleTable"><span class="table_tooltip">{{head}}</span></th>
+              {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+          {% for key,row in element.table.items %}
+          <tr>
+            <td class="rowTable">{{key}}</td>
+            {% for key_field,value2 in row.items %}
+              <td class="rowTable">{{value2}}</td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+    </table>
+  </div>
+{% endfor %}
+</div>
+
+{% for key,element in consensus.items %}
+
+{% endfor %}

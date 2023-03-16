@@ -1,118 +1,30 @@
-from scipy.stats import entropy
 import pandas as pd
 import numpy as np
 import plotly.express as px
-import sys
 from plotly.offline import plot
+from sklearn.feature_selection import mutual_info_classif
 
-def compute_impurity(feature, impurity_criterion):
-    """
-    This function calculates impurity of a feature.
-    Supported impurity criteria: 'entropy', 'gini'
-    input: feature (this needs to be a Pandas series)
-    output: feature impurity
-    """
-    probs = feature.value_counts(normalize=True)
-    
-    if impurity_criterion == 'entropy':
-        impurity = -1 * np.sum(np.log2(probs) * probs)
-    elif impurity_criterion == 'gini':
-        impurity = 1 - np.sum(np.square(probs))
-    else:
-        raise ValueError('Unknown impurity criterion')
-        
-    return(round(impurity, 3))
+def calculate_infoGain(df,annotation_df,combination):
+    group1 = combination[0]
+    group2 = combination[1]
 
-def comp_feature_information_gain(df, target, descriptive_feature, split_criterion):
-    """
-    This function calculates information gain for splitting on 
-    a particular descriptive feature for a given dataset
-    and a given impurity criteria.
-    Supported split criterion: 'entropy', 'gini'
-    """
-    
-    # print('target feature:', target)
-    # print('descriptive_feature:', descriptive_feature)
-    # print('split criterion:', split_criterion)
-            
-    target_entropy = compute_impurity(df[target], split_criterion)
+    filtered_Annotation = annotation_df[(annotation_df['group'] == group1) | (annotation_df['group'] == group2)]
+    selectedSamples = list(filtered_Annotation.index)
+    df2 = df[selectedSamples]
+    a = mutual_info_classif(df2.T, np.ravel(filtered_Annotation), discrete_features='auto')
+    info = df2
+    info['infoGain'] = a
+    infoThis = info['infoGain']
+    return infoThis
 
-    # we define two lists below:
-    # entropy_list to store the entropy of each partition
-    # weight_list to store the relative number of observations in each partition
-    entropy_list = list()
-    weight_list = list()
-    
-    # loop over each level of the descriptive feature
-    # to partition the dataset with respect to that level
-    # and compute the entropy and the weight of the level's partition
-    for level in df[descriptive_feature].unique():
-        df_feature_level = df[df[descriptive_feature] == level]
-        entropy_level = compute_impurity(df_feature_level[target], split_criterion)
-        entropy_list.append(round(entropy_level, 3))
-        weight_level = len(df_feature_level) / len(df)
-        weight_list.append(round(weight_level, 3))
-
-    # print('impurity of partitions:', entropy_list)
-    # print('weights of partitions:', weight_list)
-
-    feature_remaining_impurity = np.sum(np.array(entropy_list) * np.array(weight_list))
-    # print('remaining impurity:', feature_remaining_impurity)
-    
-    information_gain = target_entropy - feature_remaining_impurity
-    # print('information gain:', information_gain)
-    
-    # print('====================')
-
-    return(information_gain)
-
-def calculate_infoGain(infile,annotationFile,criterion):
-
-    print(infile)
-    cabecera = open(infile).readline().split("\t")[0]
-    df = pd.read_table(infile)
-    df.rename(columns = {cabecera:'name'}, inplace = True)
-    df = df.set_index(cabecera)
-    df = df.dropna()
-    df = df.T
-
-
-    #Read annotation
-    cabecera = open(annotationFile).readline().split("\t")[0]
-    ann = pd.read_table(annotationFile)
-    ann.rename(columns = {cabecera:'sample'}, inplace = True)
-    ann = ann.set_index(cabecera)
-
-    together = pd.concat([df, ann], axis=1, join="inner")
-
-
-    split_criterion = criterion
-    infoGain = {}
-    for feature in together.drop(columns='group').columns:
-        feature_info_gain = comp_feature_information_gain(together, 'group', feature, split_criterion)
-        infoGain[feature]=feature_info_gain
-
-    data = pd.DataFrame.from_dict(infoGain,orient='index')
-    data.columns = ['info']
-
-    together = together.T.drop("group")
-    together['mean'] = together.mean(axis=1)
-    result = pd.merge(data, together, left_index =True ,right_index=True)
-
-    #top100 = result.nlargest(100, 'mean')
-    information_gain = result['info']
-
-    return information_gain
-
-def plotInfo(df,outfileImage,outfile):
-
+def plotInfo(df,outfileImage,outfile,titleThis):
     x = []
     y = []
     for element in df:
         x.append(element)
         y.append(df[element])
 
-    fig = px.box(df)
+    fig = px.box(df,title=titleThis)
     fig.update_layout(
     xaxis_title="Method",
     yaxis_title="Information Gain per miRNA")

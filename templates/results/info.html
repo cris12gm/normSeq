@@ -7,13 +7,22 @@
         </div>
         <div id='topCard' class='collapse show'>
             <div class="card-body">
-            <div id="infoGain" class="infoPlot" style="display:block;">
-                <a title="{{ summary.info.name }}" name="{{ summary.info.HTML }}" class="modalPlotInfo" data-toggle="modal" data-target="#modalTargetInfo" onmouseover="this.style.cursor='pointer'">
-                    <img class="img-fluid" src="{{ summary.info.PNG }}">
-                </a>
+                <div class="form-group">
+                    <label for="selectInfo">Select comparison:</label>
+                    <select class="custom-select" id="selectInfo">
+                        {% for key in summary.FC_groups %}
+                            <option value="{{ key }}">{{ key }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% for key in summary.info %}
+                <div id="infoGain_{{key.group}}" class="infoPlot" style="display:none;">
+                        <a title="{{ key.name }} {{key.group}}" name="{{ key.HTML }}" class="modalPlotInfo" data-toggle="modal" data-target="#modalTargetInfo" onmouseover="this.style.cursor='pointer'">
+                        <img class="img-fluid" src="{{ key.PNG }}">
+                    </a>
+                </div>
+                {% endfor %}
             </div>
         </div>
     </div>
-    
-</div>
 {% endif %}

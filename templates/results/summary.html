@@ -1,20 +1,15 @@
 {% if summary %}
   <ul class="nav nav-pills mb-3" id="pills-tabSummary" role="tablist">
     <li class="nav-item" role="presentation">
-      <button class="nav-link border-0 active btn-lg" id="pills-top-tab" data-toggle="pill" data-target="#pills-top" type="button" role="tab" aria-controls="pills-top" aria-selected="true">Top miRNAs</button>
+      <button class="nav-link border-0 active btn-lg" id="pills-norm-tab" data-toggle="pill" data-target="#pills-norm" type="button" role="tab" aria-controls="pills-norm" aria-selected="true">Normalization selection</button>
     </li>
     <li class="nav-item" role="presentation">
-      <button class="nav-link tabs-plots border-0 btn-lg" id="pills-select-tab" data-toggle="pill" data-target="#pills-select" type="button" role="tab" aria-controls="pills-select" aria-selected="false">Normalization selection</button>
+      <button class="nav-link tabs-plots border-0 btn-lg" id="pills-top-tab" data-toggle="pill" data-target="#pills-top" type="button" role="tab" aria-controls="pills-top" aria-selected="false">Top miRNAs</button>
     </li>
   </ul>
 
   <div class="tab-content" id="pills-tabContent">
-    <div class="tab-pane fade show active" id="pills-top" role="tabpanel" aria-labelledby="pills-top-tab">
-      <div class="col-12">
-        {% include "results/top10.html" %}
-      </div>
-    </div>
-    <div class="tab-pane fade" id="pills-select" role="tabpanel" aria-labelledby="pills-select-tab">
+    <div class="tab-pane fade show active" id="pills-norm" role="tabpanel" aria-labelledby="pills-norm-tab">
       <div class="row">
         <div class="col-6">
           {% include "results/distribution.html" %}
@@ -24,7 +19,14 @@
         </div>
       </div>
     </div>
+    <div class="tab-pane fade" id="pills-top" role="tabpanel" aria-labelledby="pills-top-tab">
+      <div class="row">
+        <div class="col-12">
+          {% include "results/top10.html" %}
+        </div>
+      </div>
+    </div>
   </div>
 
-  
+
 {% endif %}

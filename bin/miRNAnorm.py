@@ -38,7 +38,7 @@ def tc(df,outfile):
     sums = np.array(pd.DataFrame(np.sum(df,axis=0)).T)
     mean = np.mean(sums)
 
-    normalized = np.divide(df,mean)
+    normalized = np.divide(df,mean)*1000000
     normalized.to_csv(outfile,sep="\t")
 
     return normalized
@@ -62,7 +62,7 @@ def med(df,outfile):
     sums = np.array(pd.DataFrame(np.sum(df,axis=0)).T)
     median = np.median(sums)
 
-    normalized = np.divide(df,median)
+    normalized = np.divide(df,median)*1000000
     normalized.to_csv(outfile,sep="\t")
 
     return normalized

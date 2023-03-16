@@ -19,5 +19,9 @@ $(document).ready(function() {
   $('.dataTableSummaryDE').DataTable({
     
   });
+  $('.dataTableConsensus').DataTable({
+    "order":[[1, "asc"]]
+  });
+  
   
 }); 

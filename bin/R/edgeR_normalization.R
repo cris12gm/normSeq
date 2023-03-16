@@ -16,22 +16,27 @@ df <- matrix[keep, ]
 
 #create DGEList object
 d <- DGEList(counts=df)
-d <- estimateCommonDisp(d)
 
 method <- args[2]
 
 if (method == "UQ") {
-    uq <- calcNormFactors(d, method="upperquartile")
-    normalized <- as.data.frame(uq$counts)
+    d <- calcNormFactors(d, method="upperquartile")
+    d <- estimateCommonDisp(d)
+    uq <- cpm(d, normalized.lib.sizes=TRUE, log=FALSE)
+    normalized <- as.data.frame(uq)
 }
 
 if (method == "TMM") {
-    tmm <- calcNormFactors(d, method="TMM")
-    normalized <- as.data.frame(tmm$counts)
+    d <- calcNormFactors(d, method="TMM")
+    d <- estimateCommonDisp(d)
+    tmm <- cpm(d, normalized.lib.sizes=TRUE, log=FALSE)
+    normalized <- as.data.frame(tmm)
 }
 if (method == "RLE") {
-    rle <- calcNormFactors(d, method="RLE")
-    normalized <- as.data.frame(rle$counts)
+    d <- calcNormFactors(d, method="RLE")
+    d <- estimateCommonDisp(d)
+    rle <- cpm(d, normalized.lib.sizes=TRUE, log=FALSE)
+    normalized <- as.data.frame(rle)
 }
 
 outfile <- args[3]

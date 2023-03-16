@@ -11,7 +11,7 @@ from django.http import JsonResponse
 import os
 import pandas as pd
 import json
-
+import datetime
 
 METHODS = {
         'NN' :' No normalization',
@@ -49,6 +49,9 @@ class Results(TemplateView):
         jobDir = config['jobDir']
         typeJob = config['typeJob']
 
+        start_date = datetime.date.today()
+        end_date = start_date + datetime.timedelta(days=15)
+        
         ##All visualizations
         visualization = False
 
@@ -64,31 +67,6 @@ class Results(TemplateView):
         i = 0
         j = 0
 
-        #InfoGain
-        infoGain = {}
-        info = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain.html")
-        infoPNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain.png")
-        infoGain['HTML'] = info
-        infoGain['PNG'] = infoPNG
-        infoGain['name'] = "Information Gain"
-
-        ##Dif expr
-        diffExpr = {}
-        if config['diffExpr'] == 'True':
-            groupsFile = open(os.path.join(settings.MEDIA_ROOT,jobID,"DE","groups.txt"),'r')
-            groups = []
-            for line in groupsFile:
-                groups.append(line.strip())
-            de_groups = groups
-                
-            for group in groups:
-                group = group.replace("-","_")
-                group1 = group.split("_")[0]
-                group2 = group.split("_")[1]
-                summaryDE,resultsGroup = de_prepare(jobID,group,group1,group2)
-                group = group.replace("_","-")
-                diffExpr[group]= summaryDE,resultsGroup
-
         FC_groups = []
         try:
             groupsFile = open(os.path.join(settings.MEDIA_ROOT,jobID,"graphs","summary","groups.txt"),'r')
@@ -97,6 +75,41 @@ class Results(TemplateView):
 
         except:
             pass
+
+
+        #InfoGain
+        infoGain = []
+        for group in FC_groups:
+            info = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".html")
+            infoPNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".png")
+            infoThis = {}
+            infoThis['HTML'] = info
+            infoThis['PNG'] = infoPNG
+            infoThis['name'] = "Information Gain"
+            infoThis['group'] = group
+            infoGain.append(infoThis)
+        ##Dif expr
+        diffExpr = {}
+        consensus = {}
+        if config['diffExpr'] == 'True':
+            try:
+                groupsFile = open(os.path.join(settings.MEDIA_ROOT,jobID,"DE","groups.txt"),'r')
+                groups = []
+                for line in groupsFile:
+                    groups.append(line.strip())
+                de_groups = groups
+                
+                for group in groups:
+                    group = group.replace("-","_")
+                    group1 = group.split("_")[0]
+                    group2 = group.split("_")[1]
+                    summaryDE,resultsGroup,consensusM = de_prepare(jobID,group,group1,group2)
+                    group = group.replace("_","-")
+                    diffExpr[group]= summaryDE,resultsGroup
+                    consensus[group] = consensusM
+            except:
+                pass
+
         #Visualization
         for method in methods:
 
@@ -193,7 +206,7 @@ class Results(TemplateView):
             visualization=True
 
         return render(request, self.template, {"jobID":jobID,"typeJob":typeJob,"visualization":visualization,"heatmapPlots":heatmap,
-        "pcaPlots":pca,"batchEffect":batchEffect,"downloads":downloads,"summary":summary,"de":diffExpr,"de_groups":de_groups})
+        "pcaPlots":pca,"batchEffect":batchEffect,"downloads":downloads,"summary":summary,"de":diffExpr,"de_groups":de_groups,'date':end_date,'consensus':consensus})
 
 
 def queryPlotHTML(request):
@@ -286,7 +299,23 @@ def de_prepare(jobID,group,group1,group2):
         resultsGroup['ttest'] = ttest
     except:
         pass
-    return summary,resultsGroup
+
+    ##Consensus
+    consensus={}
+    groupC = group.replace("_","-")
+    consensusFile = os.path.join(settings.MEDIA_ROOT,jobID,"DE","consensus_"+groupC+".txt")
+    try:
+        consensusdf = pd.read_table(consensusFile)
+        consensusdf = consensusdf.set_index("name")
+        consensus_header = list(consensusdf.columns)
+        consensusTable = consensusdf.T.to_dict()
+        consensus['header'] = consensus_header
+        consensus['table'] = consensusTable
+        plot = os.path.join(settings.MEDIA_URL,jobID,"DE","consensus_upset_"+groupC+".png")
+        consensus['plot'] = plot
+    except:
+        pass
+    return summary,resultsGroup,consensus
 
 def getInfraOver(df):
     output = {}

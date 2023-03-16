@@ -182,7 +182,7 @@ def consensus(df_output,jobDir):
                     facecolor="#184b7e",
                     label="Consensus 3 methods")
         upset.plot()
-        plt.savefig(os.path.join(jobDir,"DE","consensus_upset.png"))
+        plt.savefig(os.path.join(jobDir,"DE","consensus_upset_"+sample1+"-"+sample2+".png"))
 
 
         edgeR = df_output[comparison]["edgeR"]
@@ -205,5 +205,5 @@ def consensus(df_output,jobDir):
         result["T-Test"].fillna("Non-DE",inplace=True)
         result_filtered = result[['name','edgeR','DESeq','NOISeq','T-Test','log2FC',sample1+"_mean",sample2+"_mean"]]
         result_filtered = result_filtered.set_index('name')
-        outfile_consensus = os.path.join(jobDir,"DE","consensus_comparison.txt") 
+        outfile_consensus = os.path.join(jobDir,"DE","consensus_"+sample1+"-"+sample2+".txt") 
         result_filtered.to_csv(outfile_consensus,sep="\t")

@@ -12,9 +12,7 @@ import pandas as pd
 import itertools
 
 from subprocess import Popen
-
-
-#Error = False
+from multiprocessing import Pool
 
 configFile = open(sys.argv[1])
 config = json.load(configFile)
@@ -85,34 +83,41 @@ if config['batchEffect'] == 'True':
 methods = config['methods']
 infoGain = {}
 
-#Differential Expression
+##################################################################
+################## DIFFERENTIAL EXPRESSION #######################
+##################################################################
 
 if config['diffExpr']=="True":
     FDR = config['pval']
     min_t = str(0)
-    method = "TMM" #Change in input
+    methodDE = "TMM" #Change in input
     if not os.path.exists(os.path.join(jobDir,"DE")):
         os.mkdir(os.path.join(jobDir,"DE"))
     combinations = createGroupFile(annotation_df,jobDir)
 
-    output_de = de_R(infile,annotation,combinations,method,FDR,min_t,jobDir,error,log,status)
+    output_de = de_R(infile,annotation,combinations,methodDE,FDR,min_t,jobDir,error,log,status)
     output_de = ttest(df,combinations,annotation_df,FDR,output_de,jobDir,error,log,status)
     consensus(output_de,jobDir)
 
-cmds_r = []
+##################################################################
+####################### NORMALIZATION ############################
+##################################################################
 
-#Normalization
+#Methods from R code -> Parallelize with os
+
 methods_r = ["UQ","TMM","RLE","DESEQ","QN","RUV"]
-
-normalized = {}
+cmds_r = []
 r_files = []
+
+#Dict with all the normalized datasets
+normalized = {}
 
 log.write("3. Normalization\n")
 status.write("<p>3. Normalization</p>")
 status.flush()
 
 for method in methods:
-    #Normalization
+    #Normalization of non R + save R norms in cmds_r
     if method in methods_r:
         cmds_r,outfile = norm_r(infile,method,jobDir,cmds_r)
         r_files.append([outfile,method])
@@ -120,7 +125,7 @@ for method in methods:
         outdf,normfile = norm(infile,df,method,jobDir)
         normalized[method] = [outdf,normfile]
 
-#Launch the Rs
+#Launch the normalization of Rs
 procs = [ Popen(i,shell=True) for i in cmds_r ]
 for p in procs:
     p.wait()
@@ -131,13 +136,9 @@ for file,method in r_files:
     outdf = processInput(normfile)
     normalized[method] = [outdf,normfile]
 
-cmd_plots = []
-
-status.write("<p>4. Information Gain analysis</p>")
-status.write("<p>5. Visualization</p>")
-status.flush()
-
-#Make groups for plots
+##################################################################
+##################### GRAPHS DIR CREATION ########################
+##################################################################
 
 graphsDir = os.path.join(jobDir,"graphs")
 summaryDir = os.path.join(jobDir,"graphs","summary")
@@ -146,6 +147,9 @@ if not os.path.exists(graphsDir):
 if not os.path.exists(summaryDir):
     os.mkdir(summaryDir)
 
+##################################################################
+####################### GROUPS CREATION ##########################
+##################################################################
 
 groups = annotation_df["group"].values.tolist()
 diffGroups = list(set(groups))
@@ -157,36 +161,59 @@ for subset in itertools.combinations(diffGroups, 2):
     output.write(element+"\n")
 output.close()
 
+##################################################################
+###################### #INFORMATION GAIN #########################
+##################################################################
+log.write("4. Information Gain analysis\n")
+status.write("<p>4. Information Gain analysis</p>")
+status.flush()
+
+for combination in combinations:
+    comb = combination[0]+"-"+combination[1]
+    information_gain = {}
+    for method in methods:
+        normdf = normalized[method][0]
+        info = calculate_infoGain(normdf,annotation_df,combination)
+        information_gain[method] = info
+    outfileImage = os.path.join(jobDir,"graphs","summary","infoGain_"+combination[0]+"-"+combination[1]+".png")
+    outfile = os.path.join(jobDir,"graphs","summary","infoGain_"+combination[0]+"-"+combination[1]+".html")
+    title = combination[0]+"-"+combination[1]
+    plotInfo(information_gain,outfileImage,outfile,title)
+
+##################################################################
+####################### SUMMARY + PLOTS ##########################
+##################################################################
+
+cmd_plots = []
+status.write("<p>5. Visualizations</p>")
+status.flush()
+
 for method in normalized:
-    outdf = normalized[method][0]
+    normdf = normalized[method][0]
     normfile = normalized[method][1]
-    log.write("4. Information Gain analysis\n")
-#Information Gain
-    criterion=config["infoGain"]
-    info_method = calculate_infoGain(normfile,annotation,criterion)
-    infoGain[method] = info_method
 
 #Summary
-    createsummary(normfile,outdf,method,jobDir,annotation_df,combinations)
+    createsummary(normfile,normdf,method,jobDir,annotation_df,combinations)
+    
     log.write("5. Visualization\n")
+
 #Plots
-    status.flush()
-    cmd_plots = createplots(normfile,outdf,method,jobDir,annotation,annotation_df,cmd_plots)
+    cmd_plots = createplots(normfile,normdf,method,jobDir,annotation,annotation_df,cmd_plots)
+
 #Launch the Rs from plots
+
 procs = [ Popen(i,shell=True) for i in cmd_plots ]
 for p in procs:
     p.wait()
 
-
-#Plot Info Gain
-outfileImage = os.path.join(jobDir,"graphs","summary","infoGain.png")
-outfile = os.path.join(jobDir,"graphs","summary","infoGain.html")
-plotInfo(infoGain,outfileImage,outfile)
-
+##################################################################
+####################### FINAL CHECK ##############################
+##################################################################
 
 #Check and create results.txt
 log.close()
 error.close()
+status.close()
 
 resultsFile = os.path.join(jobDir,"results.txt")
 os.system("touch "+resultsFile)

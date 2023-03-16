@@ -62,7 +62,6 @@ class statusJob(TemplateView):
         elif status=="Running":
             configFile = jobDB.getConfig()
             config = json.load(open(configFile,'r'))
-            print(messages)
             return render(request, self.template, {"jobID":jobID,"status":status,"typeJob":typeJob,"messages":messages,"config":config})
         else:
             try:

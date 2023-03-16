@@ -23,7 +23,7 @@ def createsummary(infile,df,method,jobDir,annotation_df,combinations):
     outfile = os.path.join(outDir,"distribution_"+method+".html")
     outfileImage = os.path.join(outDir,"distribution_"+method+".png")
     title = METHODS[method]
-    distribution(df,outfile,outfileImage,title)
+    distribution(df,annotation_df,outfile,outfileImage,title)
 
     #Top10
     outfile = os.path.join(outDir,"top10_"+method+".html")
@@ -36,8 +36,37 @@ def createsummary(infile,df,method,jobDir,annotation_df,combinations):
     title = METHODS[method]
     top10fc(df,outDir,combinations,method,title,annotation_df)
 
-def distribution(df,outfile,outfileImage,title):
 
+def distribution(df,annotation_df,outfile,outfileImage,title):
+
+    fig = make_subplots(rows=1, cols=1)
+    # newdf = pd.melt(np.log10(df))
+    # fig = px.scatter(newdf, y="value",x="variable")
+    # fig.show()
+
+    #### Plot mean #####
+    # meandf = np.log10(df.median(axis=0)).to_frame()
+    # meandf = pd.merge(meandf,annotation_df,left_index=True, right_index=True)
+    # meandf = meandf.reset_index()
+    # meandf.columns = ["Sample","Median","Group"]
+
+    # fig = px.box(meandf, y="Median",x="Group",color="Group",title=title)
+    # fig.update(layout_yaxis_range = [0,4])
+    # fig.show()
+
+    # # for col in df.columns:
+    #     hist_data_this = np.log10(df[col]+1).values.tolist()
+    #     hist_data.append(hist_data_this)
+    #     group_labels.append(col)
+    # fig = ff.create_distplot(hist_data,group_labels,show_hist=False,show_rug=False)
+    # fig.update_layout(title_text=title,xaxis_title="Log10(Expression)",
+    # yaxis_title="Density")
+    # fig.write_image(outfileImage,scale=3,height=400)
+    
+    # plotCode = plot(fig, show_link=False, auto_open=False, output_type = 'div')
+    # outfile_W = open(outfile,'a')
+    # outfile_W.write(plotCode)
+    # outfile_W.close()
     fig = make_subplots(rows=1, cols=1)
     hist_data = []
     group_labels = []
@@ -84,6 +113,7 @@ def top10fc(df,outDir,combinations,method,title,annotation_df):
 
     for combination in combinations:
         
+        titlePlot = title+" "+combination[0]+"-"+combination[1]
         group1 = combination[0]
         group2 = combination[1]
         
@@ -115,7 +145,7 @@ def top10fc(df,outDir,combinations,method,title,annotation_df):
 
         fig = go.Figure()
 
-        fig = px.box(result_expr,color='group',
+        fig = px.box(result_expr,color='group',title=titlePlot,
         labels={
                         "group": "Group",
                         "value":"Expression",
