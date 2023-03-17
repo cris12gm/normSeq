@@ -12,6 +12,10 @@ from upsetplot import from_contents,UpSet
 from matplotlib import pyplot as plt
 from subprocess import Popen
 
+from plotly.offline import plot
+import plotly.graph_objects as go
+import plotly.express as px
+
 def createGroupFile(annotation_df,jobDir):
     groups = annotation_df["group"].values.tolist()
     diffGroups = list(set(groups))
@@ -56,7 +60,7 @@ def de_R(infile,annotation,combinations,method,FDR,min_t,jobDir,log,status):
     status.flush()
 
     
-    procs = [ Popen(i,shell=True) for i in commands ]
+    procs = [ Popen(i,shell=False) for i in commands ]
     for p in procs:
         p.wait()
         
@@ -242,3 +246,27 @@ def consensus(df_output,df,annotation_df,jobDir):
             dfConsensus.to_csv(outfile_consensus,sep="\t")
         except:
             pass
+
+def plotDE(df,output_de,annotation_df,jobDir):
+    for combination in output_de:
+        for method in output_de[combination]:
+            outfile = os.path.join(jobDir,"DE","top10_"+method+"_"+combination+".html") 
+            myDf = output_de[combination][method]
+            myDf = myDf.set_index("name")
+            top10 = list((myDf.nlargest(10, 'logFC')).index)
+            result_expr = df.loc[top10].T
+            result_expr = pd.merge(result_expr, annotation_df, left_index =True ,right_index=True)
+            fig = go.Figure()
+
+            fig = px.box(result_expr,color='group',
+            labels={
+                             "group": "Group",
+                             "value":"Expression",
+                             "variable":""
+                         },)
+
+            
+            plotCode = plot(fig, show_link=False, auto_open=False, output_type = 'div')
+            outfile_W = open(outfile,'a')
+            outfile_W.write(plotCode)
+            outfile_W.close()

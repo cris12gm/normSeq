@@ -6,7 +6,7 @@ from plots import createplots
 from miRNAnorm import processInput,norm,norm_r,processAnnotation,processInputInit
 from summary import createsummary
 from correctBatch import combat,plotsBatch
-from de import de_R,createGroupFile,ttest,consensus
+from de import de_R,createGroupFile,ttest,consensus,plotDE
 from infoGain import calculate_infoGain,plotInfo
 import pandas as pd
 import itertools
@@ -120,7 +120,7 @@ if config['diffExpr']=="True":
     output_de = de_R(infile,annotation,combinations,methodDE,FDR,min_t,jobDir,log,status)
     output_de = ttest(df,combinations,annotation_df,FDR,output_de,jobDir,log,status)
     consensus(output_de,df,annotation_df,jobDir)
-
+    plotDE(df,output_de,annotation_df,jobDir)
 
 ##################################################################
 ####################### NORMALIZATION ############################
@@ -152,7 +152,7 @@ for method in methods:
         normalized[method] = [outdf,normfile]
 
 #Launch the normalization of Rs
-procs = [ Popen(i,shell=True) for i in cmds_r ]
+procs = [ Popen(i,shell=False) for i in cmds_r ]
 for p in procs:
     p.wait()
 
@@ -188,7 +188,7 @@ for subset in itertools.combinations(diffGroups, 2):
 output.close()
 
 ##################################################################
-###################### #INFORMATION GAIN #########################
+####################### INFORMATION GAIN #########################
 ##################################################################
 log.write("4. Information Gain analysis\n")
 status.write("<p>4. Information Gain analysis</p>")
@@ -228,7 +228,7 @@ for method in normalized:
 
 #Launch the Rs from plots
 
-procs = [ Popen(i,shell=True) for i in cmd_plots ]
+procs = [ Popen(i,shell=False) for i in cmd_plots ]
 for p in procs:
     p.wait()
 

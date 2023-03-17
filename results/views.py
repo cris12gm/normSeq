@@ -91,6 +91,7 @@ class Results(TemplateView):
         ##Dif expr
         diffExpr = {}
         consensus = {}
+        topDEPerMethod = {}
         if config['diffExpr'] == 'True':
             try:
                 groupsFile = open(os.path.join(settings.MEDIA_ROOT,jobID,"DE","groups.txt"),'r')
@@ -107,6 +108,7 @@ class Results(TemplateView):
                     group = group.replace("_","-")
                     diffExpr[group]= summaryDE,resultsGroup
                     consensus[group] = consensusM
+                    topDEPerMethod[group] = de_prepareTop(jobID,group)
             except:
                 pass
 
@@ -205,8 +207,10 @@ class Results(TemplateView):
         if heatmap or pca:
             visualization=True
 
+        de_software = ["edgeR","DESeq2","NOISeq","TTest"]
         return render(request, self.template, {"jobID":jobID,"typeJob":typeJob,"visualization":visualization,"heatmapPlots":heatmap,
-        "pcaPlots":pca,"batchEffect":batchEffect,"downloads":downloads,"summary":summary,"de":diffExpr,"de_groups":de_groups,'date':end_date,'consensus':consensus})
+        "pcaPlots":pca,"batchEffect":batchEffect,"downloads":downloads,"summary":summary,"de":diffExpr,"de_groups":de_groups,'date':end_date,
+        'consensus':consensus,'de_software':de_software, 'topDEPerMethod':topDEPerMethod})
 
 
 def queryPlotHTML(request):
@@ -237,6 +241,33 @@ def queryPlotFeature(request):
     return JsonResponse(data)
     # except:
     #     return render(request, templateError)
+
+def de_prepareTop(jobID,group):
+    resultsGroup =  {}
+    #edgeR
+    edgeRFile = os.path.join(settings.MEDIA_ROOT,jobID,"DE","top10_edgeR_"+group+".html")
+    with open(edgeRFile,'r') as file:
+        edgeRPlot = file.read().rstrip()
+    resultsGroup["edgeR"] = edgeRPlot
+    #DESEq2
+    deseqFile = os.path.join(settings.MEDIA_ROOT,jobID,"DE","top10_deseq_"+group+".html")
+    with open(deseqFile,'r') as file:
+        deseqPlot = file.read().rstrip()
+    resultsGroup["DESeq2"] = deseqPlot
+    #NOISeq
+    noiseqFile = os.path.join(settings.MEDIA_ROOT,jobID,"DE","top10_noiseq_"+group+".html")
+    with open(noiseqFile,'r') as file:
+        noiseqPlot = file.read().rstrip()
+    resultsGroup["NOISeq"] = noiseqPlot
+    #T Test
+    ttestFile = os.path.join(settings.MEDIA_ROOT,jobID,"DE","top10_ttest_"+group+".html")
+    with open(ttestFile,'r') as file:
+        ttestPlot = file.read().rstrip()
+    resultsGroup["TTest"] = ttestPlot
+
+    return(resultsGroup)
+
+    
 
 def de_prepare(jobID,group,group1,group2):
     summary = {}

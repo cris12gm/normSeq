@@ -1,13 +1,13 @@
 
 <div class="row">
-    <div class="col-4">
+    <div class="col-3">
       <select id='select_de' class="custom-select">
         {% for element in de_groups %}
         <option value="{{ element }}">{{ element }}</option>
         {% endfor %}
       </select>
     </div>
-    <div class="col-4 float-right">
+    <div class="col-3 float-right">
       <select id='select_de_method' class="custom-select">
         <option value="edgeR">edgeR</option>
         <option value="DESeq2">DESeq2</option>
@@ -15,13 +15,37 @@
         <option value="T Test">T Test</option>
       </select>
     </div>
-    <div class="col-4" id="selectionDE">
+    <div class="col-3" id="selectionDE">
+    </div>
+    <div class="col-3">
+      {% for element,valor in topDEPerMethod.items %}
+        {% for meth,value in valor.items %}
+        <div class="btnTopMethod" id="btnTopMethod_{{element}}_{{meth}}" style="display:none;float:right;">
+          <button type="button" class="btn btn-warning btn-lg modalPlotTopMethod" data-toggle="modal" data-target="#modalTargetTopMethod_{{element}}_{{meth}}">Top {{typeJob}}s</button>
+        </div>
+        <div class="modal fade" id="modalTargetTopMethod_{{element}}_{{meth}}" role="dialog">
+          <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h4 class="modal-title">
+                        Top DEGs {{element}} with {{meth}}
+                      </h4>
+                  </div>
+                  <div class="modal-body">
+                    {{value|safe}}
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
+                  </div>
+              </div>
+          </div>
+        </div>
+        {% endfor %}
+    {% endfor %}
     </div>
   </div>
   <div class="row mr-2 ml-2">
   {% for mykey,myvalue in de.items %}
-  
-
       <div class="table-responsive resultsTable methodDETable" style="display:none;" id="edgeR_{{mykey}}">
         <table class="table table-hover table-sm dataTableEdgeR" width="100%" cellspacing="3">
             <thead>

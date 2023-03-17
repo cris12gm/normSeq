@@ -14,7 +14,7 @@ def processInputInit(infile,samples,minRC):
     df = df.dropna()
     dfF = df[samples]
     minRC = int(minRC)
-    dfF = dfF[dfF>minRC]
+    dfF = dfF[dfF>=minRC]
     dfF=dfF.dropna(axis=0)
 
     return(dfF)
