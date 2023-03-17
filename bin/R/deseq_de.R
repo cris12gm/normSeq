@@ -22,7 +22,7 @@ min_t <- args[4]
 group1 <- args[5]
 group2 <- args[6]
 
-sampleSheet <- read.table(annotation,header=T,sep="\t")
+sampleSheet <- read.table(annotation,header=T,sep="\t",check.names=FALSE)
 groups <- sampleSheet$group
 sampletypevalues <- groups[!duplicated(groups)]  # Getting the group levels
 
