@@ -182,9 +182,10 @@ class QueryElement(TemplateView):
             parameters["batchEffect"] = batchEffect
             parameters['diffExpr'] = request.POST['diffExpr']
             parameters['pval'] = request.POST['pval']
+            parameters['minRC'] = request.POST['minrc']
 
             # Save parameters and Launch
-            
+
             with open(settings.MEDIA_ROOT+jobID+'/config.json', 'w') as fp:
                 json.dump(parameters, fp)
             script = os.path.join(settings.BASE_DIR,"bin","miRNA_bench.py")

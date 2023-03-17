@@ -6,14 +6,30 @@ import subprocess
 from config import R_PATH
 from config import R_SCRIPTS_PATH
 
-def processInput(infile):
+def processInputInit(infile,samples,minRC):
     cabecera = open(infile).readline().split("\t")[0]
     df = pd.read_table(infile)
     df.rename(columns = {cabecera:'name'}, inplace = True)
     df = df.set_index('name')
     df = df.dropna()
+    dfF = df[samples]
+    minRC = int(minRC)
+    dfF = dfF[dfF>minRC]
+    dfF=dfF.dropna(axis=0)
 
-    return(df)
+    return(dfF)
+
+def processInput(infile,minRC):
+    cabecera = open(infile).readline().split("\t")[0]
+    df = pd.read_table(infile)
+    df.rename(columns = {cabecera:'name'}, inplace = True)
+    df = df.set_index('name')
+    dfF = df.dropna()
+    minRC = int(minRC)
+    dfF = dfF[dfF>minRC]
+    dfF=dfF.dropna(axis=0)
+
+    return(dfF)
 
 def processAnnotation(infile):
     cabecera = open(infile).readline().split("\t")[0]
@@ -21,8 +37,8 @@ def processAnnotation(infile):
     df.rename(columns = {cabecera:'sample'}, inplace = True)
     df = df.set_index('sample')
     df.dropna(how='all', axis=1, inplace=True)
-
-    return(df)
+    samples = df.index.tolist()
+    return(df,samples)
 
 def cpm(df,outfile):
 

@@ -25,7 +25,6 @@ def createplots(infile,df,method,jobDir,annotation,annotation_df,cmds):
     outfile = os.path.join(outDir,"heatmap_"+method+".png")
     outfileImage = os.path.join(outDir,"heatmap_"+method+".png")
     cmd_heatmap = heatmap(infile,outfile,annotation)
-
     cmds.append(cmd_heatmap)
 
     return(cmds)
@@ -46,9 +45,9 @@ def pca(df,annotation_df,outfile,outfileImage):
     total_var = pca.explained_variance_ratio_.sum() * 100
 
 
-
-    fig = px.scatter(components, x=0, y=1, color=list(annotation_df.group),
+    fig = px.scatter(components, x=0, y=1, hover_name=list(annotation_df.index), color=list(annotation_df.group),
         title=f'Total Explained Variance: {total_var:.2f}%')
+
     fig.update_layout(
     xaxis_title="PC1 ("+str(round(variance[0],2))+"%)",
     yaxis_title="PC2 ("+str(round(variance[1],2))+"%)",

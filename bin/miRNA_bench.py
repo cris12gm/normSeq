@@ -3,7 +3,7 @@
 import os,sys
 import json
 from plots import createplots
-from miRNAnorm import processInput,norm,norm_r,processAnnotation
+from miRNAnorm import processInput,norm,norm_r,processAnnotation,processInputInit
 from summary import createsummary
 from correctBatch import combat,plotsBatch
 from de import de_R,createGroupFile,ttest,consensus
@@ -25,14 +25,40 @@ errorFile = os.path.join(jobDir,"Error.txt")
 statusFile = os.path.join(jobDir,"status.txt")
 
 log = open(logFile, 'a')
-error = open(errorFile, 'a')
 status = open(statusFile, 'a')
 
+##################################################################
+######################### ANNOTATION #############################
+##################################################################
+
+annotation = os.path.join(jobDir,"annotation.txt")
+try:
+    annotation_df,samples=processAnnotation(annotation)
+    os.system("mv "+annotation+" "+jobDir+"/annotation_old.txt")
+    annotation_df.to_csv(annotation,sep="\t")
+    log.write("1. Annotation processed\n")
+    status.write("<p>1. Input matrix and annotation has been processed</p>")
+    status.flush()
+except:
+    error = open(errorFile, 'a')
+    error.write("<p>There is an error in the annotation file format. Please, check the format guidelines <a href='https://arn.ugr.es/normseq_doc/annotation/'>https://arn.ugr.es/normseq_doc/annotation/>here</a></p>")
+    error.close()
+    sys.exit(0)
+
+##################################################################
+######################### INPUT DATA #############################
+##################################################################
+
 #Get df
-df = processInput(os.path.join(jobDir,"matrix.txt"))
+try:
+    df = processInputInit(os.path.join(jobDir,"matrix.txt"),samples,config['minRC'])
+except:
+    error = open(errorFile, 'a')
+    error.write("<p>Normalized file couldn't be safe. Please, check the format guidelines <a href='https://arn.ugr.es/normseq_doc/annotation/'>https://arn.ugr.es/normseq_doc/annotation/>here</a></p>")
+    error.close()
+    sys.exit(0)
 
 #Create directories
-
 ##Normalized
 if not os.path.exists(os.path.join(jobDir,"normalized")):
     os.mkdir(os.path.join(jobDir,"normalized"))
@@ -44,26 +70,18 @@ df.to_csv(outfile_NN,sep="\t")
 if os.path.isfile(outfile_NN):
     log.write("0. No normalized file saved\n")
 else:
-    error.write("Normalized file couldn't be safe\n")
+    error = open(errorFile, 'a')
+    error.write("<p>Normalized file couldn't be safe. Please, check the format guidelines <a href='https://arn.ugr.es/normseq_doc/annotation/'>https://arn.ugr.es/normseq_doc/annotation/>here</a></p>")
+    error.close()
+    sys.exit(0)
 
 #Define files for the following steps
 infile = os.path.join(jobDir,"normalized","matrix_NN.txt")
 
-annotation = os.path.join(jobDir,"annotation.txt")
-try:
-    annotation_df=processAnnotation(annotation)
-    os.system("mv "+annotation+" "+jobDir+"/annotation_old.txt")
-    annotation_df.to_csv(annotation,sep="\t")
-    log.write("1. Annotation processed\n")
-    status.write("<p>1. Input matrix and annotation has been processed</p>")
-    status.flush()
-except:
-    error.write("There is an error in the annotation file format. Please, check the format guidelines <a href='https://arn.ugr.es/normseq_doc/annotation/'>https://arn.ugr.es/normseq_doc/annotation/>here</a>")
-    status.write("<p>There is an error in the annotation file format. Please, check the format guidelines <a href='https://arn.ugr.es/normseq_doc/annotation/'>https://arn.ugr.es/normseq_doc/annotation/>here</a></p>")
-    status.flush()
-    sys.exit(0)
+##################################################################
+######################## BATCH EFFECT ############################
+##################################################################
 
-#Correct batch effect
 if config['batchEffect'] == 'True':
     batchAnnotation = os.path.join(jobDir,"batchFile.txt")
     outfile = os.path.join(jobDir,"matrix_corrected.txt")
@@ -72,16 +90,20 @@ if config['batchEffect'] == 'True':
     os.rename(infile, oldMatrix)
     os.rename(outfile, infile)
 
-    dfCorrected = processInput(os.path.join(jobDir,"matrix.txt"))
-    dfOld = processInput(os.path.join(jobDir,"matrix_old.txt"))
-
+    try:
+        dfCorrected = processInput(os.path.join(jobDir,"matrix.txt"),config['minRC'])
+        dfOld = processInput(os.path.join(jobDir,"matrix_old.txt"),config['minRC'])
+    except:
+        error = open(errorFile, 'a')
+        error.write("<p>Batch effect correction was not possible, please check the input files. Please, check the format guidelines <a href='https://arn.ugr.es/normseq_doc/annotation/'>https://arn.ugr.es/normseq_doc/annotation/>here</a></p>")
+        error.close()
+        sys.exit(0)
+    
     plotsBatch(dfCorrected,dfOld,annotation,jobDir)
     df = dfCorrected
 
-
-# Make normalization and plots
-methods = config['methods']
-infoGain = {}
+    os.system("rm "+outfile_NN)
+    df.to_csv(outfile_NN,sep="\t")
 
 ##################################################################
 ################## DIFFERENTIAL EXPRESSION #######################
@@ -95,13 +117,17 @@ if config['diffExpr']=="True":
         os.mkdir(os.path.join(jobDir,"DE"))
     combinations = createGroupFile(annotation_df,jobDir)
 
-    output_de = de_R(infile,annotation,combinations,methodDE,FDR,min_t,jobDir,error,log,status)
-    output_de = ttest(df,combinations,annotation_df,FDR,output_de,jobDir,error,log,status)
-    consensus(output_de,jobDir)
+    output_de = de_R(infile,annotation,combinations,methodDE,FDR,min_t,jobDir,log,status)
+    output_de = ttest(df,combinations,annotation_df,FDR,output_de,jobDir,log,status)
+    consensus(output_de,df,annotation_df,jobDir)
+
 
 ##################################################################
 ####################### NORMALIZATION ############################
 ##################################################################
+# Make normalization and plots
+methods = config['methods']
+infoGain = {}
 
 #Methods from R code -> Parallelize with os
 
@@ -126,14 +152,14 @@ for method in methods:
         normalized[method] = [outdf,normfile]
 
 #Launch the normalization of Rs
-procs = [ Popen(i,shell=True) for i in cmds_r ]
+procs = [ Popen(i,shell=False) for i in cmds_r ]
 for p in procs:
     p.wait()
 
 #Create the matrix from the Rs
 for file,method in r_files:
     normfile = file
-    outdf = processInput(normfile)
+    outdf = processInput(normfile,config['minRC'])
     normalized[method] = [outdf,normfile]
 
 ##################################################################
@@ -202,7 +228,7 @@ for method in normalized:
 
 #Launch the Rs from plots
 
-procs = [ Popen(i,shell=True) for i in cmd_plots ]
+procs = [ Popen(i,shell=False) for i in cmd_plots ]
 for p in procs:
     p.wait()
 
@@ -212,7 +238,6 @@ for p in procs:
 
 #Check and create results.txt
 log.close()
-error.close()
 status.close()
 
 resultsFile = os.path.join(jobDir,"results.txt")

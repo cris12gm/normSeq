@@ -54,7 +54,6 @@ class statusJob(TemplateView):
                 jobDB.alterStatus("Finished")
             else:
                 jobDB.alterStatus("Error")
-
         if status=="Created":
             return render(request, self.template, {"jobID":jobID,"status":status,"typeJob":typeJob})
         elif status=="Finished":

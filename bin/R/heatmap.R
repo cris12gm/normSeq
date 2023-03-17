@@ -4,21 +4,21 @@ library(stringr)
 library(RColorBrewer)
 library(ggplot2)
 
-matrix <- read.table(args[1],header=TRUE,sep="\t",check.names=FALSE)
+matrix <- read.table(args[1],header=TRUE,sep="\t",check.names=FALSE,row.names=1)
 
 #Remove empty and 0s
 
 matrix <- na.omit(matrix)
-row.names(matrix) <- matrix$name
-matrix = subset(matrix, select = -c(name) )
+# row.names(matrix) <- matrix$name
+# matrix = subset(matrix, select = -c(name) )
 
 keep <- rowSums(matrix>0) > 0
 df <- matrix[keep, ]
 
-samplesheet <- read.table(args[2],header=T,sep="\t",check.names=FALSE)
-samplesheet$sample <- make.names(samplesheet$sample)
+samplesheet <- read.table(args[2],header=T,sep="\t",check.names=FALSE,row.names=1)
+# samplesheet$sample <- make.names(samplesheet$sample)
 
-row.names(samplesheet) <- samplesheet$sample
+# row.names(samplesheet) <- samplesheet$sample
 samplesheet$Group <- samplesheet$group
 samplesheet$sample <- NULL
 samplesheet$group <- NULL

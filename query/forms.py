@@ -28,7 +28,7 @@ class Query(forms.Form):
     methods = forms.MultipleChoiceField(choices=METHODS,label="Choose one or more normalization methods <a data-toggle='modal' data-target='#Choose_Method' class='btn btn-link'><i class='fa fa-question-circle'></i></a>",required=True,widget=forms.CheckboxSelectMultiple)
     annotation = forms.FileField(label="Annotation:", required=False)
     annotationURL = forms.URLField(label='URL/link to annotation file:', required=False)
-    minrc = forms.IntegerField(label="Minimum RC",validators=[MinValueValidator(0)],initial=0,required=False)
+    minrc = forms.IntegerField(label="Minimum RC",validators=[MinValueValidator(0)],initial=0,required=True)
     
     batchEffect = forms.TypedChoiceField(coerce=lambda x: x =='True', 
                                    choices=((False, 'No'), (True, 'Yes')),label="Apply batch effect correction:")

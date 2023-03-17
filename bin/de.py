@@ -27,7 +27,7 @@ def createGroupFile(annotation_df,jobDir):
     return combinations
 
 
-def de_R(infile,annotation,combinations,method,FDR,min_t,jobDir,error,log,status):
+def de_R(infile,annotation,combinations,method,FDR,min_t,jobDir,log,status):
     commands = []
     for subset in combinations:
         group1 = subset[0]
@@ -56,7 +56,7 @@ def de_R(infile,annotation,combinations,method,FDR,min_t,jobDir,error,log,status
     status.flush()
 
     
-    procs = [ Popen(i,shell=True) for i in commands ]
+    procs = [ Popen(i,shell=False) for i in commands ]
     for p in procs:
         p.wait()
         
@@ -90,21 +90,18 @@ def de_R(infile,annotation,combinations,method,FDR,min_t,jobDir,error,log,status
             log.write("### EdgeR DE analysis finalized\n")
         else:
             log.write("### EdgeR DE analysis finalized with errors\n")
-            error.write("### EdgeR DE analysis finalized with errors\n")
             #status.write("<p>Differential expression analysis with EdgeR finalized with errors</p>")
 
         if not deseq.empty:
             log.write("### DESeq DE analysis finalized\n")
         else:
             log.write("### DESeq DE analysis finalized with errors\n")
-            error.write("### DESeq DE analysis finalized with errors\n")
             #status.write("<p>Differential expression analysis with DESeq finalized with errors</p>")
 
         if not noiseq.empty:
             log.write("### NOISeq DE analysis finalized\n")
         else:
             log.write("### NOISeq DE analysis finalized with errors\n")
-            error.write("### NOISeq DE analysis finalized with errors\n")
             #status.write("<p>Differential expression analysis with NOISeq finalized with errors</p>")
         status.flush()
         output[subset[0]+"-"+subset[1]] = {"edgeR":edgeR,"deseq":deseq,"noiseq":noiseq}
@@ -112,7 +109,7 @@ def de_R(infile,annotation,combinations,method,FDR,min_t,jobDir,error,log,status
 
     return output
 
-def ttest(df,combinations,annotation_df,FDR,output_de,jobDir,error,log,status):
+def ttest(df,combinations,annotation_df,FDR,output_de,jobDir,log,status):
 
     log.write("### T test DE analysis in progress\n")
     for subset in combinations:
@@ -153,15 +150,32 @@ def ttest(df,combinations,annotation_df,FDR,output_de,jobDir,error,log,status):
         log.write("### T test DE analysis finalized\n")
     else:
         log.write("### T test DE analysis finalized with errors\n")
-        error.write("### T test DE analysis finalized with errors\n")
         status.write("<p>Differential expression analysis with T test finalized with errors</p>")
     status.flush()
     return output_de
 
-def consensus(df_output,jobDir):
+def consensus(df_output,df,annotation_df,jobDir):
+
+
     for comparison in df_output:
         sample1 = comparison.split("-")[0]
         sample2 = comparison.split("-")[1]
+
+        #Get expression
+        samplesFilterg1 = annotation_df[annotation_df['group'] == sample1]
+        samplesGroup1 = list(samplesFilterg1.index)
+        mean_g1 = df[samplesGroup1].mean(axis=1).to_frame()
+
+        samplesFilterg2 = annotation_df[annotation_df['group'] == sample2]
+        samplesGroup2 = list(samplesFilterg2.index)
+        mean_g2 = df[samplesGroup2].mean(axis=1).to_frame()
+
+        expression = pd.merge(mean_g1, mean_g2, left_index =True ,right_index=True)
+        expression['log2FC'] = np.where(expression["0_x"]==0,
+                        np.abs(np.log2(expression["0_y"])), 
+                        np.abs(np.log2(expression["0_y"]/expression["0_x"])))
+        expression = expression.round(decimals=2)
+        
         try:
             edgeR = df_output[comparison]["edgeR"].name.tolist()
         except:
@@ -212,15 +226,19 @@ def consensus(df_output,jobDir):
             result.rename(columns = {'PValue':'NOISeq'}, inplace = True)
             result = result[['name','edgeR','DESeq','NOISeq']]
             result = pd.merge(result, ttest, on="name",how="outer", suffixes= ["","_ttest"])
-            result.rename(columns = {'PValue':'T-Test','logFC':'log2FC',}, inplace = True)
-
+            result.rename(columns = {'PValue':'T-Test',}, inplace = True)
+            result = result[['name','edgeR','DESeq','NOISeq','T-Test']]
             result["edgeR"].fillna("Non-DE",inplace=True)
             result["DESeq"].fillna("Non-DE",inplace=True)
             result["NOISeq"].fillna("Non-DE",inplace=True)
             result["T-Test"].fillna("Non-DE",inplace=True)
-            result_filtered = result[['name','edgeR','DESeq','NOISeq','T-Test','log2FC',sample1+"_mean",sample2+"_mean"]]
-            result_filtered = result_filtered.set_index('name')
+            result = result.set_index('name')
+            result_filtered = pd.merge(result, expression, left_index =True,right_index=True)
+            result_filtered.rename(columns = {'0_x':sample1+"_mean",'0_y':sample2+"_mean"}, inplace=True)
+            numMethods = 4 - (result_filtered.isin(['Non-DE']).sum(axis=1)).to_frame()
+            dfConsensus = pd.merge(result_filtered, numMethods, left_index =True,right_index=True)
+            dfConsensus.rename(columns = {0:"Number Methods"}, inplace=True)
             outfile_consensus = os.path.join(jobDir,"DE","consensus_"+sample1+"-"+sample2+".txt") 
-            result_filtered.to_csv(outfile_consensus,sep="\t")
+            dfConsensus.to_csv(outfile_consensus,sep="\t")
         except:
             pass
