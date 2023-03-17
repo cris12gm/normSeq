@@ -227,6 +227,20 @@ def queryPlotHTML(request):
     # except:
     #     return render(request, templateError)
 
+def queryPlotTopDE(request):
+    method = request.GET.get('method')
+    comparison = request.GET.get('comparison')
+    jobID = request.GET.get('jobID')
+    
+
+    url = os.path.join(settings.MEDIA_ROOT,jobID,"DE","top10_"+method+"_"+comparison+".html")
+    with open(url,'r') as file:
+        plot = file.read().rstrip()
+    data = {}
+    data["plot"]=plot
+    return JsonResponse(data)
+
+
 
 def queryPlotFeature(request):
     method = request.GET.get('method', None)
@@ -246,24 +260,16 @@ def de_prepareTop(jobID,group):
     resultsGroup =  {}
     #edgeR
     edgeRFile = os.path.join(settings.MEDIA_ROOT,jobID,"DE","top10_edgeR_"+group+".html")
-    with open(edgeRFile,'r') as file:
-        edgeRPlot = file.read().rstrip()
-    resultsGroup["edgeR"] = edgeRPlot
+    resultsGroup["edgeR"] = edgeRFile
     #DESEq2
     deseqFile = os.path.join(settings.MEDIA_ROOT,jobID,"DE","top10_deseq_"+group+".html")
-    with open(deseqFile,'r') as file:
-        deseqPlot = file.read().rstrip()
-    resultsGroup["DESeq2"] = deseqPlot
+    resultsGroup["DESeq2"] = deseqFile
     #NOISeq
     noiseqFile = os.path.join(settings.MEDIA_ROOT,jobID,"DE","top10_noiseq_"+group+".html")
-    with open(noiseqFile,'r') as file:
-        noiseqPlot = file.read().rstrip()
-    resultsGroup["NOISeq"] = noiseqPlot
+    resultsGroup["NOISeq"] = noiseqFile
     #T Test
     ttestFile = os.path.join(settings.MEDIA_ROOT,jobID,"DE","top10_ttest_"+group+".html")
-    with open(ttestFile,'r') as file:
-        ttestPlot = file.read().rstrip()
-    resultsGroup["TTest"] = ttestPlot
+    resultsGroup["TTest"] = ttestFile
 
     return(resultsGroup)
 

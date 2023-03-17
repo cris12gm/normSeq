@@ -13,6 +13,7 @@
     {% include "modals/results/modal_batch.html" %}
     {% include "modals/results/modal_info.html" %}
     {% include "modals/results/modal_consensus.html" %}
+    {% include "modals/results/modal_topDE.html" %}
 {% endblock %}
 
 {% block content %}
@@ -132,11 +133,6 @@
 
         comparisonInfo = document.getElementById("selectInfo").value;
         newDiv = document.getElementById("infoGain_"+comparisonInfo);
-        newDiv.style.display="block";
-
-        comparisonPlot = document.getElementById("select_de").value;
-        methodPlot = document.getElementById("select_de_method").value;
-        newDiv = document.getElementById("btnTopMethod_"+comparisonPlot+"_"+methodPlot);
         newDiv.style.display="block";
 
     });
@@ -285,6 +281,27 @@
             }
         });
     });
+
+    $('.btnTopMethod').on('click', function (e) {
+        method = document.getElementById("select_de_method").value;
+        comparison = document.getElementById("select_de").value;
+
+        title = "Top DEGs "+comparison+" with "+valor;
+        jobID = this.name;
+        $.ajax({
+             url: '{% url "ajax_plot_topDE" %}',
+             data: {
+                 "method" : method,
+                 "comparison" : comparison,
+                 "jobID":jobID
+             },
+             dataType: 'json',
+            success: function (dataE) {
+                $("#modalContentTopDE").html(dataE.plot);
+                $("#modalTitleTopDE").html(title);
+            }
+        });
+    });
   
 </script> 
 
@@ -397,17 +414,6 @@
             div.style.display = 'none';
         }
         newDiv.style.display="block";
-
-        if (valor=="T Test"){
-            valor="TTest";
-        }
-        var btn = document.getElementById("btnTopMethod_"+comparison+"_"+valor);
-        const allBtns = document.getElementsByClassName('btnTopMethod');
-        for (const thisbtn of allBtns) {
-        // Remove element from DOM
-            thisbtn.style.display = 'none';
-        }
-        btn.style.display="block";
     });
 
     $('#select_de').change(function(){ 
@@ -424,16 +430,6 @@
         }
         newDiv.style.display="block";
 
-        if (valor=="T Test"){
-            valor="TTest";
-        }
-        var btn = document.getElementById("btnTopMethod_"+comparison+"_"+valor);
-        const allBtns = document.getElementsByClassName('btnTopMethod');
-        for (const thisbtn of allBtns) {
-        // Remove element from DOM
-            thisbtn.style.display = 'none';
-        }
-        btn.style.display="block";
     });
 
     $('#select_de_summary').change(function(){ 
