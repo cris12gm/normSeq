@@ -56,7 +56,7 @@ def de_R(infile,annotation,combinations,method,FDR,min_t,jobDir,log,status):
     status.flush()
 
     
-    procs = [ Popen(i,shell=False) for i in commands ]
+    procs = [ Popen(i,shell=True) for i in commands ]
     for p in procs:
         p.wait()
         
