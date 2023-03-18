@@ -253,20 +253,23 @@ def plotDE(df,output_de,annotation_df,jobDir):
             outfile = os.path.join(jobDir,"DE","top10_"+method+"_"+combination+".html") 
             myDf = output_de[combination][method]
             myDf = myDf.set_index("name")
-            top10 = list((myDf.nlargest(10, 'logFC')).index)
-            result_expr = df.loc[top10].T
-            result_expr = pd.merge(result_expr, annotation_df, left_index =True ,right_index=True)
-            fig = go.Figure()
+            try:
+                top10 = list((myDf.nlargest(10, 'logFC')).index)
+                result_expr = df.loc[top10].T
+                result_expr = pd.merge(result_expr, annotation_df, left_index =True ,right_index=True)
+                fig = go.Figure()
 
-            fig = px.box(result_expr,color='group',
-            labels={
-                             "group": "Group",
-                             "value":"Expression",
-                             "variable":""
-                         },)
+                fig = px.box(result_expr,color='group',
+                labels={
+                                "group": "Group",
+                                "value":"Expression",
+                                "variable":""
+                            },)
 
-            
-            plotCode = plot(fig, show_link=False, auto_open=False, output_type = 'div')
-            outfile_W = open(outfile,'a')
-            outfile_W.write(plotCode)
-            outfile_W.close()
+                
+                plotCode = plot(fig, show_link=False, auto_open=False, output_type = 'div')
+                outfile_W = open(outfile,'a')
+                outfile_W.write(plotCode)
+                outfile_W.close()
+            except:
+                pass

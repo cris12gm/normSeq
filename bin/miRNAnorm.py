@@ -25,9 +25,6 @@ def processInput(infile,minRC):
     df.rename(columns = {cabecera:'name'}, inplace = True)
     df = df.set_index('name')
     dfF = df.dropna()
-    minRC = int(minRC)
-    dfF = dfF[dfF>minRC]
-    dfF=dfF.dropna(axis=0)
 
     return(dfF)
 
@@ -59,10 +56,24 @@ def tc(df,outfile):
 
     return normalized
 
-def uq(infile,outfile,jobDir):
+def uq(df,outfile):
     #Execute in R
-    cmd_uq = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"edgeR_normalization.R "+infile+" UQ "+outfile+" >"+jobDir+"/Log.txt"
-    return cmd_uq
+    # Calculate the upper quartile normalization factors
+    # Calculate the upper quartile normalization factors
+    upper_quartile = np.percentile(df, 75, axis=1)
+
+    # Replace any zero normalization factors with median non-zero value
+    med_norm_factor = np.median(upper_quartile[upper_quartile > 0])
+    upper_quartile[upper_quartile == 0] = med_norm_factor
+
+    # Divide the counts by the normalization factors
+    norm_factors = df.divide(upper_quartile, axis=0)
+
+    # Save the normalized counts to a new file
+    normalized = norm_factors.multiply(np.median(upper_quartile))
+    normalized.to_csv(outfile,sep="\t")
+
+    return normalized
 
 def tmm(infile,outfile,jobDir):
     #Execute in R
@@ -115,6 +126,9 @@ def norm(infile,df,method,jobDir):
     elif method == 'Med':
         outfile = os.path.join(outDir,"matrix_Med.txt")
         outdf = med(df,outfile)
+    elif method == 'UQ':
+        outfile = os.path.join(outDir,"matrix_UQ.txt")
+        outdf = uq(df,outfile)
 
     return outdf,outfile
 
@@ -125,10 +139,8 @@ def norm_r(infile,method,jobDir,cmds):
         os.mkdir(outDir)
 
     cmd = ""
-    if method == "UQ":
-        outfile = os.path.join(outDir,"matrix_UQ.txt")
-        cmd = uq(infile,outfile,jobDir)   
-    elif method == "TMM":
+
+    if method == "TMM":
         outfile = os.path.join(outDir,"matrix_TMM.txt")
         cmd = tmm(infile,outfile,jobDir)
     elif method == "RLE":

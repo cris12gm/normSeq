@@ -1,8 +1,17 @@
-import pandas as pd
 import numpy as np
+from sklearn.datasets import load_iris
+from sklearn.feature_selection import mutual_info_classif
+from joblib import Parallel, delayed
+import sys
+import pandas as pd
 import plotly.express as px
 from plotly.offline import plot
-from sklearn.feature_selection import mutual_info_classif
+import multiprocessing as mp
+
+def calc_information_gain(data, target):
+    # Calculate information gain for a single feature using mutual_info_classif
+    infoGain = mutual_info_classif(data.reshape(-1, 1), target)[0]
+    return infoGain
 
 def calculate_infoGain(df,annotation_df,combination):
     group1 = combination[0]
@@ -11,18 +20,17 @@ def calculate_infoGain(df,annotation_df,combination):
     filtered_Annotation = annotation_df[(annotation_df['group'] == group1) | (annotation_df['group'] == group2)]
     selectedSamples = list(filtered_Annotation.index)
     df2 = df[selectedSamples]
-    a = mutual_info_classif(df2.T, np.ravel(filtered_Annotation), discrete_features='auto')
-    info = df2
-    info['infoGain'] = a
-    infoThis = info['infoGain']
-    return infoThis
+
+    merged = (pd.merge(df2.T,filtered_Annotation,left_index=True,right_index=True)).T
+    labels = np.asarray((merged.loc['group']).values)
+    merged = np.asarray(merged.drop("group").T)
+
+    # Calculate information gain for each feature in parallel using joblib
+    results = Parallel(n_jobs=12)(delayed(calc_information_gain)(merged[:, i], labels) for i in range(merged.shape[1]))
+
+    return(results)
 
 def plotInfo(df,outfileImage,outfile,titleThis):
-    x = []
-    y = []
-    for element in df:
-        x.append(element)
-        y.append(df[element])
 
     fig = px.box(df,title=titleThis)
     fig.update_layout(

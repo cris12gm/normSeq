@@ -131,7 +131,7 @@ infoGain = {}
 
 #Methods from R code -> Parallelize with os
 
-methods_r = ["UQ","TMM","RLE","DESEQ","QN","RUV"]
+methods_r = ["TMM","RLE","DESEQ","QN","RUV"]
 cmds_r = []
 r_files = []
 
