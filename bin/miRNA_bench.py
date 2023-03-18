@@ -152,7 +152,7 @@ for method in methods:
         normalized[method] = [outdf,normfile]
 
 #Launch the normalization of Rs
-procs = [ Popen(i,shell=False) for i in cmds_r ]
+procs = [ Popen(i,shell=True) for i in cmds_r ]
 for p in procs:
     p.wait()
 
