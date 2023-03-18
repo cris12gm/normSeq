@@ -11,13 +11,14 @@ matrix <- na.omit(matrix)
 row.names(matrix) <- matrix$name
 matrix = subset(matrix, select = -c(name) )
 
-keep <- rowSums(matrix>0) > 0
+keep <- rowSums(matrix > 1) >= (ncol(matrix)/2)
 df <- matrix[keep, ]
 
 #create DGEList object
 d <- DGEList(counts=df)
 
 method <- args[2]
+
 
 if (method == "UQ") {
     d <- calcNormFactors(d, method="upperquartile")
