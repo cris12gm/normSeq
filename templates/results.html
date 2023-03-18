@@ -130,13 +130,14 @@
         newDiv.style.display="block";
         newButton = document.getElementById("btnConsensus_"+comparison);
         newButton.style.display="block";
-
+    });
+    
+    $(document).ready(function()
+    {
         comparisonInfo = document.getElementById("selectInfo").value;
         newDiv = document.getElementById("infoGain_"+comparisonInfo);
         newDiv.style.display="block";
-
     });
-  
 </script>
 
 <!-- Modal plot Heatmap -->

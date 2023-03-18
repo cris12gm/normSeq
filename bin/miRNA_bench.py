@@ -152,7 +152,7 @@ for method in methods:
         normalized[method] = [outdf,normfile]
 
 #Launch the normalization of Rs
-procs = [ Popen(i,shell=True) for i in cmds_r ]
+procs = [ Popen(i,shell=False) for i in cmds_r ]
 for p in procs:
     p.wait()
 
@@ -179,13 +179,20 @@ if not os.path.exists(summaryDir):
 
 groups = annotation_df["group"].values.tolist()
 diffGroups = list(set(groups))
-combinations = []
 output = open(os.path.join(summaryDir,"groups.txt"),'w')
+for group in diffGroups:
+    output.write(group+"\n")
+output.close()
+
+
+output = open(os.path.join(summaryDir,"combinations.txt"),'w')
+combinations = []
 for subset in itertools.combinations(diffGroups, 2):
     combinations.append([subset[0],subset[1]])
-    element = subset[0]+"-"+subset[1]
-    output.write(element+"\n")
+    output.write(subset[0]+"-"+subset[1]+"\n")
+
 output.close()
+
 
 ##################################################################
 ####################### INFORMATION GAIN #########################
@@ -194,16 +201,21 @@ log.write("4. Information Gain analysis\n")
 status.write("<p>4. Information Gain analysis</p>")
 status.flush()
 
-for combination in combinations:
-    comb = combination[0]+"-"+combination[1]
+for group in groups:
+    #comb = combination[0]+"-"+combination[1]
     information_gain = {}
     for method in methods:
         normdf = normalized[method][0]
-        info = calculate_infoGain(normdf,annotation_df,combination)
+        info = calculate_infoGain(normdf,annotation_df,group,groups)
         information_gain[method] = info
-    outfileImage = os.path.join(jobDir,"graphs","summary","infoGain_"+combination[0]+"-"+combination[1]+".png")
-    outfile = os.path.join(jobDir,"graphs","summary","infoGain_"+combination[0]+"-"+combination[1]+".html")
-    title = combination[0]+"-"+combination[1]
+    infoDf = pd.DataFrame(information_gain)
+    infoDf['name'] = list(normdf.index)
+    infoDf = infoDf.set_index('name')
+    outfileInfo = os.path.join(jobDir,"graphs","summary","infoGain_"+group+".txt")
+    infoDf.to_csv(outfileInfo,sep="\t")
+    outfileImage = os.path.join(jobDir,"graphs","summary","infoGain_"+group+".png")
+    outfile = os.path.join(jobDir,"graphs","summary","infoGain_"+group+".html")
+    title = group
     plotInfo(information_gain,outfileImage,outfile,title)
 
 ##################################################################

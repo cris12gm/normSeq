@@ -67,27 +67,24 @@ class Results(TemplateView):
         i = 0
         j = 0
 
-        FC_groups = []
+        Info_Groups = []
         try:
             groupsFile = open(os.path.join(settings.MEDIA_ROOT,jobID,"graphs","summary","groups.txt"),'r')
             for line in groupsFile:
-                FC_groups.append(line.strip())
+                Info_Groups.append(line.strip())
 
         except:
             pass
 
 
         #InfoGain
-        infoGain = []
-        for group in FC_groups:
+        infoGain = {}
+        for group in Info_Groups:
             info = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".html")
             infoPNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".png")
             infoThis = {}
-            infoThis['HTML'] = info
-            infoThis['PNG'] = infoPNG
-            infoThis['name'] = "Information Gain"
-            infoThis['group'] = group
-            infoGain.append(infoThis)
+            infoGain[group] = {'HTML':info,'PNG':infoPNG,'name':"Information Gain "+group}
+
         ##Dif expr
         diffExpr = {}
         consensus = {}
@@ -159,6 +156,15 @@ class Results(TemplateView):
 
             #Top miRNAS FC
             top10FC[method] = {}
+
+            FC_groups = []
+            try:
+                groupsFile = open(os.path.join(settings.MEDIA_ROOT,jobID,"graphs","summary","combinations.txt"),'r')
+                for line in groupsFile:
+                    FC_groups.append(line.strip())
+            except:
+                pass
+
             if FC_groups:
 
                 top10FC[method]['name'] = METHODS[method]

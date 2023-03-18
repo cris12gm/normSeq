@@ -13,15 +13,24 @@ def calc_information_gain(data, target):
     infoGain = mutual_info_classif(data.reshape(-1, 1), target)[0]
     return infoGain
 
-def calculate_infoGain(df,annotation_df,combination):
-    group1 = combination[0]
-    group2 = combination[1]
+def calculate_infoGain(df,annotation_df,group,groups):
+    #group1 = combination[0]
+    #group2 = combination[1]
 
-    filtered_Annotation = annotation_df[(annotation_df['group'] == group1) | (annotation_df['group'] == group2)]
-    selectedSamples = list(filtered_Annotation.index)
-    df2 = df[selectedSamples]
+    annotation_group = annotation_df[(annotation_df['group'] == group)]
+    samplesGroup = list(annotation_group.index)
+    dfGroup = df[samplesGroup]
+    
+    annotation_other = annotation_df[(annotation_df['group'] != group)]
+    annotation_other = annotation_other.drop('group',axis=1)
+    annotation_other['group']="Other"
+    samplesOther = list(annotation_other.index)
+    dfOther = df[samplesOther]
 
-    merged = (pd.merge(df2.T,filtered_Annotation,left_index=True,right_index=True)).T
+    annotationC = pd.concat([annotation_group,annotation_other])
+    dfC = pd.merge(dfGroup,dfOther,left_index=True,right_index=True)
+
+    merged = (pd.merge(dfC.T,annotationC,left_index=True,right_index=True)).T
     labels = np.asarray((merged.loc['group']).values)
     merged = np.asarray(merged.drop("group").T)
 
@@ -32,6 +41,7 @@ def calculate_infoGain(df,annotation_df,combination):
 
 def plotInfo(df,outfileImage,outfile,titleThis):
 
+    
     fig = px.box(df,title=titleThis)
     fig.update_layout(
     xaxis_title="Method",
