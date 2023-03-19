@@ -152,7 +152,9 @@
 <script type="text/javascript">
      $('#plotFeature').change(function(){ 
         feature = document.getElementById("plotFeature").value;
-        $("#selectedFeature").html(feature);
+        $("#plotThisFeature").html("<img src='{% static 'images/loading.gif' %}'>");
+        $("#selectedFeature").html("");
+        
 
         jobID = this.name;
 
@@ -166,7 +168,8 @@
             },
             dataType: 'json',
             success: function (dataE) {
-                 $("#plotThisFeature").html(dataE.plot);
+                $("#plotThisFeature").html(dataE.plot);
+                $("#selectedFeature").html(feature);
             }
         });
     });

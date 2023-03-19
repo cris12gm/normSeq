@@ -272,34 +272,28 @@ def queryPlotFeature(request):
 
         thisSample = normDf.loc[feature]
         thisSample = pd.merge(thisSample,annotationdf,right_index=True,left_index=True)
-        thisSample['method'] = method
+        thisSample['method'] = METHODS[method]
         toPlot.append(thisSample)
     result = pd.concat(toPlot)
-    
 
- #   print(result)
-#    fig = px.box(result)
     fig = px.box(result, x="group", y=feature, color="group",facet_col="method", facet_col_wrap=4,facet_col_spacing=0.04)
     fig.update_yaxes(matches=None,showticklabels=True)
+    fig.for_each_annotation(lambda a: a.update(text=a.text.split("=")[-1]))
     fig.update_layout(
     width=1400,
     height=500,
+    font=dict(
+        size=16,
+    )
     ),
 
 
     plotCode = plot(fig, show_link=False, auto_open=False, output_type = 'div')
-#        sys.exit(1)
-
-    # url = request.GET.get('url', None).replace(settings.MEDIA_URL,settings.MEDIA_ROOT)
-    # with open(url,'r') as file:
-    #     plot = file.read().rstrip()
 
     data = {}
     data["plot"]=plotCode
 
     return JsonResponse(data)
-    # except:
-    #     return render(request, templateError)
 
 def de_prepareTop(jobID,group):
     resultsGroup =  {}
