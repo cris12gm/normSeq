@@ -43,7 +43,11 @@ def plotInfo(df,outfileImage,outfile,titleThis,title):
     fig = px.box(df,title=titleThis,notched=True)
     fig.update_layout(
     xaxis_title="Method",
-    yaxis_title=title,yaxis_range=[0,1])
+    yaxis_title=title,yaxis_range=[0,1],
+    font=dict(
+        family="Courier New, monospace",
+        size=18
+    ))
     
     fig.write_image(outfileImage)
 
