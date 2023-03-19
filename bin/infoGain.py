@@ -11,25 +11,22 @@ import multiprocessing as mp
 def calc_information_gain(data, target):
     # Calculate information gain for a single feature using mutual_info_classif
     infoGain = mutual_info_classif(data.reshape(-1, 1), target)[0]
+    print(data.reshape(-1, 1),target)
     return infoGain
 
 def calculate_infoGain(df,annotation_df,group,groups):
-    #group1 = combination[0]
-    #group2 = combination[1]
 
     annotation_group = annotation_df[(annotation_df['group'] == group)]
     samplesGroup = list(annotation_group.index)
     dfGroup = df[samplesGroup]
-    
+  
     annotation_other = annotation_df[(annotation_df['group'] != group)]
     annotation_other = annotation_other.drop('group',axis=1)
     annotation_other['group']="Other"
     samplesOther = list(annotation_other.index)
     dfOther = df[samplesOther]
-
     annotationC = pd.concat([annotation_group,annotation_other])
     dfC = pd.merge(dfGroup,dfOther,left_index=True,right_index=True)
-
     merged = (pd.merge(dfC.T,annotationC,left_index=True,right_index=True)).T
     labels = np.asarray((merged.loc['group']).values)
     merged = np.asarray(merged.drop("group").T)
