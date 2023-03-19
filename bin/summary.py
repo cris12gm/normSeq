@@ -76,7 +76,10 @@ def distribution(df,annotation_df,outfile,outfileImage,title):
         group_labels.append(col)
     fig = ff.create_distplot(hist_data,group_labels,show_hist=False,show_rug=False)
     fig.update_layout(title_text=title,xaxis_title="Log10(Expression)",
-    yaxis_title="Density")
+    yaxis_title="Density",
+    font=dict(
+        size=18
+    ))
     fig.write_image(outfileImage,scale=3,height=400)
     
     plotCode = plot(fig, show_link=False, auto_open=False, output_type = 'div')
@@ -101,6 +104,11 @@ def top10(df,outfile,outfileImage,title,annotation):
                      "value":"Expression",
                      "variable":""
                  },)
+    
+    fig.update_layout(
+    font=dict(
+        size=18
+    ))
 
     fig.write_image(outfileImage,scale=3,height=400)
     
@@ -151,6 +159,11 @@ def top10fc(df,outDir,combinations,method,title,annotation_df):
                         "value":"Expression",
                         "variable":""
                     },)
+        fig.update_layout(
+        font=dict(
+            size=18
+        ))
+
 
         fig.write_image(outfileImage,scale=3,height=400)
         

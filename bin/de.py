@@ -266,7 +266,11 @@ def plotDE(df,output_de,annotation_df,jobDir):
                                 "variable":""
                             },)
 
-                
+                fig.update_layout(
+                font=dict(
+                    size=16
+                ))
+
                 plotCode = plot(fig, show_link=False, auto_open=False, output_type = 'div')
                 outfile_W = open(outfile,'a')
                 outfile_W.write(plotCode)
