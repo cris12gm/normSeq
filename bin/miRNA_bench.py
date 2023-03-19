@@ -152,7 +152,7 @@ for method in methods:
         normalized[method] = [outdf,normfile]
 
 #Launch the normalization of Rs
-procs = [ Popen(i,shell=False) for i in cmds_r ]
+procs = [ Popen(i,shell=True) for i in cmds_r ]
 for p in procs:
     p.wait()
 
@@ -218,7 +218,6 @@ for group in diffGroups:
     title = group
     plotInfo(information_gain,outfileImage,outfile,title)
 
-sys.exit(1)
 ##################################################################
 ####################### SUMMARY + PLOTS ##########################
 ##################################################################
@@ -241,7 +240,7 @@ for method in normalized:
 
 #Launch the Rs from plots
 
-procs = [ Popen(i,shell=False) for i in cmd_plots ]
+procs = [ Popen(i,shell=True) for i in cmd_plots ]
 for p in procs:
     p.wait()
 
