@@ -11,7 +11,6 @@ import multiprocessing as mp
 def calc_information_gain(data, target):
     # Calculate information gain for a single feature using mutual_info_classif
     infoGain = mutual_info_classif(data.reshape(-1, 1), target)[0]
-    print(data.reshape(-1, 1),target)
     return infoGain
 
 def calculate_infoGain(df,annotation_df,group,groups):
