@@ -10,10 +10,10 @@ import multiprocessing as mp
 
 def calc_information_gain(data, target):
     # Calculate information gain for a single feature using mutual_info_classif
-    infoGain = mutual_info_classif(data.reshape(-1, 1), target)[0]
+    infoGain = mutual_info_classif(data.reshape(-1, 1), target,discrete_features=False,random_state=1,n_neighbors=2)[0]
     return infoGain
 
-def calculate_infoGain(df,annotation_df,group,groups):
+def calculate_infoGain(df,annotation_df,group):
 
     annotation_group = annotation_df[(annotation_df['group'] == group)]
     samplesGroup = list(annotation_group.index)
@@ -32,7 +32,7 @@ def calculate_infoGain(df,annotation_df,group,groups):
 
     # Calculate information gain for each feature in parallel using joblib
     results = Parallel(n_jobs=12)(delayed(calc_information_gain)(merged[:, i], labels) for i in range(merged.shape[1]))
-
+    
     return(results)
 
 def plotInfo(df,outfileImage,outfile,titleThis):

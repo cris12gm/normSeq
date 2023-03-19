@@ -206,7 +206,7 @@ for group in diffGroups:
     information_gain = {}
     for method in methods:
         normdf = normalized[method][0]
-        info = calculate_infoGain(normdf,annotation_df,group,groups)
+        info = calculate_infoGain(normdf,annotation_df,group)
         information_gain[method] = info
     infoDf = pd.DataFrame(information_gain)
     infoDf['name'] = list(normdf.index)
