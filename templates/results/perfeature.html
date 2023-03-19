@@ -1,1 +1,20 @@
-Something
+<div class="row">
+    <div class="col-3">
+        <label for="plotFeature">Select {{typeJob}}:</label>
+        <select id="plotFeature" class="selectpicker" name={{jobID}} data-live-search="true" data-width="fit">
+            <option data-hidden="true"></option>
+            {% for feature in features %}
+                <option data-tokens="{{feature}}">{{feature}}</option>
+            {% endfor %}
+          </select>
+    </div>
+            
+</div>
+<div class="row d-flex justify-content-center">
+    <h4 id="selectedFeature"></h4>
+</div>
+
+<div class="row d-flex justify-content-center">
+    <div id="plotThisFeature"></div>
+</div>
+

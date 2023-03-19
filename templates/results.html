@@ -140,6 +140,39 @@
     });
 </script>
 
+<!-- Init select -->
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#plotFeature').selectpicker({
+        });
+
+    });
+</script>
+
+<script type="text/javascript">
+     $('#plotFeature').change(function(){ 
+        feature = document.getElementById("plotFeature").value;
+        $("#selectedFeature").html(feature);
+
+        jobID = this.name;
+
+        var OBJ = [];
+
+        $.ajax({
+            url: '{% url "ajax_feature" %}',
+            data: {
+                "feature" : feature,
+                "jobID":jobID,
+            },
+            dataType: 'json',
+            success: function (dataE) {
+                 $("#plotThisFeature").html(dataE.plot);
+            }
+        });
+    });
+  
+</script>
+
 <!-- Modal plot Heatmap -->
 <script>
     $('.modalHeatmapPlot').on('click', function (e) {

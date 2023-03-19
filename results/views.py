@@ -8,10 +8,12 @@ from django.views.generic import FormView, DetailView, TemplateView
 
 from django.http import JsonResponse
 
-import os
+import os,sys
 import pandas as pd
 import json
 import datetime
+import plotly.express as px
+from plotly.offline import plot
 
 METHODS = {
         'NN' :' No normalization',
@@ -84,6 +86,11 @@ class Results(TemplateView):
             infoPNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".png")
             infoThis = {}
             infoGain[group] = {'HTML':info,'PNG':infoPNG,'name':"Information Gain "+group}
+
+        ## Features
+        no_normalized = os.path.join(settings.MEDIA_ROOT,jobID,"normalized","matrix_NN.txt")
+        features = (pd.read_table(no_normalized)['name']).tolist()
+
 
         ##Dif expr
         diffExpr = {}
@@ -216,7 +223,7 @@ class Results(TemplateView):
         de_software = ["edgeR","DESeq2","NOISeq","TTest"]
         return render(request, self.template, {"jobID":jobID,"typeJob":typeJob,"visualization":visualization,"heatmapPlots":heatmap,
         "pcaPlots":pca,"batchEffect":batchEffect,"downloads":downloads,"summary":summary,"de":diffExpr,"de_groups":de_groups,'date':end_date,
-        'consensus':consensus,'de_software':de_software, 'topDEPerMethod':topDEPerMethod})
+        'consensus':consensus,'de_software':de_software, 'topDEPerMethod':topDEPerMethod,'features':features})
 
 
 def queryPlotHTML(request):
@@ -249,14 +256,46 @@ def queryPlotTopDE(request):
 
 
 def queryPlotFeature(request):
-    method = request.GET.get('method', None)
-    print(method)
+    feature = request.GET.get('feature', None)
+    jobID = request.GET.get('jobID', None)
+    configFile = open(settings.MEDIA_ROOT+jobID+'/config.json')
+    config = json.load(configFile)
+
+    methods = config['methods']
+    
+    annotationdf = pd.read_table(os.path.join(settings.MEDIA_ROOT,jobID,"annotation.txt"))
+    annotationdf = annotationdf.set_index('sample')
+    toPlot = []
+    for method in methods:
+        normDf = pd.read_table(os.path.join(settings.MEDIA_ROOT,jobID,"normalized","matrix_"+method+".txt"))
+        normDf = normDf.set_index('name')
+
+        thisSample = normDf.loc[feature]
+        thisSample = pd.merge(thisSample,annotationdf,right_index=True,left_index=True)
+        thisSample['method'] = method
+        toPlot.append(thisSample)
+    result = pd.concat(toPlot)
+    
+
+ #   print(result)
+#    fig = px.box(result)
+    fig = px.box(result, x="group", y=feature, color="group",facet_col="method", facet_col_wrap=4,facet_col_spacing=0.04)
+    fig.update_yaxes(matches=None,showticklabels=True)
+    fig.update_layout(
+    width=1400,
+    height=500,
+    ),
+
+
+    plotCode = plot(fig, show_link=False, auto_open=False, output_type = 'div')
+#        sys.exit(1)
+
     # url = request.GET.get('url', None).replace(settings.MEDIA_URL,settings.MEDIA_ROOT)
     # with open(url,'r') as file:
     #     plot = file.read().rstrip()
 
     data = {}
-    # data["plot"]=plot
+    data["plot"]=plotCode
 
     return JsonResponse(data)
     # except:

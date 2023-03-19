@@ -5,9 +5,11 @@
     <li class="nav-item" role="presentation">
       <button class="nav-link tabs-plots border-0 btn-lg" id="pills-pca-tab" data-toggle="pill" data-target="#pills-pca" type="button" role="tab" aria-controls="pills-pca" aria-selected="false">PCA</button>
     </li>
+    {% if features %}
     <li class="nav-item" role="presentation">
       <button class="nav-link tabs-plots border-0 btn-lg" id="pills-feature-tab" data-toggle="pill" data-target="#pills-feature" type="button" role="tab" aria-controls="pills-feature" aria-selected="false">Expression per {{typeJob}}</button>
     </li>
+    {% endif %}
 </ul>
 
   <div class="tab-content" id="pills-tabContent">
@@ -18,7 +20,9 @@
     <div class="tab-pane fade" id="pills-pca" role="tabpanel" aria-labelledby="pills-pca-tab">
       {% include "results/pca.html" %}
     </div>
+    {% if features %}
     <div class="tab-pane fade" id="pills-feature" role="tabpanel" aria-labelledby="pills-feature-tab">
       {% include "results/perfeature.html" %}
     </div>
+    {% endif %}
   </div>
