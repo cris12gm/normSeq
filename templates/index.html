@@ -6,18 +6,38 @@
 
 {% block content %}
     <div class="menu-hide" id="menu-hide">
-        <div class="row">
-            <div class="col-lg-12">
-                <img id="titleIndex" src="{% static 'images/graphicalAbstract.png'%}"> 
-            </div>
+        <div class="d-flex justify-content-center mt-3 mb-3">
+            <img width="60%" src="{% static 'images/titleBig.png'%}">
         </div>
-        <div class = "row">
-            <div class= "col-12">
-                <div class="buttonIndex">
-                    <a href="{% url 'query' %}" ><button id="buttonQuery" class="btn btn-warning btn-lg " onclick="ShowLoading()">Try it!</button></a>
+        <div class="row mt-3">
+            <div class="col-6">
+                <div class="ml-3 mr-3 mt-3">
+                    <h5>NormSeq is a freely accessible web-server for data normalization, batch-effect correction and differential expression analysis of RNA-seq data.
+                        <br>
+                        The platform offers eight normalization methods and comparison between them, together with multiple visualization options and downloadable outputs.
+                    </h5>
+                    <div class="row mt-3">
+                        <div class="col-2"></div>
+                        <div class="col-4">
+                            <div class="buttonIndex">
+                                <a href="{% url 'query' %}" ><button id="buttonQuery" class="btn btn-warning btn-lg " onclick="ShowLoading()">Try it!</button></a>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="buttonIndex">
+                                <a href="https://arn.ugr.es/normseq_doc/quick/" ><button id="buttonTutorial" class="btn btn-success btn-lg " onclick="ShowLoading()">Quick Start Tutorial</button></a>
+                            </div>
+                        </div>
+                        <div class="col-2"></div>
+                    </div>
                 </div>
             </div>
+            <div class="col-6">
+                <img width="100%" src="{% static 'images/graphicalAbstract_notitle.png'%}"> 
+            </div>
         </div>
+        <br>
+        
         <div class="alert text-center cookiealert" role="alert">
             This website is free and open to all users and there is no login requirement. This site does not use cookies to track your behaviour or keep any personal data.
         
