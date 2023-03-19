@@ -284,7 +284,8 @@ def queryPlotFeature(request):
     height=500,
     font=dict(
         size=16,
-    )
+    ),
+    xaxis_title=None
     ),
 
 
