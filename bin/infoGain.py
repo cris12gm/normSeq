@@ -40,7 +40,7 @@ def calculate_infoGain(df,annotation_df,group):
 def plotInfo(df,outfileImage,outfile,titleThis):
 
     
-    fig = px.violin(df,title=titleThis)
+    fig = px.box(df,title=titleThis,notched=True)
     fig.update_layout(
     xaxis_title="Method",
     yaxis_title="Information Gain per miRNA")
