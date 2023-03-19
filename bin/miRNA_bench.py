@@ -216,7 +216,8 @@ for group in diffGroups:
     outfileImage = os.path.join(jobDir,"graphs","summary","infoGain_"+group+".png")
     outfile = os.path.join(jobDir,"graphs","summary","infoGain_"+group+".html")
     title = group
-    plotInfo(information_gain,outfileImage,outfile,title)
+    titleaxis = "Information Gain per "+config["typeJob"]
+    plotInfo(information_gain,outfileImage,outfile,title,titleaxis)
 
 ##################################################################
 ####################### SUMMARY + PLOTS ##########################
