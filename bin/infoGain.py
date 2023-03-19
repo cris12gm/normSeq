@@ -10,7 +10,7 @@ import multiprocessing as mp
 
 def calc_information_gain(data, target):
     # Calculate information gain for a single feature using mutual_info_classif
-    infoGain = mutual_info_classif(data.reshape(-1, 1), target,discrete_features=False,random_state=1,n_neighbors=2)[0]
+    infoGain = mutual_info_classif(data.reshape(-1, 1), target,discrete_features=False,random_state=1,n_neighbors=3)[0]
     if infoGain>1:
         infoGain = 1
     return infoGain
