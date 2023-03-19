@@ -45,7 +45,6 @@ def plotInfo(df,outfileImage,outfile,titleThis,title):
     xaxis_title="Method",
     yaxis_title=title,yaxis_range=[0,1],
     font=dict(
-        family="Courier New, monospace",
         size=18
     ))
     
