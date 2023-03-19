@@ -14,6 +14,7 @@ import json
 import datetime
 import plotly.express as px
 from plotly.offline import plot
+import plotly.graph_objects as go
 
 METHODS = {
         'NN' :' No normalization',
@@ -284,9 +285,11 @@ def queryPlotFeature(request):
     height=500,
     font=dict(
         size=16,
-    ),
-    xaxis_title=None
-    ),
+    )
+    )
+    for axis in fig.layout:
+        if type(fig.layout[axis]) == go.layout.XAxis:
+            fig.layout[axis].title.text = ''
 
 
     plotCode = plot(fig, show_link=False, auto_open=False, output_type = 'div')
