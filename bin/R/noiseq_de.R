@@ -13,7 +13,7 @@ row.names(matrix) <- matrix$name
 matrix = subset(matrix, select = -c(name) )
 
 keep <- rowSums(matrix > 0) >= (ncol(matrix)/2)
-df<-matrix[keep, ]
+matfile<-matrix[keep, ]
 
 method <- args[2]
 annotation <- args[3]
