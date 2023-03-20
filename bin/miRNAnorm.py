@@ -6,10 +6,14 @@ import subprocess
 from config import R_PATH
 from config import R_SCRIPTS_PATH
 
+
 def processInputInit(infile,samples,minRC):
     cabecera = open(infile).readline().split("\t")[0]
     df = pd.read_table(infile)
-    df.rename(columns = {cabecera:'name'}, inplace = True)
+    if cabecera!="":
+        df.rename(columns = {cabecera:'name'}, inplace = True)
+    else:
+        df.rename(columns = {list(df)[0]:'name'}, inplace=True)
     df = df.set_index('name')
     df = df.dropna()
     dfF = df[samples]
@@ -19,10 +23,14 @@ def processInputInit(infile,samples,minRC):
 
     return(dfF)
 
+
 def processInput(infile,minRC):
     cabecera = open(infile).readline().split("\t")[0]
     df = pd.read_table(infile)
-    df.rename(columns = {cabecera:'name'}, inplace = True)
+    if cabecera!="":
+        df.rename(columns = {cabecera:'name'}, inplace = True)
+    else:
+        df.rename(columns = {list(df)[0]:'name'}, inplace=True)
     df = df.set_index('name')
     dfF = df.dropna()
 
