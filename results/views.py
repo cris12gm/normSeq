@@ -104,7 +104,7 @@ class Results(TemplateView):
 
         ## Features
         no_normalized = os.path.join(settings.MEDIA_ROOT,jobID,"normalized","matrix_NN.txt")
-        features = (pd.read_table(no_normalized)['name']).tolist()
+        features = (pd.read_table(no_normalized)['name']).tolist().sort()
 
 
         ##Dif expr

@@ -35,6 +35,8 @@
                             <button type="button" value="feature" name="Other" class="btn btn-info">Other</button>
                         </div>
                         {% include 'query/exampletRNA.html' %}
+                        {% include 'query/examplemiRNA.html' %}
+                        <h5 id="ExampleLoaded" class="mt-2" style="color:#041C34;"></h5>
                     </div>
                     <h3 id="selectedRNA">
                     </h3>
@@ -62,6 +64,34 @@
                     
                     thisBtn.addClass('active').siblings().removeClass('active');
                     var btnValue = thisBtn.val();
+                    alert(btnValue);
+                    if (btnValue=='tRNA'){
+                        document.querySelectorAll('.exampletRNA').forEach(function(el) {
+                            el.style.display = 'block';
+                            });
+                        document.querySelectorAll('.examplemiRNA').forEach(function(el) {
+                            el.style.display = 'none';
+                            });
+                    }
+                    else if (btnValue=='miRNA'){
+                        document.querySelectorAll('.exampletRNA').forEach(function(el) {
+                            el.style.display = 'none';
+                            });
+                        document.querySelectorAll('.examplemiRNA').forEach(function(el) {
+                            el.style.display = 'block';
+                            });
+
+                    }
+                    else{
+                        document.querySelectorAll('.exampletRNA').forEach(function(el) {
+                            el.style.display = 'none';
+                            });
+                        document.querySelectorAll('.examplemiRNA').forEach(function(el) {
+                            el.style.display = 'none';
+                            });
+
+                    }
+
                     
                     if (btnValue=="feature") {
                         var name = "Other"
@@ -74,7 +104,7 @@
                     document.getElementById("id_typeJob").value = btnValue;
 
                 }); 
-                $('#aBtnGroup button[value="miRNA"]').click();
+                $('#aBtnGroup button[value="tRNA"]').click();
     });
     
 </script>
@@ -92,7 +122,23 @@
 
 <!-- Load example data -->
 <script type="text/javascript">
-     $('#loadEx').on('click', function(){
+    $('#loadExTRNA').on('click', function(){
+        $('#aBtnGroup button[value="tRNA"]').click();
+        $('#id_url').val("https://arn.ugr.es/normSeq/static/testFiles/exampleMatrix.txt");
+        $('[href="#url"]').tab('show');
+        $('#id_annotationURL').val("http://arn.ugr.es/normSeq/static/testFiles/templateExample.txt");
+        $('[href="#annotation_url"]').tab('show');
+        var ele=document.getElementsByName('methods');  
+                for(var i=0; i<ele.length; i++){  
+                    if(ele[i].type=='checkbox' && ele[i].value=='NN' | ele[i].value=='CPM' | ele[i].value=='QN'){
+                        ele[i].checked=true;
+                    }
+                    
+                }     
+        document.getElementById("ExampleLoaded").innerHTML = "Example data was loaded";
+
+   });
+   $('#loadExMIRNA').on('click', function(){
         $('#aBtnGroup button[value="miRNA"]').click();
         $('#id_url').val("https://arn.ugr.es/normSeq/static/testFiles/exampleMatrix.txt");
         $('[href="#url"]').tab('show');
@@ -108,6 +154,7 @@
         document.getElementById("ExampleLoaded").innerHTML = "Example data was loaded";
 
    });
+   
 </script>
 
 <script>
