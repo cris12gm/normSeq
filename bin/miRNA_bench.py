@@ -7,7 +7,7 @@ from miRNAnorm import processInput,norm,norm_r,processAnnotation,processInputIni
 from summary import createsummary
 from correctBatch import combat,plotsBatch
 from de import de_R,createGroupFile,ttest,consensus,plotDE
-from infoGain import calculate_infoGain_group,calculate_infoGain_pairwise,plotInfo,top10Info
+from infoGain import calculate_infoGain_group,calculate_infoGain_pairwise,plotInfo
 import pandas as pd
 import itertools
 
