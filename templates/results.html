@@ -149,6 +149,66 @@
     });
 </script>
 
+<!-- Init select -->
+<script type="text/javascript">
+     $('#selectMethodInfo').change(function(){ 
+        var selected = this.value;
+
+
+        if (selected=='pairwise'){
+            const boxes = document.querySelectorAll('.group');
+            var i = 0
+            boxes.forEach(
+                box => {
+                    box.style.display = 'none';
+                });
+            const boxes_2 = document.querySelectorAll('.pairwise');
+            boxes_2.forEach(
+                box => {
+                    box.style.display = 'block';
+                    if (i ==0){
+                        box.selected = 'true';
+                        i = 1
+                        valor = box.value;
+                        newDiv = document.getElementById("infoGain_"+valor);
+                        const allDivs = document.getElementsByClassName('infoPlot');
+                        for (const div of allDivs) {
+                        // 👇️ Remove element from DOM
+                            div.style.display = 'none';
+                        }
+                        newDiv.style.display="block";
+                    }
+                });
+        }
+        if (selected=='group'){
+            const boxes = document.querySelectorAll('.pairwise');
+            var i = 0
+            boxes.forEach(
+                box => {
+                    box.style.display = 'none';
+                });
+            const boxes_2 = document.querySelectorAll('.group');
+            boxes_2.forEach(
+                box => {
+                    box.style.display = 'block';
+                    if (i ==0){
+                        box.selected = 'true';
+                        i = 1
+                        valor = box.value;
+                        newDiv = document.getElementById("infoGain_"+valor);
+                        const allDivs = document.getElementsByClassName('infoPlot');
+                        for (const div of allDivs) {
+                        // 👇️ Remove element from DOM
+                            div.style.display = 'none';
+                        }
+                        newDiv.style.display="block";
+                    }
+                });
+        }
+
+    });
+</script>
+
 <script type="text/javascript">
      $('#plotFeature').change(function(){ 
         feature = document.getElementById("plotFeature").value;

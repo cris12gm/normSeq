@@ -3,7 +3,7 @@
         <div class="card cardBatch" style="width: 100%; ">
             <h5 class="card-header d-flex justify-content-center"> Before Batch Effect Correction</h5>
             <div class="card-body">
-                <a title="Before Batch Effect Correction" name="{{ batchEffect.before }}" class="modalPlotBatch" data-toggle="modal" data-target="#modalTargetBatch" onmouseover="this.style.cursor='pointer'">
+                <a title="Before Batch Effect Correction" name="{{ batchEffect.before }}" class="modalPlotBatch" data-toggle="modal" data-target="#modalTargetBatch" onmouseover="this.style.cursor='pointer';this.style.border = '1px solid #041C34';" onmouseout="this.style.border = '0px solid'">
                     <img class="img-fluid" src="{{ batchEffect.beforePNG }}">
                 </a>
             </div>
@@ -13,7 +13,7 @@
         <div class="card cardBatch" style="width: 100%; ">
             <h5 class="card-header d-flex justify-content-center"> After Batch Effect Correction</h5>
             <div class="card-body">
-                <a title="After Batch Effect Correction" name="{{ batchEffect.after }}" class="modalPlotBatch" data-toggle="modal" data-target="#modalTargetBatch" onmouseover="this.style.cursor='pointer'">
+                <a title="After Batch Effect Correction" name="{{ batchEffect.after }}" class="modalPlotBatch" data-toggle="modal" data-target="#modalTargetBatch" onmouseover="this.style.cursor='pointer';this.style.border = '1px solid #041C34';" onmouseout="this.style.border = '0px solid'">
                     <img class="img-fluid" src="{{ batchEffect.afterPNG }}">
                 </a>
             </div>

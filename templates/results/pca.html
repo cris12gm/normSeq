@@ -2,7 +2,7 @@
     {% for pca in pcaPlots %}
         <div class="card cardPca" style="width: 100%; ">
             <h5 class="card-header d-flex justify-content-center">{{ pca.3 }}</h5>
-            <a title="{{ pca.3 }}" name="{{ pca.1 }}" class="modalPlotPCA" data-toggle="modal" data-target="#modalTargetPCA" onmouseover="this.style.cursor='pointer'">
+            <a title="{{ pca.3 }}" name="{{ pca.1 }}" class="modalPlotPCA" data-toggle="modal" data-target="#modalTargetPCA" onmouseover="this.style.cursor='pointer';this.style.border = '1px solid #041C34';" onmouseout="this.style.border = '0px solid'">
                 <div class="d-flex ml-1 mr-1">
                     <img class="img-fluid" src="{{ pca.0 }}">
                 </div>

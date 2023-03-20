@@ -7,6 +7,7 @@ import pandas as pd
 import plotly.express as px
 from plotly.offline import plot
 import multiprocessing as mp
+import plotly.graph_objects as go
 
 def calc_information_gain(data, target):
     # Calculate information gain for a single feature using mutual_info_classif
@@ -15,7 +16,7 @@ def calc_information_gain(data, target):
         infoGain = 1
     return infoGain
 
-def calculate_infoGain(df,annotation_df,group):
+def calculate_infoGain_group(df,annotation_df,group):
 
     annotation_group = annotation_df[(annotation_df['group'] == group)]
     samplesGroup = list(annotation_group.index)
@@ -37,13 +38,33 @@ def calculate_infoGain(df,annotation_df,group):
 
     return(results)
 
+
+def calculate_infoGain_pairwise(df,annotation_df,combination):
+
+    group1 = combination[0]
+    group2 = combination[1]
+
+    filtered_Annotation = annotation_df[(annotation_df['group'] == group1) | (annotation_df['group'] == group2)]
+    selectedSamples = list(filtered_Annotation.index)
+    df2 = df[selectedSamples]
+
+    merged = (pd.merge(df2.T,filtered_Annotation,left_index=True,right_index=True)).T
+    labels = np.asarray((merged.loc['group']).values)
+    merged = np.asarray(merged.drop("group").T)
+
+    # Calculate information gain for each feature in parallel using joblib
+    results = Parallel(n_jobs=12)(delayed(calc_information_gain)(merged[:, i], labels) for i in range(merged.shape[1]))
+
+    return(results)
+
+
 def plotInfo(df,outfileImage,outfile,titleThis,title):
 
     
     fig = px.box(df,title=titleThis,notched=True)
     fig.update_layout(
     xaxis_title="Method",
-    yaxis_title=title,yaxis_range=[0,1],
+    yaxis_title=title,
     font=dict(
         size=16
     ))
@@ -54,3 +75,42 @@ def plotInfo(df,outfileImage,outfile,titleThis,title):
     outfile_W = open(outfile,'a')
     outfile_W.write(plotCode)
     outfile_W.close()
+
+# def top10Info(infoDf,normalized,methods,annotation_df,outfileImage,outfile):
+#     thisDf = infoDf
+
+#     thisDf["max"] = thisDf.max(axis=1)
+#     thisDf["min"] = thisDf.min(axis=1)
+#     thisDf["diff"] = thisDf["max"] - thisDf["min"]
+#     top10 = list((thisDf.sort_values('diff').head(10)).index)
+
+#     exprPlot = []
+#     for method in methods:
+#         normDf = normalized[method][0]
+#         result = normDf.loc[top10].T
+#         result = (pd.merge(result,annotation_df,left_index=True,right_index=True))
+#         result = result.set_index('group')
+#         result = pd.melt(result)
+#         result["method"] = method
+#         exprPlot.append(result)
+#     expression = pd.concat(exprPlot)
+
+#     print(expression)
+#     fig = go.Figure()
+#     fig = px.box(expression,color='variable')
+#     # labels={
+#     #                  "group": "Group",
+#     #                  "value":"Expression",
+#     #                  "variable":""
+#     #              },)
+    
+#     fig.show()
+
+
+#     # sys.exit(1)
+#     # fig.write_image(outfileImage,scale=3,height=400)
+    
+#     # plotCode = plot(fig, show_link=False, auto_open=False, output_type = 'div')
+#     # outfile_W = open(outfile,'a')
+#     # outfile_W.write(plotCode)
+#     # outfile_W.close()

@@ -79,14 +79,28 @@ class Results(TemplateView):
         except:
             pass
 
+        FC_groups = []
+        try:
+            groupsFile = open(os.path.join(settings.MEDIA_ROOT,jobID,"graphs","summary","combinations.txt"),'r')
+            for line in groupsFile:
+                FC_groups.append(line.strip())
+        except:
+            pass
 
-        #InfoGain
+
+        #InfoGain per group
         infoGain = {}
         for group in Info_Groups:
             info = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".html")
             infoPNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".png")
-            infoThis = {}
-            infoGain[group] = {'HTML':info,'PNG':infoPNG,'name':"Information Gain "+group}
+            infoGain[group] = {'HTML':info,'PNG':infoPNG,'name':"Information Gain "}
+
+        infoGainPairwise = {}
+        for group in FC_groups:
+            info = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".html")
+            infoPNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".png")
+            infoGainPairwise[group] = {'HTML':info,'PNG':infoPNG,'name':"Information Gain "}
+        
 
         ## Features
         no_normalized = os.path.join(settings.MEDIA_ROOT,jobID,"normalized","matrix_NN.txt")
@@ -165,14 +179,6 @@ class Results(TemplateView):
             #Top miRNAS FC
             top10FC[method] = {}
 
-            FC_groups = []
-            try:
-                groupsFile = open(os.path.join(settings.MEDIA_ROOT,jobID,"graphs","summary","combinations.txt"),'r')
-                for line in groupsFile:
-                    FC_groups.append(line.strip())
-            except:
-                pass
-
             if FC_groups:
 
                 top10FC[method]['name'] = METHODS[method]
@@ -216,7 +222,7 @@ class Results(TemplateView):
             downloads[METHODS[method]] = [downloadLink,"matrix_"+method+".txt"]
             i = i + 1 
 
-        summary = {'distribution':distribution,'top10':top10,'top10FC':top10FC,'FC_groups':FC_groups,'info':infoGain}
+        summary = {'distribution':distribution,'top10':top10,'top10FC':top10FC,'FC_groups':FC_groups,'info':infoGain,'infoPairwise':infoGainPairwise}
 
         if heatmap or pca:
             visualization=True

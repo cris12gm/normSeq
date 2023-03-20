@@ -47,18 +47,17 @@ def cpm(df,outfile):
 
     return normalized
 
-def tc(df,outfile):
-    sums = np.array(pd.DataFrame(np.sum(df,axis=0)).T)
-    mean = np.mean(sums)
+# def tc(df,outfile):
+#     sums = np.array(pd.DataFrame(np.sum(df,axis=0)).T)
+#     mean = np.mean(sums)
 
-    normalized = np.divide(df,mean)*1000000
-    normalized.to_csv(outfile,sep="\t")
+#     normalized = np.divide(df,mean)*1000000
+#     normalized.to_csv(outfile,sep="\t")
 
-    return normalized
+#     return normalized
 
 def uq(df,outfile):
     #Execute in R
-    # Calculate the upper quartile normalization factors
     # Calculate the upper quartile normalization factors
     upper_quartile = np.percentile(df, 75, axis=1)
 
@@ -117,9 +116,9 @@ def norm(infile,df,method,jobDir):
     if method == "CPM":
         outfile = os.path.join(outDir,"matrix_CPM.txt")
         outdf = cpm(df,outfile)
-    elif method =="TC":
-        outfile = os.path.join(outDir,"matrix_TC.txt")
-        outdf = tc(df,outfile)
+    # elif method =="TC":
+    #     outfile = os.path.join(outDir,"matrix_TC.txt")
+    #     outdf = tc(df,outfile)
     elif method == 'NN':
         outfile = os.path.join(outDir,"matrix_NN.txt") 
         outdf = df

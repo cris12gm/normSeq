@@ -7,7 +7,7 @@ from miRNAnorm import processInput,norm,norm_r,processAnnotation,processInputIni
 from summary import createsummary
 from correctBatch import combat,plotsBatch
 from de import de_R,createGroupFile,ttest,consensus,plotDE
-from infoGain import calculate_infoGain,plotInfo
+from infoGain import calculate_infoGain_group,calculate_infoGain_pairwise,plotInfo,top10Info
 import pandas as pd
 import itertools
 
@@ -201,21 +201,43 @@ log.write("4. Information Gain analysis\n")
 status.write("<p>4. Information Gain analysis</p>")
 status.flush()
 
+
+#Per Group
 for group in diffGroups:
 
     information_gain = {}
     for method in methods:
         normdf = normalized[method][0]
-        info = calculate_infoGain(normdf,annotation_df,group)
+        info = calculate_infoGain_group(normdf,annotation_df,group)
         information_gain[method] = info
     infoDf = pd.DataFrame(information_gain)
     infoDf['name'] = list(normdf.index)
     infoDf = infoDf.set_index('name')
+
+    # #Get Top 10
+    # outfileImage = os.path.join(jobDir,"graphs","summary","infoGainTop10_"+group+".txt")
+    # outfile = os.path.join(jobDir,"graphs","summary","infoGainTop10_"+group+".html")
+    # top10Info(infoDf,normalized,methods,annotation_df,outfileImage,outfile)
+    # sys.exit(1)
     outfileInfo = os.path.join(jobDir,"graphs","summary","infoGain_"+group+".txt")
     infoDf.to_csv(outfileInfo,sep="\t")
     outfileImage = os.path.join(jobDir,"graphs","summary","infoGain_"+group+".png")
     outfile = os.path.join(jobDir,"graphs","summary","infoGain_"+group+".html")
     title = group
+    titleaxis = "Information Gain per "+config["typeJob"]
+    plotInfo(information_gain,outfileImage,outfile,title,titleaxis)
+
+#Pairwise
+
+for combination in combinations:
+    information_gain_groups = {}
+    for method in methods:
+        normdf = normalized[method][0]
+        info = calculate_infoGain_pairwise(normdf,annotation_df,combination)
+        information_gain_groups[method] = info
+    outfileImage = os.path.join(jobDir,"graphs","summary","infoGain_"+combination[0]+"-"+combination[1]+".png")
+    outfile = os.path.join(jobDir,"graphs","summary","infoGain_"+combination[0]+"-"+combination[1]+".html")
+    title = combination[0]+"-"+combination[1]
     titleaxis = "Information Gain per "+config["typeJob"]
     plotInfo(information_gain,outfileImage,outfile,title,titleaxis)
 

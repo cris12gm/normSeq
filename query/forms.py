@@ -11,7 +11,7 @@ class Query(forms.Form):
     METHODS = (
         ('NN', ' No normalization, just visualization'),
         ('CPM', ' Counts per Million'),
-        ('TC', ' Total Count'),
+        # ('TC', ' Total Count'),
         ('UQ', ' Upper Quartile'),
         ('Med',' Median'),
         ('TMM',' TMM'),
