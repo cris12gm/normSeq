@@ -12,7 +12,7 @@ matrix <- na.omit(matrix)
 row.names(matrix) <- matrix$name
 matrix = subset(matrix, select = -c(name) )
 
-keep <- rowSums(matrix > 0) >= (ncol(matrix)/2)
+keep <- rowSums(matrix > 0) > 0)
 matfile<-matrix[keep, ]
 
 method <- args[2]

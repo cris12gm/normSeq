@@ -201,18 +201,25 @@ def consensus(df_output,df,annotation_df,jobDir):
             ttest = []
         methods = from_contents({'edgeR': edgeR, 'DESeq': deseq, 'NOISeq': noiseq,'T-test': ttest })
         upset = UpSet(methods, subset_size='count', show_counts=True,facecolor="#041C34")
-        upset.style_subsets(present=["edgeR", "DESeq","NOISeq"],
+        upset.style_subsets(present=["edgeR", "DESeq"],
                     facecolor="#184b7e",
-                    label="Consensus 3 methods")
-        upset.style_subsets(present=["T-test", "DESeq","NOISeq"],
+                    label="Consensus 2 methods")
+        upset.style_subsets(present=["edgeR", "NOISeq"],
                     facecolor="#184b7e",
-                    label="Consensus 3 methods")
-        upset.style_subsets(present=["edgeR", "T-test","NOISeq"],
+                    label="Consensus 2 methods")
+        upset.style_subsets(present=["edgeR", "T-test"],
                     facecolor="#184b7e",
-                    label="Consensus 3 methods")
-        upset.style_subsets(present=["edgeR", "T-test","DESeq"],
+                    label="Consensus 2 methods")
+        upset.style_subsets(present=["DESeq", "NOISeq"],
                     facecolor="#184b7e",
-                    label="Consensus 3 methods")
+                    label="Consensus 2 methods")
+        upset.style_subsets(present=["DESeq", "T-test"],
+                    facecolor="#184b7e",
+                    label="Consensus 2 methods")
+        upset.style_subsets(present=["NOISeq", "T-test"],
+                    facecolor="#184b7e",
+                    label="Consensus 2 methods")
+
         upset.plot()
         plt.savefig(os.path.join(jobDir,"DE","consensus_upset_"+sample1+"-"+sample2+".png"))
 
