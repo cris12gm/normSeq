@@ -12,8 +12,8 @@ matrix <- na.omit(matrix)
 row.names(matrix) <- matrix$name
 matrix = subset(matrix, select = -c(name) )
 
-keep <- rowSums(matrix > 0) > 0)
-matfile<-matrix[keep, ]
+keep <- rowSums(matrix>0) > 0
+matfile <- matrix[keep, ]
 
 method <- args[2]
 annotation <- args[3]
