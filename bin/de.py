@@ -60,7 +60,7 @@ def de_R(infile,annotation,combinations,method,FDR,min_t,jobDir,log,status):
     status.flush()
 
     
-    procs = [ Popen(i,shell=True) for i in commands ]
+    procs = [ Popen(i,shell=False) for i in commands ]
     for p in procs:
         p.wait()
         
@@ -200,7 +200,7 @@ def consensus(df_output,df,annotation_df,jobDir):
         except:
             ttest = []
         methods = from_contents({'edgeR': edgeR, 'DESeq': deseq, 'NOISeq': noiseq,'T-test': ttest })
-        plt.figure(figsize=(10, 6))
+
         upset = UpSet(methods, subset_size='count', show_counts=True,facecolor="#041C34")
         upset.style_subsets(present=["edgeR", "DESeq"],
                     facecolor="#184b7e",
@@ -221,8 +221,8 @@ def consensus(df_output,df,annotation_df,jobDir):
                     facecolor="#184b7e",
                     label="Consensus 2 methods")
 
-        upset.plot()
-        
+        upset.plot(plt.figure(figsize=(15,6)))
+
         plt.savefig(os.path.join(jobDir,"DE","consensus_upset_"+sample1+"-"+sample2+".png"))
 
 
