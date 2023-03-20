@@ -123,13 +123,13 @@
 <script type="text/javascript">
     $('#loadExTRNA').on('click', function(){
         $('#aBtnGroup button[value="tRNA"]').click();
-        $('#id_url').val("https://arn.ugr.es/normSeq/static/testFiles/exampleMatrix.txt");
+        $('#id_url').val("https://arn.ugr.es/normSeq/static/testFiles/exampleTrna.txt");
         $('[href="#url"]').tab('show');
-        $('#id_annotationURL').val("http://arn.ugr.es/normSeq/static/testFiles/templateExample.txt");
+        $('#id_annotationURL').val("http://arn.ugr.es/normSeq/static/testFiles/annotationTrna.txt");
         $('[href="#annotation_url"]').tab('show');
         var ele=document.getElementsByName('methods');  
                 for(var i=0; i<ele.length; i++){  
-                    if(ele[i].type=='checkbox' && ele[i].value=='NN' | ele[i].value=='CPM' | ele[i].value=='QN'){
+                    if(ele[i].type=='checkbox'){
                         ele[i].checked=true;
                     }
                     
@@ -139,13 +139,13 @@
    });
    $('#loadExMIRNA').on('click', function(){
         $('#aBtnGroup button[value="miRNA"]').click();
-        $('#id_url').val("https://arn.ugr.es/normSeq/static/testFiles/exampleMatrix.txt");
+        $('#id_url').val("https://arn.ugr.es/normSeq/static/testFiles/exampleMirna.txt");
         $('[href="#url"]').tab('show');
-        $('#id_annotationURL').val("http://arn.ugr.es/normSeq/static/testFiles/templateExample.txt");
+        $('#id_annotationURL').val("http://arn.ugr.es/normSeq/static/testFiles/annotationMirna.txt");
         $('[href="#annotation_url"]').tab('show');
         var ele=document.getElementsByName('methods');  
                 for(var i=0; i<ele.length; i++){  
-                    if(ele[i].type=='checkbox' && ele[i].value=='NN' | ele[i].value=='CPM' | ele[i].value=='QN'){
+                    if(ele[i].type=='checkbox'){
                         ele[i].checked=true;
                     }
                     
