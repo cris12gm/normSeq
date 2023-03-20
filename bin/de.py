@@ -200,6 +200,7 @@ def consensus(df_output,df,annotation_df,jobDir):
         except:
             ttest = []
         methods = from_contents({'edgeR': edgeR, 'DESeq': deseq, 'NOISeq': noiseq,'T-test': ttest })
+        plt.figure(figsize=(10, 6))
         upset = UpSet(methods, subset_size='count', show_counts=True,facecolor="#041C34")
         upset.style_subsets(present=["edgeR", "DESeq"],
                     facecolor="#184b7e",
@@ -220,7 +221,6 @@ def consensus(df_output,df,annotation_df,jobDir):
                     facecolor="#184b7e",
                     label="Consensus 2 methods")
 
-        plt.figure(figsize=(10, 6))
         upset.plot()
         
         plt.savefig(os.path.join(jobDir,"DE","consensus_upset_"+sample1+"-"+sample2+".png"))
