@@ -60,7 +60,7 @@ def de_R(infile,annotation,combinations,method,FDR,min_t,jobDir,log,status):
     status.flush()
 
     
-    procs = [ Popen(i,shell=True) for i in commands ]
+    procs = [ Popen(i,shell=False) for i in commands ]
     for p in procs:
         p.wait()
         
@@ -203,25 +203,19 @@ def consensus(df_output,df,annotation_df,jobDir):
 
         upset = UpSet(methods, subset_size='count', show_counts=True,facecolor="#041C34")
         upset.style_subsets(present=["edgeR", "DESeq"],
-                    facecolor="#184b7e",
-                    label="Consensus 2 methods")
+                    facecolor="#184b7e")
         upset.style_subsets(present=["edgeR", "NOISeq"],
-                    facecolor="#184b7e",
-                    label="Consensus 2 methods")
+                    facecolor="#184b7e")
         upset.style_subsets(present=["edgeR", "T-test"],
-                    facecolor="#184b7e",
-                    label="Consensus 2 methods")
+                    facecolor="#184b7e")
         upset.style_subsets(present=["DESeq", "NOISeq"],
-                    facecolor="#184b7e",
-                    label="Consensus 2 methods")
+                    facecolor="#184b7e")
         upset.style_subsets(present=["DESeq", "T-test"],
-                    facecolor="#184b7e",
-                    label="Consensus 2 methods")
+                    facecolor="#184b7e")
         upset.style_subsets(present=["NOISeq", "T-test"],
-                    facecolor="#184b7e",
-                    label="Consensus 2 methods")
+                    facecolor="#184b7e")
 
-        upset.plot(plt.figure(figsize=(15,6)))
+        upset.plot()
 
         plt.savefig(os.path.join(jobDir,"DE","consensus_upset_"+sample1+"-"+sample2+".png"))
 
