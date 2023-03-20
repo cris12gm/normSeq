@@ -10,8 +10,8 @@ from config import R_SCRIPTS_PATH
 def processInputInit(infile,samples,minRC):
     cabecera = open(infile).readline().split("\t")[0]
     df = pd.read_table(infile)
-    df = df.replace(' ','', regex=True)
-    df = df.replace('_','', regex=True)
+    df = df.rename(columns=lambda s: s.replace("_", ""))
+    df = df.rename(columns=lambda s: s.replace(" ", ""))
     if cabecera!="":
         df.rename(columns = {cabecera:'name'}, inplace = True)
     else:
@@ -24,7 +24,6 @@ def processInputInit(infile,samples,minRC):
     dfF = dfF.loc[~(dfF==0).all(axis=1)]
     dfF = dfF[dfF>=minRC]
     dfF=dfF.dropna(axis=0)
-
     return(dfF,dfOriginal)
 
 
