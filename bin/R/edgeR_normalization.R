@@ -11,7 +11,9 @@ matrix <- na.omit(matrix)
 row.names(matrix) <- matrix$name
 matrix = subset(matrix, select = -c(name) )
 
-df <- matrix
+keep <- rowSums(matrix>0) > 0
+df <- matrix[keep, ]
+
 #create DGEList object
 d <- DGEList(counts=df)
 

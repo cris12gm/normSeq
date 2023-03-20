@@ -10,6 +10,7 @@ from config import R_SCRIPTS_PATH
 def processInputInit(infile,samples,minRC):
     cabecera = open(infile).readline().split("\t")[0]
     df = pd.read_table(infile)
+    df = df.replace(' ','_', regex=True)
     if cabecera!="":
         df.rename(columns = {cabecera:'name'}, inplace = True)
     else:
@@ -19,6 +20,7 @@ def processInputInit(infile,samples,minRC):
     dfF = df[samples]
     dfOriginal = dfF
     minRC = int(minRC)
+    dfF = dfF.loc[~(dfF==0).all(axis=1)]
     dfF = dfF[dfF>=minRC]
     dfF=dfF.dropna(axis=0)
 
@@ -40,6 +42,7 @@ def processInput(infile,minRC):
 def processAnnotation(infile):
     cabecera = open(infile).readline().split("\t")[0]
     df = pd.read_table(infile)
+    df = df.replace(' ','_', regex=True)
     df.rename(columns = {cabecera:'sample'}, inplace = True)
     df = df.set_index('sample')
     df.dropna(how='all', axis=1, inplace=True)
@@ -47,7 +50,7 @@ def processAnnotation(infile):
     return(df,samples)
 
 def cpm(df,outfile):
-
+    df = df.loc[~(df==0).all(axis=1)]
     #Normalize CPM
     sums = np.array(pd.DataFrame(np.sum(df,axis=0)).T)
     normalized = np.divide(df, sums)*1000000
@@ -66,6 +69,7 @@ def cpm(df,outfile):
 #     return normalized
 
 def uq(df,outfile):
+    df = df.loc[~(df==0).all(axis=1)]
     #Execute in R
     # Calculate the upper quartile normalization factors
     upper_quartile = np.percentile(df, 75, axis=1)
@@ -94,6 +98,7 @@ def rle(infile,outfile,jobDir):
     return cmd_rle
 
 def med(df,outfile):
+    df = df.loc[~(df==0).all(axis=1)]
     sums = np.array(pd.DataFrame(np.sum(df,axis=0)).T)
     median = np.median(sums)
 

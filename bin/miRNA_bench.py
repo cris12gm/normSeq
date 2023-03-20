@@ -206,21 +206,21 @@ status.flush()
 
 #Per Group
 for group in diffGroups:
-
     information_gain = {}
     for method in methods:
         normdf = normalized[method][0]
         info = calculate_infoGain_group(normdf,annotation_df,group)
         information_gain[method] = info
-    infoDf = pd.DataFrame(information_gain)
+    # infoDf = pd.DataFrame(information_gain)
+    infoDf = pd.DataFrame(dict([ (k,pd.Series(v)) for k,v in information_gain.items() ]))
     infoDf['name'] = list(normdf.index)
     infoDf = infoDf.set_index('name')
 
-    # #Get Top 10
-    # outfileImage = os.path.join(jobDir,"graphs","summary","infoGainTop10_"+group+".txt")
-    # outfile = os.path.join(jobDir,"graphs","summary","infoGainTop10_"+group+".html")
-    # top10Info(infoDf,normalized,methods,annotation_df,outfileImage,outfile)
-    # sys.exit(1)
+    # # #Get Top 10
+    # # outfileImage = os.path.join(jobDir,"graphs","summary","infoGainTop10_"+group+".txt")
+    # # outfile = os.path.join(jobDir,"graphs","summary","infoGainTop10_"+group+".html")
+    # # top10Info(infoDf,normalized,methods,annotation_df,outfileImage,outfile)
+    # # sys.exit(1)
     outfileInfo = os.path.join(jobDir,"graphs","summary","infoGain_"+group+".txt")
     infoDf.to_csv(outfileInfo,sep="\t")
     outfileImage = os.path.join(jobDir,"graphs","summary","infoGain_"+group+".png")
@@ -257,7 +257,6 @@ for method in normalized:
 
 #Summary
     createsummary(normfile,normdf,method,jobDir,annotation_df,combinations)
-    
     log.write("5. Visualization\n")
 
 #Plots
