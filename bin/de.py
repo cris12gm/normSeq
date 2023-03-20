@@ -220,7 +220,9 @@ def consensus(df_output,df,annotation_df,jobDir):
                     facecolor="#184b7e",
                     label="Consensus 2 methods")
 
+        plt.figure(figsize=(10, 6))
         upset.plot()
+        
         plt.savefig(os.path.join(jobDir,"DE","consensus_upset_"+sample1+"-"+sample2+".png"))
 
 
