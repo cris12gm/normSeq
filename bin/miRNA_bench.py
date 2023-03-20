@@ -41,7 +41,7 @@ try:
     status.flush()
 except:
     error = open(errorFile, 'a')
-    error.write("<p>There is an error in the annotation file format. Please, check the format guidelines <a href='https://arn.ugr.es/normseq_doc/annotation/'>https://arn.ugr.es/normseq_doc/annotation/>here</a></p>")
+    error.write("<p>There is an error in the annotation file format. Please, check the format guidelines <a href='https://arn.ugr.es/normseq_doc/annotation/'>here</a></p>")
     error.close()
     sys.exit(0)
 
@@ -51,10 +51,10 @@ except:
 
 #Get df
 try:
-    df = processInputInit(os.path.join(jobDir,"matrix.txt"),samples,config['minRC'])
+    df,dfOriginal = processInputInit(os.path.join(jobDir,"matrix.txt"),samples,config['minRC'])
 except:
     error = open(errorFile, 'a')
-    error.write("<p>Normalized file couldn't be safe. Please, check the format guidelines <a href='https://arn.ugr.es/normseq_doc/annotation/'>https://arn.ugr.es/normseq_doc/annotation/>here</a></p>")
+    error.write("<p>Normalized file couldn't be safe. Please, check the format guidelines <a href='https://arn.ugr.es/normseq_doc/annotation/'>here</a></p>")
     error.close()
     sys.exit(0)
 
@@ -66,6 +66,8 @@ if not os.path.exists(os.path.join(jobDir,"normalized")):
 #Save df in normalized
 outfile_NN = os.path.join(jobDir,"normalized","matrix_NN.txt") 
 df.to_csv(outfile_NN,sep="\t")
+outfile_NN_Original = os.path.join(jobDir,"normalized","matrix_NN_toDE.txt") 
+dfOriginal.to_csv(outfile_NN_Original,sep="\t")
 
 if os.path.isfile(outfile_NN):
     log.write("0. No normalized file saved\n")
@@ -117,7 +119,7 @@ if config['diffExpr']=="True":
         os.mkdir(os.path.join(jobDir,"DE"))
     combinations = createGroupFile(annotation_df,jobDir)
 
-    output_de = de_R(infile,annotation,combinations,methodDE,FDR,min_t,jobDir,log,status)
+    output_de = de_R(outfile_NN_Original,annotation,combinations,methodDE,FDR,min_t,jobDir,log,status)
     output_de = ttest(df,combinations,annotation_df,FDR,output_de,jobDir,log,status)
     consensus(output_de,df,annotation_df,jobDir)
     plotDE(df,output_de,annotation_df,jobDir)

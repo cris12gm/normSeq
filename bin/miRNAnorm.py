@@ -17,11 +17,12 @@ def processInputInit(infile,samples,minRC):
     df = df.set_index('name')
     df = df.dropna()
     dfF = df[samples]
+    dfOriginal = dfF
     minRC = int(minRC)
     dfF = dfF[dfF>=minRC]
     dfF=dfF.dropna(axis=0)
 
-    return(dfF)
+    return(dfF,dfOriginal)
 
 
 def processInput(infile,minRC):
