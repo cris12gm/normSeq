@@ -7,9 +7,9 @@ from config import R_PATH
 from config import R_SCRIPTS_PATH
 
 def combat(infile,annotation,outfile):
-    subprocess.call (R_PATH+" --vanilla "+R_SCRIPTS_PATH+"combat.R "+infile+" "+annotation+" "+outfile,shell=True)
+    subprocess.call (R_PATH+" --vanilla "+R_SCRIPTS_PATH+"combat.R "+infile+" "+annotation+" "+outfile,shell=False)
 
-def plotsBatch(dfCorrected,dfOld,annotation,jobDir):
+def plotsBatch(dfCorrected,dfOld,annotation_df,jobDir):
     
     outDir = os.path.join(jobDir,"graphs","batchEffect")
     if not os.path.exists(os.path.join(jobDir,"graphs")):
@@ -20,7 +20,7 @@ def plotsBatch(dfCorrected,dfOld,annotation,jobDir):
 
     outfile = os.path.join(outDir,"pca_corrected.html")
     outfileImage = os.path.join(outDir,"pca_corrected.png")
-    pca(dfCorrected,outfile,outfileImage)
+    pca(dfCorrected,annotation_df,outfile,outfileImage)
     outfile = os.path.join(outDir,"pca_old.html")
     outfileImage = os.path.join(outDir,"pca_old.png")
-    pca(dfOld,outfile,outfileImage)
+    pca(dfOld,annotation_df,outfile,outfileImage)

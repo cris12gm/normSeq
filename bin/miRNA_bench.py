@@ -101,7 +101,7 @@ if config['batchEffect'] == 'True':
         error.close()
         sys.exit(0)
     
-    plotsBatch(dfCorrected,dfOld,annotation,jobDir)
+    plotsBatch(dfCorrected,dfOld,annotation_df,jobDir)
     df = dfCorrected
 
     os.system("rm "+outfile_NN)
@@ -241,7 +241,7 @@ for combination in combinations:
     outfile = os.path.join(jobDir,"graphs","summary","infoGain_"+combination[0]+"-"+combination[1]+".html")
     title = combination[0]+"-"+combination[1]
     titleaxis = "Information Gain per "+config["typeJob"]
-    plotInfo(information_gain,outfileImage,outfile,title,titleaxis)
+    plotInfo(information_gain_groups,outfileImage,outfile,title,titleaxis)
 
 ##################################################################
 ####################### SUMMARY + PLOTS ##########################

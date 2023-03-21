@@ -383,7 +383,7 @@
         method = document.getElementById("select_de_method").value;
         comparison = document.getElementById("select_de").value;
 
-        title = "Top DEGs "+comparison+" with "+valor;
+        title = "Top DEGs "+comparison+" with "+method;
         jobID = this.name;
         $.ajax({
              url: '{% url "ajax_plot_topDE" %}',

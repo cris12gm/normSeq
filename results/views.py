@@ -252,6 +252,10 @@ def queryPlotTopDE(request):
     comparison = request.GET.get('comparison')
     jobID = request.GET.get('jobID')
     
+    if method=="T Test":
+        method="ttest"
+    elif method=="DESeq2":
+        method ="deseq"
 
     url = os.path.join(settings.MEDIA_ROOT,jobID,"DE","top10_"+method+"_"+comparison+".html")
     with open(url,'r') as file:
