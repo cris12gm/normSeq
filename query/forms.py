@@ -143,7 +143,7 @@ class Query(forms.Form):
             'typeJob',
             Div(
                 ButtonHolder(
-                    HTML('<input type="reset" class="btn btn-secondary btn-lg mr-2 resetbtn" value="Reset">'),
+                    HTML('<input type="reset" id="resetForm" class="btn btn-secondary btn-lg mr-2 resetbtn" value="Reset">'),
                     Submit('submit', 'SUBMIT', css_class='btn btn-info btn-lg float-centre', css_id="submit", onclick='check_form();')
                 ),
                 css_class="text-center"

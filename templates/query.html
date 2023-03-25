@@ -60,6 +60,7 @@
         function() {
               // Get click event, assign button to var, and get values from that var
                 $('#aBtnGroup button').on('click', function() {
+                    document.getElementById("resetForm").click();
                     var thisBtn = $(this);
                     
                     thisBtn.addClass('active').siblings().removeClass('active');
