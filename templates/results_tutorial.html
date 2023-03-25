@@ -1,0 +1,791 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block css %}
+<link href="{% static 'css/customStyles/stylesResults.css'%}" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/stylesIntroJs.css' %}" type="text/css">
+{% endblock %}
+
+{% block modals %}
+    {% include "modals/results/modal_heatmap.html" %}
+    {% include "modals/results/modal_pca.html" %}
+    {% include "modals/results/modal_distribution.html" %}
+    {% include "modals/results/modal_top.html" %}
+    {% include "modals/results/modal_batch.html" %}
+    {% include "modals/results/modal_info.html" %}
+    {% include "modals/results/modal_consensus.html" %}
+    {% include "modals/results/modal_topDE.html" %}
+{% endblock %}
+
+{% block content %}
+
+    <div id="page-wrapper" class="resultsPage">
+        <div class="row">
+            <div class="col-md-11"style="float:none;margin:auto;">
+                <div id="headerResults">
+                    <h2>Results for Job ID <a href="{% url 'status' %}/?jobID={{ jobID }}">{{ jobID }}</a></h2>
+                    <p> You can <a id="bookmarkt" href="{% url 'status' %}/?jobID={{ jobID }}"><i class="fas fa-fw fa-bookmark"></i>bookmark this page</a> to access the results later.</p>
+                    <p><i>Results will be stored for 15 days, until {{date}}</i></p>
+                </div>
+                <div class="menu-hide" id="menu-hide">
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="summary-tab" data-toggle="tab" href="#summary" role="tab" aria-controls="summary" aria-selected="true"><h5>Summary</h5></a>
+                        </li>
+                        {% if visualization %}
+                        <li class="nav-item">
+                            <a class="nav-link" id="visualization-tab" data-toggle="tab" href="#visualization" role="tab" aria-controls="visualization" aria-selected="false"><h5>Visualization</h5></a>
+                        </li>
+                        {% endif %}
+                        {% if de %}
+                        <li class="nav-item">
+                            <a class="nav-link" id="de-tab" data-toggle="tab" href="#de" role="tab" aria-controls="de" aria-selected="false"><h5>Differential Expression</h5></a>
+                        </li>
+                        {% endif %}
+                        {% if batchEffect %}
+                        <li class="nav-item">
+                            <a class="nav-link" id="batch-tab" data-toggle="tab" href="#batch" role="tab" aria-controls="batch" aria-selected="false"><h5>Batch effect correction</h5></a>
+                        </li>
+                        {% endif %}
+                        {% if downloads %}
+                        <li class="nav-item">
+                            <a class="nav-link" id="downloads-tab" data-toggle="tab" href="#downloads" role="tab" aria-controls="downloads" aria-selected="false"><h5>Downloads</h5></a>
+                        </li>
+                        {% endif %}
+
+                    </ul>
+            
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active tabResult" id="summary" role="tabpanel" aria-labelledby="summary-tab">
+                            <div id="results_summary">
+                                {% include "results/summary.html" %}
+                            </div>
+                        </div>
+                        {% if visualization %}
+                        <div class="tab-pane fade tabResult" id="visualization" role="tabpanel" aria-labelledby="visualization-tab">
+                            {% include "results/visualization.html" %}
+                        </div>
+                        {% endif %}
+                        {% if de %}
+                        <div class="tab-pane fade tabResult" id="de" role="tabpanel" aria-labelledby="de-tab">
+                            {% include "results/de.html" %}
+                        </div>
+                        {% endif %}
+                        {% if downloads %}
+                        <div class="tab-pane fade tabResult" id="downloads" role="tabpanel" aria-labelledby="downloads-tab">
+                            {% include "results/downloads.html" %}
+                        </div>
+                        {% endif %}
+                        {% if batchEffect %}
+                        <div class="tab-pane fade tabResult" id="batch" role="tabpanel" aria-labelledby="batch-tab">
+                            {% include "results/batcheffect.html" %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+
+
+    </div>
+{% endblock %}
+{% block js %}
+
+<!-- This script enables link to tabs-->
+<script src="{% static 'tour/intro.js' %}"></script>
+<script>
+    var intro = introJs();
+    var options_before = {
+        steps: [
+            {   element:document.querySelector('#headerResults'),
+                intro: "<h2>Results Page</h2><p>This is the example results page of NormSeq. You will find on top of it your JobID, and a link to bookmark this results page.</p><p>Results are stored for 15 days<\p><p>Results for each Job ID are organized in four different tabs: <b>Summary</b>, <b>Visualization</b>, <b>Differential Expression</b> and <b>Downloads</b>, which allows the user to explore the normalization results in a step-wise manner.<\p>",
+            },
+            {   element:document.querySelector('#summary-tab'),
+                intro: "<h3>Summary</h3><p>In the summary tab are located the <b>Normalization selection</b>, which will help the user with the selection of the most optimal normalization method for downstream analysis, and <b>Top RNAs</b> tab.</p>"
+            },
+            {   element:document.querySelector('#infoCard'),
+                intro: "<h4>Information gain per RNA</h4><p>The first plot that can be assesed is the <b>Information gain per RNA</b> distribution, which informs the user about the noise reduction for each normalization method. It has a value between 0 (highest impurity) and 1 (lowest impurity), so higher values of information gain would represent a clear separation based on the biological groups for that RNA.</p> <p>NormSeq offers the information gain distribution for all chosen normalization methods in two formats: for each <b>pair-wise</b> comparison and for each <b>individual group</b>.</p>",
+                tooltipClass:"tourMed"
+            },
+            {   element:document.querySelector('#infoCard'),
+                intro: "<h4>Information gain per RNA</h4><p>If a distribution <b>per group</b> is chosen, a higher information gain distribution would indicate that the differences of that group compared to all other groups are more apparent using that specific method.</p><p>In this example, for the group <i>CNS</i> the highest information gain distribution is obtained with the Quantile (QN) normalization</p>",
+                tooltipClass:"tourMed"
+            },
+            {   element:document.querySelector('#infoCard'),
+                intro: "<h4>Information gain per RNA</h4><p>If a <b>pair-wise</b> group comparison is chosen, the normalization method with a higher information gain would better recover the biological signal for that particular comparison.</p><p>In this example, for the <i>Tibia-Heart</i> comparison, the highest information gain is obtained with the Quantile (QN) normalization also.</p>",
+                tooltipClass:"tourMed"
+            },
+            {   element:document.querySelector('#infoCard'),
+                intro: "<h3><i>Important information</i></h3><p>User can click in any plot to get an interactive plot</p>",
+                tooltipClass:"tourMed"
+            },
+            {   element:document.querySelector('#distributionCard'),
+                intro: "<h4>Expression Levels Distribution</h4><p>This is a reflection of the expression levels of the different RNAs in each sample. Distributions between groups need to be comparable in order to increase the probability of correct biological inferences for further downstream analysis.</p>",
+                tooltipClass:"tourMed" 
+            },
+            {   element:document.querySelector('#pills-top-tab'),
+                intro: "<h4>Top 10 RNAs</h4><p>In this tab are located basic visualization of the ten most abundant RNAs ordered by mean expresion or fold-change between groups</p>"
+            },
+            {   element:document.querySelector('.topPlot'),
+                intro: "<h4>Top 10 RNAs</h4><p>Top 10 RNAs ordered by <b>mean expression</b> in all samples for each normalization method.</p>"
+            },
+            {   element:document.querySelector('.topFCPlot'),
+                intro: "<h4>Top 10 RNAs</h4><p>Top 10 RNAs ordered by <b>Fold-Change</b> for each potential group comparison and for each normalization method.</p>"
+            },
+            {   element:document.querySelector('#visualization-tab'),
+                intro: "<h3>Visualization</h3><p>The visualization tab is divided in three sections: <b>Hyerarchical clustering</b>, <b>PCA</b>, and <b>Expression per RNA</b>.</p>"
+            },
+            {   element:document.querySelector('#heatmap_NN'),
+                intro: "<h4>Hyerarchical clustering</h4><p>Hierarchical clustering analysis are used to visualize side-by-side similarities or dissimilarities between samples for each chosen normalization method. Samples are coloured by the group to which they belong.</p><p>If the user click in the different heatmaps, the following options can be adjusted:<ul><li><b>Method:</b> Single, complete, average or median</li><li><b>Scale:</b> Row, column, or none</li></ul>",
+                position:"right",
+                tooltipClass:"tourMed"
+            },
+            {   element:document.querySelector('#pills-pca-tab'),
+                intro: "<h4>PCA</h4><p>The second section contains principal component analysis (PCA), which is a very flexible tool that reduces dimensionality while preserving as much as possible from the information of the dataset.</p>",
+            },
+            {   element:document.querySelector('#pca_NN'),
+                intro: "<h4>PCA</h4><p> PCA plots are shown for all analyzed normalization side-by-side.Click on the PCA plot to enlarge the figure and get a detailed overview of the results. Each group is represented by a different color.</p><p>The user has two visualization options by hovering over the arrows in the plot. The plot can either be viewed in <i>two dimensions</i> or in <i>three dimensions</i>.</p>",
+                position:"right",
+                tooltipClass:"tourMed"
+            },
+            {
+                element:document.querySelector('#pills-feature-tab'),
+                intro:"<h4>Plot per RNA</h4><p>The third section contains per RNA plots. By default, nothing is selected, you can click on Select tRNA and a list will appear with all RNAs in alphabetical order.</p><p>When a RNA is selected, the user will get the expression plot for that RNA with all normalization methods</p>",
+                tooltipClass:"tourMed",
+                position:"bottom"
+            },
+            {
+                element:document.querySelector('#plotThisFeature'),
+                intro:"<h4>Plot per RNA</h4><p>In this example of the tRNA <b>Ile-TAT-2-1;2-2;2-3</b>, which has been described before as CNS associated, only with <i>Quantile</i> normalization can be distimguised its expression in CNS from that in the other tissues.</p>",
+            },
+            {
+                element:document.querySelector('#de-tab'),
+                intro:"<h3>Differential Expression</h3><p>Differential expression (DE) analysis takes the non-normalized data for the discovery of quantitative changes in expression levels between experimental groups. The <i>Differential Expression</i> tab is divided into three sections.</p>",
+                position:"bottom",
+                tooltipClass:"tourMed"
+            },
+            {
+                element:document.querySelector('#pills-summaryDE'),
+                intro:"<h4>Summary Differential Expression</h4><p> In <b>Summary</b> an overview of the performance of each differential expression analysis protocol is showed. Four different protocols were used for DE: edgeR, DESeq2, NOISeq, and a T-test.</p>",
+            },
+            {
+                element:document.querySelector('#pills-method-tab'),
+                intro:"<h4>Differential Expression per method</h4><p> In <b>Results per method</b> the differentially expressed genes can be explored in more detail for each given differential expression analysis protocol.</p>",
+                tooltipClass:"tourMed"
+            },
+            {
+                element:document.querySelector('#pills-consensus-tab'),
+                intro:"<h4>Consensus Differential Expression</h4><p> Finally, in the <b>Consensus Differential Expression</b> section, the consensus between the 4 different differential expression protocols is calculated.</p>",
+                tooltipClass:"tourMed"
+            },
+            {
+                element:document.querySelector('#downloads-tab'),
+                intro:"<h3>Downloads</h3><p> Finally, several files, as well as a compressed file containing all the results, can be downloaded.</p>",
+                tooltipClass:"tourMed"
+            },    
+        ],
+        showStepNumbers:false,
+        hideNext:false,
+        disableInteraction:true,
+        tooltipClass:true,
+        doneLabel:"Try it yourself!",
+        scrollTo:"tooltip",
+        hidePrev:true,
+        exitOnEsc:false,
+        exitOnOverlayClick:false,
+    };
+    intro.setOptions(options_before);
+    intro.onbeforechange(function () {
+
+        if (intro._currentStep == "4") {
+            document.getElementById("selectMethodInfo").value='pairwise';
+            const boxes = document.querySelectorAll('.group');
+            var i = 0
+            boxes.forEach(
+                box => {
+                    box.style.display = 'none';
+                });
+            const boxes_2 = document.querySelectorAll('.pairwise');
+            boxes_2.forEach(
+                box => {
+                    box.style.display = 'block';
+                    if (i ==0){
+                        box.selected = 'true';
+                        i = 1
+                        valor = box.value;
+                        newDiv = document.getElementById("infoGain_"+valor);
+                        const allDivs = document.getElementsByClassName('infoPlot');
+                        for (const div of allDivs) {
+                        // 👇️ Remove element from DOM
+                            div.style.display = 'none';
+                        }
+                        newDiv.style.display="block";
+                    }
+                });
+        }
+        
+        if (intro._currentStep == "7") {
+            document.getElementById("pills-top-tab").click();
+
+        }
+        if (intro._currentStep == "10") {
+            document.getElementById("visualization-tab").click();
+        }
+        if (intro._currentStep == "12") {
+            document.getElementById("pills-pca-tab").click();
+        }
+        if (intro._currentStep == "14") {
+            document.getElementById("pills-feature-tab").click();
+        }
+        if (intro._currentStep == "16") {
+            document.getElementById("de-tab").click();
+        }
+        if (intro._currentStep == "18") {
+            document.getElementById("pills-method-tab").click();
+        }
+        if (intro._currentStep == "19") {
+            document.getElementById("pills-consensus-tab").click();
+        }
+        if (intro._currentStep == "20") {
+            document.getElementById("downloads-tab").click();
+        }
+
+     });
+     
+
+    intro.oncomplete(function() {
+        window.location.href = "{% url 'query' %}";
+    });
+    
+    intro.start();
+</script>
+
+<script>
+
+    // Javascript to enable link to tab
+    var url = document.location.toString();
+    if (url.match('#')) {
+        $('.nav-tabs a[href="#' + url.split('#')[1] + '"]').tab('show');
+    }
+    
+    // Change hash for page-reload
+    $('.nav-tabs a').on('shown.bs.tab', function (e) {
+        window.location.hash = e.target.hash;
+    })
+
+    $(document).ready(function()
+    {
+        $("#loadpage").hide();
+        $('#divPageContent').css("visibility", "visible");
+
+        comparison = document.getElementById("select_de").value;
+        valor = document.getElementById("select_de_method").value;
+        text  = "<b>Method:</b> "+valor+"<br><b>Comparison:</b> "+comparison;
+        $("#selectionDE").html(text);
+        newDiv = document.getElementById(valor+"_"+comparison);
+        newDiv.style.display="block";
+
+        comparisonSummary = document.getElementById("select_de_summary").value;
+        $("#comparisonSummaryDE").html(comparisonSummary);
+        newDiv = document.getElementById("summaryDE_"+comparison);
+        newDiv.style.display="block";
+
+        comparisonConsensus = document.getElementById("select_de_consensus").value;
+        $("#comparisonConsensusDE").html(comparisonSummary);
+        newDiv = document.getElementById("consensusDE_"+comparison);
+        newDiv.style.display="block";
+        newButton = document.getElementById("btnConsensus_"+comparison);
+        newButton.style.display="block";
+    });
+    
+    $(document).ready(function()
+    {
+        comparisonInfo = document.getElementById("selectInfo").value;
+        newDiv = document.getElementById("infoGain_"+comparisonInfo);
+        newDiv.style.display="block";
+    });
+</script>
+
+<!-- Init select -->
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#plotFeature').selectpicker({
+        });
+        $('#plotFeature').selectpicker('val', 'Ile-TAT-2-1;2-2;2-3');
+        feature = document.getElementById("plotFeature").value;
+        
+        jobID = document.getElementById("plotFeature").name;
+
+        var OBJ = [];
+
+        $.ajax({
+            url: '{% url "ajax_feature" %}',
+            data: {
+                "feature" : feature,
+                "jobID":jobID,
+            },
+            dataType: 'json',
+            success: function (dataE) {
+                $("#plotThisFeature").html(dataE.plot);
+                $("#selectedFeature").html(feature);
+            }
+        });
+    });
+</script>
+
+<!-- Init select -->
+<script type="text/javascript">
+     $('#selectMethodInfo').change(function(){ 
+        var selected = this.value;
+
+
+        if (selected=='pairwise'){
+            const boxes = document.querySelectorAll('.group');
+            var i = 0
+            boxes.forEach(
+                box => {
+                    box.style.display = 'none';
+                });
+            const boxes_2 = document.querySelectorAll('.pairwise');
+            boxes_2.forEach(
+                box => {
+                    box.style.display = 'block';
+                    if (i ==0){
+                        box.selected = 'true';
+                        i = 1
+                        valor = box.value;
+                        newDiv = document.getElementById("infoGain_"+valor);
+                        const allDivs = document.getElementsByClassName('infoPlot');
+                        for (const div of allDivs) {
+                        // 👇️ Remove element from DOM
+                            div.style.display = 'none';
+                        }
+                        newDiv.style.display="block";
+                    }
+                });
+        }
+        if (selected=='group'){
+            const boxes = document.querySelectorAll('.pairwise');
+            var i = 0
+            boxes.forEach(
+                box => {
+                    box.style.display = 'none';
+                });
+            const boxes_2 = document.querySelectorAll('.group');
+            boxes_2.forEach(
+                box => {
+                    box.style.display = 'block';
+                    if (i ==0){
+                        box.selected = 'true';
+                        i = 1
+                        valor = box.value;
+                        newDiv = document.getElementById("infoGain_"+valor);
+                        const allDivs = document.getElementsByClassName('infoPlot');
+                        for (const div of allDivs) {
+                        // 👇️ Remove element from DOM
+                            div.style.display = 'none';
+                        }
+                        newDiv.style.display="block";
+                    }
+                });
+        }
+
+    });
+</script>
+
+<script type="text/javascript">
+     $('#plotFeature').change(function(){ 
+        feature = document.getElementById("plotFeature").value;
+        $("#plotThisFeature").html("<img src='{% static 'images/loading.gif' %}'>");
+        $("#selectedFeature").html("");
+        
+
+        jobID = this.name;
+
+        var OBJ = [];
+
+        $.ajax({
+            url: '{% url "ajax_feature" %}',
+            data: {
+                "feature" : feature,
+                "jobID":jobID,
+            },
+            dataType: 'json',
+            success: function (dataE) {
+                $("#plotThisFeature").html(dataE.plot);
+                $("#selectedFeature").html(feature);
+            }
+        });
+    });
+  
+</script>
+
+<!-- Modal plot Heatmap -->
+<script>
+    $('.modalHeatmapPlot').on('click', function (e) {
+        title = this.title;
+        url = this.name;
+        imageHeatmap  = '<img class="img-fluid" src="'+url+'">';
+        $("#modalHeatmapContent").html(imageHeatmap);
+        document.getElementById("parametersHeatmap").setAttribute('value',url);
+        $("#modalHeatmapTitle").html(title);
+        });
+  
+</script>
+
+<!-- Modal plot PCA, modalDistribution, modalTop -->
+<script>
+    $('.modalPlotPCA').on('click', function (e) {
+        title = this.title;
+        url = this.name;
+        
+        $.ajax({
+             url: '{% url "ajax_plot" %}',
+             data: {
+                 "url" : url
+             },
+             dataType: 'json',
+            success: function (dataE) {
+                $("#modalContentPCA").html(dataE.plot);
+                $("#modalTitlePCA").html(title);
+            }
+        });
+    });
+    $('.modalPlotDistribution').on('click', function (e) {
+        title = this.title;
+        url = this.name;
+        
+        $.ajax({
+             url: '{% url "ajax_plot" %}',
+             data: {
+                 "url" : url
+             },
+             dataType: 'json',
+            success: function (dataE) {
+                $("#modalContentDistribution").html(dataE.plot);
+                $("#modalTitleDistribution").html(title);
+            }
+        });
+    });
+    $('.modalPlotTop').on('click', function (e) {
+        title = this.title;
+        url = this.name;
+        
+        $.ajax({
+             url: '{% url "ajax_plot" %}',
+             data: {
+                 "url" : url
+             },
+             dataType: 'json',
+            success: function (dataE) {
+                $("#modalContentTop").html(dataE.plot);
+                $("#modalTitleTop").html(title);
+            }
+        });
+    });
+    $('.modalPlotBatch').on('click', function (e) {
+        title = this.title;
+        url = this.name;
+        
+        $.ajax({
+             url: '{% url "ajax_plot" %}',
+             data: {
+                 "url" : url
+             },
+             dataType: 'json',
+            success: function (dataE) {
+                $("#modalContentBatch").html(dataE.plot);
+                $("#modalTitleBatch").html(title);
+            }
+        });
+    });
+    $('.modalPlotInfo').on('click', function (e) {
+        title = this.title;
+        url = this.name;
+        
+        $.ajax({
+             url: '{% url "ajax_plot" %}',
+             data: {
+                 "url" : url
+             },
+             dataType: 'json',
+            success: function (dataE) {
+                $("#modalContentInfo").html(dataE.plot);
+                $("#modalTitleInfo").html(title);
+            }
+        });
+    });
+</script>
+
+<!-- On change of number of dimensions, change plot PCA-->
+<script>
+    $('#selectDimensions').change(function(){ 
+        valor = this.value;
+        url = this.name;
+        if (valor == "3"){
+            url = url.replace('.html', '_3D.html');
+        }
+        if (valor == "2"){
+            url = url.replace('_3D.html', '_3D.html');
+        }
+        $("#modalContentPCA").html("<img src='{% static 'images/loading.gif' %}'>")
+        $.ajax({
+            url: '{% url "ajax_plot" %}',
+            data: {
+                "url" : url
+            },
+            dataType: 'json',
+            success: function (dataE) {
+                $("#modalContentPCA").html(dataE.plot);
+            }
+        });
+    });
+
+
+
+    $('.modalPlotPCA').on('click', function (e) {
+        title = this.title;
+        url = this.name;
+        const $select = document.querySelector('#selectDimensions');
+        $select.value = '2';
+
+        $.ajax({
+             url: '{% url "ajax_plot" %}',
+             data: {
+                 "url" : url
+             },
+             dataType: 'json',
+            success: function (dataE) {
+                $("#modalContentPCA").html(dataE.plot);
+                $("#modalTitlePCA").html(title);
+                document.getElementById("selectDimensions").setAttribute("name",url);
+            }
+        });
+    });
+
+    $('.btnTopMethod').on('click', function (e) {
+        method = document.getElementById("select_de_method").value;
+        comparison = document.getElementById("select_de").value;
+
+        title = "Top DEGs "+comparison+" with "+method;
+        jobID = this.name;
+        $.ajax({
+             url: '{% url "ajax_plot_topDE" %}',
+             data: {
+                 "method" : method,
+                 "comparison" : comparison,
+                 "jobID":jobID
+             },
+             dataType: 'json',
+            success: function (dataE) {
+                $("#modalContentTopDE").html(dataE.plot);
+                $("#modalTitleTopDE").html(title);
+            }
+        });
+    });
+  
+</script> 
+
+
+<!-- On change of heatmap options, change plot -->
+<script>
+    $('#selectMethod').change(function(){ 
+        $("#modalContentHeatmap").html("<img src='{% static 'images/loading.gif' %}'>")
+
+        scale = document.getElementById("selectScale").value;
+        method = document.getElementById("selectMethod").value;
+        oldPlot = document.getElementById("parametersHeatmap").getAttribute('value');
+        
+        newPlot = oldPlot.replace('.png', '_'+method+"_"+scale+".png")
+        imageHeatmap  = '<img class="img-fluid" src="'+newPlot+'">';
+        $("#modalHeatmapContent").html(imageHeatmap);
+
+    });
+
+    $('#selectScale').change(function(){ 
+        $("#modalContentHeatmap").html("<img src='{% static 'images/loading.gif' %}'>")
+
+        scale = document.getElementById("selectScale").value;
+        method = document.getElementById("selectMethod").value;
+        oldPlot = document.getElementById("parametersHeatmap").getAttribute('value');
+        
+        newPlot = oldPlot.replace('.png', '_'+method+"_"+scale+".png")
+        imageHeatmap  = '<img class="img-fluid" src="'+newPlot+'">';
+        $("#modalHeatmapContent").html(imageHeatmap);
+
+    });
+</script>
+
+<!-- Select distribution plot and top-->
+<script>
+    $('#selectDistribution').change(function(){ 
+        valor = this.value;
+        newDiv = document.getElementById("distribution_"+valor);
+
+        const allDivs = document.getElementsByClassName('distributionPlot');
+        for (const div of allDivs) {
+        // 👇️ Remove element from DOM
+            div.style.display = 'none';
+        }
+        newDiv.style.display="block";
+    });
+</script>
+
+<script>
+    
+    $('#selectTop').change(function(){ 
+        valor = this.value;
+        newDiv = document.getElementById("top10_"+valor);
+        const allDivs = document.getElementsByClassName('topPlot');
+        for (const div of allDivs) {
+        // 👇️ Remove element from DOM
+            div.style.display = 'none';
+        }
+        newDiv.style.display="block";
+    });
+    $('#selectTopMethod').change(function(){ 
+        valor = this.value;
+        comparison = document.getElementById("selectTopComparison").value;
+        newDiv = document.getElementById("top10FC_"+valor+"_"+comparison);
+        const allDivs = document.getElementsByClassName('topFCPlot');
+        for (const div of allDivs) {
+        // 👇️ Remove element from DOM
+            div.style.display = 'none';
+        }
+        newDiv.style.display="block";
+    });
+    $('#selectTopComparison').change(function(){ 
+        valor = this.value;
+        method = document.getElementById("selectTopMethod").value;
+        newDiv = document.getElementById("top10FC_"+method+"_"+valor);
+        const allDivs = document.getElementsByClassName('topFCPlot');
+        for (const div of allDivs) {
+        // 👇️ Remove element from DOM
+            div.style.display = 'none';
+        }
+        newDiv.style.display="block";
+    });
+    $('#selectInfo').change(function(){ 
+        valor = this.value;
+        newDiv = document.getElementById("infoGain_"+valor);
+        const allDivs = document.getElementsByClassName('infoPlot');
+        for (const div of allDivs) {
+        // 👇️ Remove element from DOM
+            div.style.display = 'none';
+        }
+        newDiv.style.display="block";
+    });
+</script>
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
+<script>
+    $('#select_de_method').change(function(){ 
+        valor = this.value;
+        comparison = document.getElementById("select_de").value;
+        text  = "<b>Method:</b> "+valor+"<br><b>Comparison:</b> "+comparison;
+        $("#selectionDE").html(text);
+
+        newDiv = document.getElementById(valor+"_"+comparison);
+        const allDivs = document.getElementsByClassName('methodDETable');
+        for (const div of allDivs) {
+        // 👇️ Remove element from DOM
+            div.style.display = 'none';
+        }
+        newDiv.style.display="block";
+    });
+
+    $('#select_de').change(function(){ 
+        comparison = this.value;
+        valor = document.getElementById("select_de_method").value;
+        text  = "<b>Method:</b> "+valor+"<br><b>Comparison:</b> "+comparison;
+        $("#selectionDE").html(text);
+
+        newDiv = document.getElementById(valor+"_"+comparison);
+        const allDivs = document.getElementsByClassName('methodDETable');
+        for (const div of allDivs) {
+        // 👇️ Remove element from DOM
+            div.style.display = 'none';
+        }
+        newDiv.style.display="block";
+
+    });
+
+    $('#select_de_summary').change(function(){ 
+        comparison = this.value;
+        text  = "<b>"+comparison+"</b>";
+        $("#comparisonSummaryDE").html(text);
+
+        newDiv = document.getElementById("summaryDE_"+comparison);
+        const allDivs = document.getElementsByClassName('summaryDETable');
+        for (const div of allDivs) {
+        // 👇️ Remove element from DOM
+            div.style.display = 'none';
+        }
+        newDiv.style.display="block";
+    });
+
+    $('#select_de_consensus').change(function(){ 
+        comparison = this.value;
+        text  = "<b>"+comparison+"</b>";
+        $("#comparisonConsensusDE").html(text);
+
+        newDiv = document.getElementById("consensusDE_"+comparison);
+        button = document.getElementById("btnConsensus_"+comparison);
+        const allDivs = document.getElementsByClassName('consensusDETable');
+        const allButtons = document.getElementsByClassName('btnConsensus');
+        for (const div of allDivs) {
+        // 👇️ Remove element from DOM
+            div.style.display = 'none';
+        }
+        for (const btn of allButtons) {
+        // 👇️ Remove element from DOM
+            btn.style.display = 'none';
+        }
+        newDiv.style.display="block";
+        button.style.display="block";
+    });
+
+</script>
+
+    <script>
+        
+    </script>
+
+
+
+    <!-- To save bookmarks -->
+    <script>
+        $("#bookmarkt").click(function () {
+        var url = 'https://' + location.host; // i'm in a sub-page and bookmarking the home page
+        var name = "normSeq results {{ jobID }}";
+    
+        if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1){ //chrome
+            alert("Please to bookmark press " 
+                + (navigator.userAgent.toLowerCase().indexOf('mac') != -1 ? 
+                    'Command/Cmd' : 'CTRL') + "+D.")
+        } 
+        else if (window.sidebar) { // Mozilla Firefox Bookmark
+            //important for firefox to add bookmarks - remember to check out the checkbox on the popup
+            $(this).attr('rel', 'sidebar');
+            //set the appropriate attributes
+            $(this).attr('href', url);
+            $(this).attr('title', name);
+    
+            window.sidebar.addPanel('', '', '');
+        } 
+        else if (window.external) { // IE Favorite
+                window.external.addFavorite(url, name);
+        } 
+        return;
+    });
+    
+    </script>
+    
+{% endblock %}
+

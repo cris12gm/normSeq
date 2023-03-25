@@ -1,4 +1,104 @@
-<h5>Download Expression matrix</h5>
-{% for key, value in downloads.items %}
-    <a href="{{ value.0 }}" download="{{ value.1 }}"><button type="button" class="btn btn-success mt-3">{{ key}}</button></a>
-{% endfor %}
+<div id="accordion">
+    <div class="card">
+      <div class="card-header" id="collapseNormHeading">
+        <h5 class="mb-0">
+          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseNorm" aria-expanded="true" aria-controls="collapseNorm">
+            <h4>Normalized Expression Matrix</h4>
+          </button>
+        </h5>
+      </div>
+      <div id="collapseNorm" class="collapse show" aria-labelledby="collapseNormHeading" data-parent="#accordion">
+        <div class="card-body">
+            {% for key, value in downloads.normalized.items %}
+                <a href="{{ value.0 }}" download="{{ value.1 }}"><button type="button" class="btn btn-success mt-3">{{ key}}</button></a>
+            {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div class="card">
+        <div class="card-header" id="collapseInfoHeading">
+          <h5 class="mb-0">
+            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseInfo" aria-expanded="false" aria-controls="collapseInfo">
+              <h4>Information Gain</h4>
+            </button>
+          </h5>
+        </div>
+        <div id="collapseInfo" class="collapse" aria-labelledby="collapseInfoHeading" data-parent="#accordion">
+          <div class="card-body">
+              {% for key, value in downloads.info.items %}
+                  <a href="{{ value.0 }}" download="{{ value.1 }}"><button type="button" class="btn btn-success mt-3">{{ key}}</button></a>
+              {% endfor %}
+          </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header" id="collapsetop10Heading">
+          <h5 class="mb-0">
+            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapsetop10" aria-expanded="false" aria-controls="collapsetop10">
+              <h4>Top 10 {{typeJob}}s</h4>
+            </button>
+          </h5>
+        </div>
+        <div id="collapsetop10" class="collapse" aria-labelledby="collapsetop10Heading" data-parent="#accordion">
+          <div class="card-body">
+                <h5>Top 10 Expression {{typeJob}}s</h5>
+                {% for key, value in downloads.top10.items %}
+                    <a href="{{ value.0 }}" download="{{ value.1 }}"><button type="button" class="btn btn-success mt-3">{{ key}}</button></a>
+                {% endfor %}
+                <h5 class="mt-3">Top 10 FC {{typeJob}}s</h5>
+                {% for key, value in downloads.top10FC.items %}
+                    <p class="mt-3"><b>{{key}}:</b></p>
+                        {% for file,link in value.items %}
+                            <a href="{{ link.0 }}" download="{{ link.1 }}"><button type="button" class="btn btn-success mt-3">{{ file }}</button></a>
+                    {% endfor %}
+                {% endfor %}
+          </div>
+        </div>
+    </div>
+    {% if downloads.DE %}
+        <div class="card">
+            <div class="card-header" id="collapseDEHeading">
+                <h5 class="mb-0">
+                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseDE" aria-expanded="false" aria-controls="collapseDE">
+                        <h4>Differential Expression</h4>
+                    </button>
+                </h5>
+            </div>
+            <div id="collapseDE" class="collapse" aria-labelledby="collapseDEHeading" data-parent="#accordion">
+                <div class="card-body">
+                    <div class="mt-3 mb-3">
+                        {% for key, value in downloads.DE.items %}
+                            <h5 class="mt-3">{{key}}</h5>
+                            {% for file,link in value.items %}
+                                <a href="{{ link.0 }}" download="{{ link.1 }}"><button type="button" class="btn btn-success mt-3">{{ file }}</button></a>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>  
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <div class="card">
+        <div class="card-header" id="collapseAllHeading">
+          <h5 class="mb-0">
+            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseAll" aria-expanded="false" aria-controls="collapseAll">
+              <h4>All results</h4>
+            </button>
+          </h5>
+        </div>
+        <div id="collapseAll" class="collapse" aria-labelledby="collapseAllHeading" data-parent="#accordion">
+          <div class="card-body">
+              <a href="{{ downloads.all.0 }}" download="{{ downloads.all.1 }}"><button type="button" class="btn btn-success mt-3">All results</button></a>
+          </div>
+        </div>
+      </div>
+  </div>
+
+
+
+
+
+
+
+
+

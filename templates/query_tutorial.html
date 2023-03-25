@@ -1,0 +1,296 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block css %}
+<link href="{% static 'css/customStyles/stylesQuery.css'%}" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/stylesIntroJs.css' %}" type="text/css">
+{% endblock %}
+
+{% block modals %}
+    {% include "modals/query/chooseInput.html" %}
+    {% include "modals/query/chooseMethod.html" %}
+    {% include "modals/query/uploadAnnotation.html" %}
+    {% include "modals/query/chooseAnnotation.html" %}
+    {% include "modals/query/chooseParameters.html" %}
+{% endblock %}
+
+{% load crispy_forms_tags %}    
+
+{% block content %}
+
+<div class="menu-hide" id="menu-hide">
+    <div class="d-flex justify-content-center mt-3">
+        <img id="titleIndex" width="40%" src="{% static 'images/titleBig.png'%}">
+    </div>
+    
+    <hr>
+    <div class="row">
+        <div class="col-md-11"style="float:none;margin:auto;">
+            <div class="card">
+                <div class="card-body">
+                    <div class="text-center">
+                        <div class="btn-group btn-group-lg mr-3" role="group" id="aBtnGroup" aria-label="Basic example">
+                            <button type="button" value="miRNA" name="miRNA" class="btn btn-info">miRNA</button>
+                            <button type="button" value="mRNA" name="mRNA" class="btn btn-info">mRNA</button>
+                            <button type="button" value="tRNA" name="tRNA" class="btn btn-info">tRNA</button>
+                            <button type="button" value="feature" name="Other" class="btn btn-info">Other</button>
+                        </div>
+                        {% include 'query/exampletRNA.html' %}
+                        {% include 'query/examplemiRNA.html' %}
+                        <h5 id="ExampleLoaded" class="mt-2" style="color:#041C34;"></h5>
+                    </div>
+                    <h3 id="selectedRNA">
+                    </h3>
+                    <br>
+                    <div id="formMirna" style="display:block;">
+                        {% crispy form %}
+                    </div>
+                </div>
+            </div>
+            <div class='form-group'>
+            </div>  
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+
+<script src="{% static 'tour/intro.js' %}"></script>
+<script>
+    var intro = introJs();
+    var options_before = {
+        steps: [
+            { 
+                intro: "<center><h2>Welcome to <img src='{% static 'images/title_white.png'%}' width='250'><br></h2><p>NormSeq is a freely accessible web-server for data normalization, batch-effect correction and differential expression analysis of RNA-seq data. </p><p>The platform offers six normalization methods and comparison between them, together with multiple visualization options and downloadable outputs.<\p><p>This quick-start tutorial aims to guide the user through the NormSeq platform using the provided example tRNA expression dataset that consists of mouse tissue samples from the GEO dataset <a href='https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE141436'>GSE141436<\a>.The dataset consists of a tRNA-sequencing raw counts matrix, at tRNA isodecoder level, of 21 different samples from seven mouse tissues, derived from the central nervous system (CNS), liver, tibialis and heart mouse tissues.<\p><p>If you use the test dataset, please cite the following publication:<\p><p>Pinkard O, McFarland S, Sweet T, Coller J. Quantitative tRNA-sequencing uncovers metazoan tissue-specific tRNA regulation. Nat Commun. 2020 Aug 14;11(1):4104. doi: <a href='https://www.nature.com/articles/s41467-020-17879-x'>10.1038/s41467-020-17879-x</a>. PMID: 32796835; PMCID: PMC7428014.</p>",
+                tooltipClass:"tourBig"
+            },
+            {   element: document.querySelector('#loadExTRNA'),
+                click: true,
+                intro:"<h3>Load Example</h3>First, you can upload the example dataset to the web server by selecting <i>Load example data</i>.",
+            },
+            {   
+                element: document.querySelector('#ExampleLoaded'),
+                intro:"<h3>Load Example</h3>Example data was successfully loaded.",
+            },
+            {
+                element:document.querySelector('#input_card'),
+                intro:"<h3>Input matrix</h3><p>The first required input file is the input matrix.</p><p>The data input matrix can be provided in two different ways: 1) uploading a file; 2) introducing a link/URL. In both cases the <i>txt</i>, <i>csv</i>, <i>tsv</i>,and <i>xls</i> formats are allowed.</p><p>The input matrix should contain a raw read count table with a number of columns that matches the sample number and a number of rows that matches the number of features. The first column should be annotated as <i>name</i> and the following columns should be annotated with the sample names.</p><div class='d-flex justify-content-center annotation_table'><table><thead><tr><th class=>name</th><th>sample1</th><th>sample2</th><th>sample3</th></tr></thead><tbody><tr><td>RNA1</td><td>1280</td><td>2341</td><td>2214</td></tr><tr><td>RNA2</td><td>232</td><td class=>345</td><td>343</td></tr><tr><td>RNA3</td><td>12</td><td>24</td><td>21</td></tr></tbody></table></div>",
+                tooltipClass:"tourMed"
+            },
+            {
+                element:document.querySelector('#id_url'),
+                intro:"<h3>Input matrix</h3>In this case, the example data was loaded throught an URL.",
+            },
+            {
+                element:document.querySelector('#tab_upload'),
+                intro:"<h3>Input matrix </h3>You can also upload a file by clicking in the upload tab and submitting an input matrix in the allowed formats.",
+            },
+            {
+                element:document.querySelector('#annotation_card'),
+                intro:"<h3>Annotation matrix</h3><p>The second required input file is the annotation matrix.</p><p>The annotation matrix can be provided also in two different ways: 1) uploading a file; 2) introducing a link/URL. In both cases the <i>txt</i>, <i>csv</i>, <i>tsv</i>,and <i>xls</i> formats are allowed.</p><p>The annotation matrix should contain a table with two columns. The first one should correspond to the samples (same ones as in input matrix) and the second column should be the group to which that samples belong to. A minimum of two groups is required.</p><div class='annotation_table d-flex justify-content-center'><table><thead><tr><th>name</th><th>group</th></tr></thead><tbody><tr><td>sample1</td><td>Healthy</td></tr><tr><td>sample2</td><td>Healthy</td></tr><tr><td>sample3</td><td>Healthy</td></tr><tr><td>sample4</td><td>Disease</td></tr><tr><td>sample5</td><td>Disease</td></tr><tr><td>sample6</td><td>Disease</td></tr></tbody></table></div>",
+                tooltipClass:"tourMed"
+            },
+            {
+                element:document.querySelector('#parameters_card'),
+                intro:"<h3>Parameters</h3><p>In this section you can adjust several parameters of the analysis.",
+            },
+            {
+                element:document.querySelector('#div_id_methods'),
+                intro:"<h3>Parameters</h3><p>First, you can select the number of normalization method that you want to apply to your data. By default in the example dataset all are selected. You can change this, and also reset the selection by clicking in the select button below the list.</p>",
+            },
+            {
+                element:document.querySelector('#div_id_minrc'),
+                intro:"<h3>Parameters</h3><p>The minimum read count (RC) to consider a RNA in the analysis can be set by adjusting this parameter</p>",
+            },
+            {
+                element:document.querySelector('#div_id_diffExpr'),
+                intro:"<h3>Parameters</h3><p>A Differential Expression Analysis between the groups that have been provided in the annotation file is realized by default. In this section you can avoid it by selection <i>No</i>.</p>",
+            },
+            {
+                element:document.querySelector('#div_id_pval'),
+                intro:"<h3>Parameters</h3><p>You can also adjust the FDR value that is used as cut-off to determine a RNA as differentially expressed or not.</p>",
+            },
+            {
+                element:document.querySelector('#div_id_batchEffect'),
+                intro:"<h3>Parameters</h3><p>Finally, the possibility to select for batch effect correction is provided.</p>"
+            },
+            {
+                element:document.querySelector('#div_id_batchFile'),
+                intro:"<h3>Parameters</h3><p>If batch effect correction is selected, you will get the possibility to upload a batch annotation file. Analogously as the annotation file, it should be a two column file, with a first column with the name of the samples, and a second column with the batch effect group to which that sample belong to.</p><div class='annotation_table d-flex justify-content-center'><table><thead><tr><th>name</th><th>batch</th></tr></thead><tbody><tr><td>sample1</td><td>Lane1</td></tr><tr><td>sample2</td><td>Lane1</td></tr><tr><td>sample3</td><td>Lane2</td></tr><tr><td>sample4</td><td>Lane1</td></tr><tr><td>sample5</td><td>Lane2</td></tr><tr><td>sample6</td><td>Lane2</td></tr></tbody></table></div>",
+                tooltipClass:"tourMed"
+            },
+            {
+                element:document.querySelector('#div_id_batchEffect'),
+                intro:"<h3>Parameters</h3><p>In this example, we will not perform Batch Effect Correction, so that should be set to <i>No</i></p>"
+            },
+            {
+                element:document.querySelector('#submit'),
+                intro:"<h3>Submit</h3><p>Finally, you should press on submit to run NormSeq pipeline.</p>"
+            }            
+        ],
+        showStepNumbers:false,
+        hideNext:false,
+        disableInteraction:true,
+        tooltipClass:true,
+        // doneLabel:"Next →",
+        scrollTo:"tooltip"
+    };
+    intro.setOptions(options_before);
+    intro.onbeforechange(function () {
+
+        if (intro._currentStep == "2") {
+            document.getElementById("loadExTRNA").click();
+        }
+        if (intro._currentStep == "13") {
+            document.getElementById("id_batchEffect").value="True";
+            document.getElementById("divFileBatch").style.display="block";
+        }
+        if (intro._currentStep == "15") {
+            document.getElementById("id_batchEffect").value="False";
+            document.getElementById("divFileBatch").style.display="none";
+        }
+     });
+    intro.setOption('doneLabel', 'Go to results');
+    intro.oncomplete(function() {
+        window.location.href = "{% url 'tutorial_2' %}?multipage=true";
+    });
+    intro.start();
+</script>
+
+
+<script>
+    $(document).ready(
+        function() {
+              // Get click event, assign button to var, and get values from that var
+                $('#aBtnGroup button').on('click', function() {
+                    var thisBtn = $(this);
+                    
+                    thisBtn.addClass('active').siblings().removeClass('active');
+                    var btnValue = thisBtn.val();
+                    if (btnValue=='tRNA'){
+                        document.querySelectorAll('.exampletRNA').forEach(function(el) {
+                            el.style.display = 'block';
+                            });
+                        document.querySelectorAll('.examplemiRNA').forEach(function(el) {
+                            el.style.display = 'none';
+                            });
+                    }
+                    else if (btnValue=='miRNA'){
+                        document.querySelectorAll('.exampletRNA').forEach(function(el) {
+                            el.style.display = 'none';
+                            });
+                        document.querySelectorAll('.examplemiRNA').forEach(function(el) {
+                            el.style.display = 'block';
+                            });
+
+                    }
+                    else{
+                        document.querySelectorAll('.exampletRNA').forEach(function(el) {
+                            el.style.display = 'none';
+                            });
+                        document.querySelectorAll('.examplemiRNA').forEach(function(el) {
+                            el.style.display = 'none';
+                            });
+
+                    }
+
+                    
+                    if (btnValue=="feature") {
+                        var name = "Other"
+                    }
+                    else{
+                        var name = btnValue;
+                    }
+                    // document.getElementById("RNAselected").innerHTML = "<b>RNA class: </b>"+name;
+                    document.getElementById("selectedRNA").innerHTML = name;
+                    document.getElementById("id_typeJob").value = btnValue;
+
+                }); 
+                $('#aBtnGroup button[value="tRNA"]').click();
+    });
+    
+</script>
+
+
+<script>
+    $(document).ready(
+        function() {
+            var jobIDValue = document.getElementById("id_jobID");
+            jobIDValue.value = "{{ jobID }}";
+            document.getElementById("divFileBatch").style.display="none";
+        });
+
+</script>
+
+<!-- Load example data -->
+<script type="text/javascript">
+    $('#loadExTRNA').on('click', function(){
+        $('#aBtnGroup button[value="tRNA"]').click();
+        $('#id_url').val("https://arn.ugr.es/normSeq/static/testFiles/exampleTrna.txt");
+        $('[href="#url"]').tab('show');
+        $('#id_annotationURL').val("http://arn.ugr.es/normSeq/static/testFiles/annotationTrna.txt");
+        $('[href="#annotation_url"]').tab('show');
+        var ele=document.getElementsByName('methods');  
+                for(var i=0; i<ele.length; i++){  
+                    if(ele[i].type=='checkbox'){
+                        ele[i].checked=true;
+                    }
+                    
+                }     
+        document.getElementById("ExampleLoaded").innerHTML = "Example data was loaded";
+
+   });
+   $('#loadExMIRNA').on('click', function(){
+        $('#aBtnGroup button[value="miRNA"]').click();
+        $('#id_url').val("https://arn.ugr.es/normSeq/static/testFiles/exampleMirna.txt");
+        $('[href="#url"]').tab('show');
+        $('#id_annotationURL').val("http://arn.ugr.es/normSeq/static/testFiles/annotationMirna.txt");
+        $('[href="#annotation_url"]').tab('show');
+        var ele=document.getElementsByName('methods');  
+                for(var i=0; i<ele.length; i++){  
+                    if(ele[i].type=='checkbox'){
+                        ele[i].checked=true;
+                    }
+                    
+                }     
+        document.getElementById("ExampleLoaded").innerHTML = "Example data was loaded";
+
+   });
+   
+</script>
+
+<script>
+    $('#id_batchEffect').change(function(){ 
+            valor = this.value;
+            if (valor == 'True'){
+                document.getElementById("divFileBatch").style.display="block";
+            }
+            if (valor == 'False' ){
+                document.getElementById("divFileBatch").style.display="none";
+            }
+            
+        });
+</script>
+
+<script>
+    $('.select-all').click(function(){
+        var ele=document.getElementsByName('methods');  
+                for(var i=0; i<ele.length; i++){  
+                    if(ele[i].type=='checkbox')  
+                        ele[i].checked=true;  
+                }  
+    });
+    $('.deselect-all').click(function(){
+        var ele=document.getElementsByName('methods');  
+        for(var i=0; i<ele.length; i++){  
+                    if(ele[i].type=='checkbox')  
+                        ele[i].checked=false;  
+                }
+            });
+    $('.resetbtn').click(function(){
+        document.getElementById("ExampleLoaded").innerHTML = "";
+            });
+</script>
+
+{% endblock %}

@@ -276,7 +276,15 @@ for p in procs:
 log.close()
 status.close()
 
+os.system("rm "+jobDir+"/annotation_old.txt")
+
+zipFile = os.path.join(jobDir,"results_"+config["jobID"]+".zip")
+zipCmd = "cd "+jobDir+" && zip -r "+zipFile+" ./*"
+
+os.system(zipCmd)
+
 resultsFile = os.path.join(jobDir,"results.txt")
 os.system("touch "+resultsFile)
+
 
 sys.exit(0)

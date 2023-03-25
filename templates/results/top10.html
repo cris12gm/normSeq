@@ -20,9 +20,11 @@
                 </div>
                 {% for key, value in summary.top10.items %}
                     <div id="top10_{{key}}" class="topPlot" style="display:{{value.active}}" onmouseover="this.style.cursor='pointer';this.style.border = '1px solid #041C34';" onmouseout="this.style.border = '0px solid'">
-                        <a title="{{ value.name }}" name="{{ value.HTML }}" class="modalPlotTop" data-toggle="modal" data-target="#modalTargetTop">
-                            <img class="img-fluid" src="{{ value.PNG }}">
+                        <div class="d-flex justify-content-center">
+                            <a title="{{ value.name }}" name="{{ value.HTML }}" class="modalPlotTop" data-toggle="modal" data-target="#modalTargetTop">
+                                <img class="img-fluid" src="{{ value.PNG }}">
                             </a>
+                        </div>
                     </div>
                 {% endfor %}
             </div>
@@ -66,9 +68,11 @@
                         <!-- {{plot}} -->
                         <!-- {{plot}} -->
                         <div id="top10FC_{{key}}_{{group}}" class="topFCPlot" style="display:{{plot.active}}" onmouseover="this.style.cursor='pointer';this.style.border = '1px solid #041C34';" onmouseout="this.style.border = '0px solid'">
-                            <a title="{{ value.name }}" name="{{ plot.HTML }}" class="modalPlotTop" data-toggle="modal" data-target="#modalTargetTop">
-                                <img class="img-fluid" src="{{ plot.PNG }}">
+                            <div class="d-flex justify-content-center">
+                                <a title="{{ value.name }}" name="{{ plot.HTML }}" class="modalPlotTop" data-toggle="modal" data-target="#modalTargetTop">
+                                    <img class="img-fluid" src="{{ plot.PNG }}">
                                 </a>
+                            </div>
                         </div>
                         {% endfor %}
                     {% endfor %}

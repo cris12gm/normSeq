@@ -48,19 +48,55 @@
   }
   
   .introjs-button:hover, .introjs-button:focus {
-    background: #2c3e50;
+    background: #041C34;
     color: #fff;
     box-shadow: none;
-    border-color: #2c3e50;
+    border-color: #041C34;
     text-decoration: none;
   }
 .introjs-tooltip {
   max-width: 2000px;
+  font-size:18px;
 }
 
-.step1Tour {
+
+
+/* Annotation table */
+
+.annotation_table {
+  text-align: center;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.annotation_table td, .annotation_table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.annotation_table tr:nth-child(even){background-color: #f2f2f2;}
+
+.annotation_table tr:hover {background-color: #ddd;}
+
+.annotation_table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #041C34;
+  color: white;
+}
+
+
+.tourBig {
+  width:1000px;
+  max-width: 1080px;
+  font-size: 18px;
+}
+
+.tourMed {
   width:800px;
-  max-width: 2000px;
+  max-width: 1080px;
+  font-size: 18px;
 }
 .step8Tour {
     width:800px;
@@ -74,3 +110,4 @@
 #allPage{
   display:block;
 }
+

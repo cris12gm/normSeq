@@ -60,6 +60,7 @@ class Query(forms.Form):
                 title='Input Matrix',
                 id="input",
                 show=True,
+                id_card='input_card',
                 modal="Choose_Input",
             ),
             HTML("</div>"),
@@ -82,6 +83,7 @@ class Query(forms.Form):
                 title="Annotation",
                 id="annotation",
                 show=True,
+                id_card='annotation_card',
                 modal="Choose_Annotation"
             ),
             HTML("</div>"),
@@ -132,6 +134,7 @@ class Query(forms.Form):
                 ),
                 title="Parameters",
                 id="parameters",
+                id_card='parameters_card',
                 show=True,
                 modal="chooseParameters"
                 ),

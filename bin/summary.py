@@ -28,8 +28,9 @@ def createsummary(infile,df,method,jobDir,annotation_df,combinations):
     #Top10
     outfile = os.path.join(outDir,"top10_"+method+".html")
     outfileImage = os.path.join(outDir,"top10_"+method+".png")
+    outfileTxt = os.path.join(outDir,"top10_"+method+".txt")
     title = METHODS[method]
-    top10(df,outfile,outfileImage,title,annotation_df)
+    top10(df,outfile,outfileImage,outfileTxt,title,annotation_df)
 
     #Top10FC
     
@@ -60,7 +61,7 @@ def distribution(df,annotation_df,outfile,outfileImage,title):
     outfile_W.close()
 
 
-def top10(df,outfile,outfileImage,title,annotation):
+def top10(df,outfile,outfileImage,outfileTxt,title,annotation):
     media = df.mean(axis=1)
     top10 = list(media.nlargest(10).index)
     
@@ -68,6 +69,8 @@ def top10(df,outfile,outfileImage,title,annotation):
     result = df.loc[top10].T
     result = pd.merge(result, annotation, left_index =True ,right_index=True)
 
+    result.to_csv(outfileTxt,sep="\t")
+    
     fig = go.Figure()
 
     fig = px.box(result,color='group',
@@ -95,6 +98,7 @@ def top10fc(df,outDir,combinations,method,title,annotation_df):
         
         outfile = os.path.join(outDir,"top10FC_"+method+"_"+group1+"-"+group2+".html")
         outfileImage = os.path.join(outDir,"top10FC_"+method+"_"+group1+"-"+group2+".png")
+        outFiletxt = os.path.join(outDir,"top10FC_"+method+"_"+group1+"-"+group2+".txt")
 
 
         samplesFilterg1 = annotation_df[annotation_df['group'] == group1]
@@ -119,6 +123,7 @@ def top10fc(df,outDir,combinations,method,title,annotation_df):
         result_expr = df.loc[top10].T
         result_expr = pd.merge(result_expr, annotation_df, left_index =True ,right_index=True)
 
+        result_expr.to_csv(outFiletxt,sep="\t")
         fig = go.Figure()
 
         fig = px.box(result_expr,color='group',title=titlePlot,

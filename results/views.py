@@ -90,16 +90,30 @@ class Results(TemplateView):
 
         #InfoGain per group
         infoGain = {}
+        downloads['info'] = {}
         for group in Info_Groups:
             info = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".html")
             infoPNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".png")
             infoGain[group] = {'HTML':info,'PNG':infoPNG,'name':"Information Gain "}
+            downloadLink = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".txt")
+            try:
+                values = downloads['info'][group]
+            except:
+                downloads['info'][group] = {}
+            downloads['info'][group] = [downloadLink,"infoGain_"+group+".txt"]
 
         infoGainPairwise = {}
         for group in FC_groups:
             info = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".html")
             infoPNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".png")
             infoGainPairwise[group] = {'HTML':info,'PNG':infoPNG,'name':"Information Gain "}
+
+            downloadLink = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".txt")
+            try:
+                values = downloads['info'][group]
+            except:
+                downloads['info'][group] = {}
+            downloads['info'][group] = [downloadLink,"infoGain_"+group+".txt"]
         
 
         ## Features
@@ -111,6 +125,7 @@ class Results(TemplateView):
         diffExpr = {}
         consensus = {}
         topDEPerMethod = {}
+        downloads['DE']={}
         if config['diffExpr'] == 'True':
             try:
                 groupsFile = open(os.path.join(settings.MEDIA_ROOT,jobID,"DE","groups.txt"),'r')
@@ -121,6 +136,7 @@ class Results(TemplateView):
                 
                 for group in groups:
                     group = group.replace("-","_")
+                    groupFile = group
                     group1 = group.split("_")[0]
                     group2 = group.split("_")[1]
                     summaryDE,resultsGroup,consensusM = de_prepare(jobID,group,group1,group2)
@@ -128,9 +144,30 @@ class Results(TemplateView):
                     diffExpr[group]= summaryDE,resultsGroup
                     consensus[group] = consensusM
                     topDEPerMethod[group] = de_prepareTop(jobID,group)
+
+                    #Downloads DE
+                    protocols = {}
+                    protocols = {"edgeR":"edgeR","DESeq2":"deseq2","NOISeq":"noiseq","T-Test":"test"}
+                    
+                    for protocolName in protocols:
+                        protocolFile = protocols[protocolName]
+                        downloadLink = os.path.join(settings.MEDIA_URL,jobID,"DE",protocolFile+"_"+groupFile+".txt")
+                        try:
+                            values = downloads['DE'][protocolName]
+                        except:
+                            downloads['DE'][protocolName] = {}
+                        downloads['DE'][protocolName][group] = [downloadLink,protocolFile+"_"+groupFile+".txt"]
             except:
                 pass
 
+        ##Downloads All
+        downloadLink = os.path.join(settings.MEDIA_URL,jobID,"results_"+jobID+".zip")
+        downloads['all'] = {}
+        downloads['all'] = [downloadLink,"results_"+jobID+".zip"]
+
+        downloads['normalized'] = {}
+        downloads['top10FC'] = {}
+        downloads['top10'] = {}
         #Visualization
         for method in methods:
 
@@ -176,6 +213,14 @@ class Results(TemplateView):
             else:
                 top10[method]['active'] = "none;"
 
+            #Downloads
+            downloadLink = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","top10_"+method+".txt")
+            try:
+                values = downloads['top10'][METHODS[method]]
+            except:
+                downloads['top10'][METHODS[method]] = []
+            downloads['top10'][METHODS[method]] = [downloadLink,method+".txt"]
+
             #Top miRNAS FC
             top10FC[method] = {}
 
@@ -199,6 +244,15 @@ class Results(TemplateView):
                         top10FC[method]["data"][element]['active'] = "block;"
                     else:
                         top10FC[method]["data"][element]['active'] = "none;"
+
+                    #Downloads
+                    downloadLink = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","top10FC_"+method+"_"+element+".txt")
+                    try:
+                        values = downloads['top10FC'][METHODS[method]]
+                    except:
+                        downloads['top10FC'][METHODS[method]] = {}
+                    downloads['top10FC'][METHODS[method]][element] = [downloadLink,method+"_"+element+".txt"]
+
                     j = 1
             if config['batchEffect'] == 'True':
                 #Batch effect Plots
@@ -216,10 +270,10 @@ class Results(TemplateView):
                 batchEffect=False
 
 
-            ##Downloads
+            ##Downloads Normalized
             downloadLink = os.path.join(settings.MEDIA_URL,jobID,"normalized","matrix_"+method+".txt")
+            downloads['normalized'][METHODS[method]] = [downloadLink,"matrix_"+method+".txt"]
 
-            downloads[METHODS[method]] = [downloadLink,"matrix_"+method+".txt"]
             i = i + 1 
 
         summary = {'distribution':distribution,'top10':top10,'top10FC':top10FC,'FC_groups':FC_groups,'info':infoGain,'infoPairwise':infoGainPairwise}
@@ -423,3 +477,254 @@ def getInfraOver(df):
     output = {"over":overExpressed_names,"infra":infraExpressed_names,"numOver":overExpressed_number,"numInfra":infraExpressed_number}
 
     return output
+
+
+class Results_tutorial(TemplateView):
+    template = 'results_tutorial.html'
+
+    def get(self, request):
+        
+        jobID = 'QYV6F9IIPTEOG1E'
+
+        #Get config file
+
+        configFile = open(settings.MEDIA_ROOT+jobID+'/config.json')
+        config = json.load(configFile)
+
+        methods = config['methods']
+        jobDir = config['jobDir']
+        typeJob = config['typeJob']
+
+        start_date = datetime.date.today()
+        end_date = start_date + datetime.timedelta(days=15)
+        
+        ##All visualizations
+        visualization = False
+
+        heatmap = []
+        pca = []
+        downloads = {}
+        distribution = {}
+        top10 = {}
+        top10FC = {}
+        de_groups={}
+        features = {}
+
+        i = 0
+        j = 0
+
+        Info_Groups = []
+        try:
+            groupsFile = open(os.path.join(settings.MEDIA_ROOT,jobID,"graphs","summary","groups.txt"),'r')
+            for line in groupsFile:
+                Info_Groups.append(line.strip())
+
+        except:
+            pass
+
+        FC_groups = []
+        try:
+            groupsFile = open(os.path.join(settings.MEDIA_ROOT,jobID,"graphs","summary","combinations.txt"),'r')
+            for line in groupsFile:
+                FC_groups.append(line.strip())
+        except:
+            pass
+
+
+        #InfoGain per group
+        infoGain = {}
+        downloads['info'] = {}
+        for group in Info_Groups:
+            info = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".html")
+            infoPNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".png")
+            infoGain[group] = {'HTML':info,'PNG':infoPNG,'name':"Information Gain "}
+            downloadLink = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".txt")
+            try:
+                values = downloads['info'][group]
+            except:
+                downloads['info'][group] = {}
+            downloads['info'][group] = [downloadLink,"infoGain_"+group+".txt"]
+
+        infoGainPairwise = {}
+        for group in FC_groups:
+            info = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".html")
+            infoPNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".png")
+            infoGainPairwise[group] = {'HTML':info,'PNG':infoPNG,'name':"Information Gain "}
+
+            downloadLink = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".txt")
+            try:
+                values = downloads['info'][group]
+            except:
+                downloads['info'][group] = {}
+            downloads['info'][group] = [downloadLink,"infoGain_"+group+".txt"]
+        
+
+        ## Features
+        no_normalized = os.path.join(settings.MEDIA_ROOT,jobID,"normalized","matrix_NN.txt")
+        features = (pd.read_table(no_normalized)['name']).tolist()
+        features.sort()
+
+        ##Dif expr
+        diffExpr = {}
+        consensus = {}
+        topDEPerMethod = {}
+        downloads['DE']={}
+        if config['diffExpr'] == 'True':
+            try:
+                groupsFile = open(os.path.join(settings.MEDIA_ROOT,jobID,"DE","groups.txt"),'r')
+                groups = []
+                for line in groupsFile:
+                    groups.append(line.strip())
+                de_groups = groups
+                
+                for group in groups:
+                    group = group.replace("-","_")
+                    groupFile = group
+                    group1 = group.split("_")[0]
+                    group2 = group.split("_")[1]
+                    summaryDE,resultsGroup,consensusM = de_prepare(jobID,group,group1,group2)
+                    group = group.replace("_","-")
+                    diffExpr[group]= summaryDE,resultsGroup
+                    consensus[group] = consensusM
+                    topDEPerMethod[group] = de_prepareTop(jobID,group)
+
+                    #Downloads DE
+                    protocols = {}
+                    protocols = {"edgeR":"edgeR","DESeq2":"deseq2","NOISeq":"noiseq","T-Test":"test"}
+                    
+                    for protocolName in protocols:
+                        protocolFile = protocols[protocolName]
+                        downloadLink = os.path.join(settings.MEDIA_URL,jobID,"DE",protocolFile+"_"+groupFile+".txt")
+                        try:
+                            values = downloads['DE'][protocolName]
+                        except:
+                            downloads['DE'][protocolName] = {}
+                        downloads['DE'][protocolName][group] = [downloadLink,protocolFile+"_"+groupFile+".txt"]
+            except:
+                pass
+
+        ##Downloads All
+        downloadLink = os.path.join(settings.MEDIA_URL,jobID,"results_"+jobID+".zip")
+        downloads['all'] = {}
+        downloads['all'] = [downloadLink,"results_"+jobID+".zip"]
+
+        downloads['normalized'] = {}
+        downloads['top10FC'] = {}
+        downloads['top10'] = {}
+        #Visualization
+        for method in methods:
+
+            pngHeatmap = os.path.join(settings.MEDIA_URL,jobID,"graphs","heatmap_"+method+".png")
+            id_modal = "heatmap_"+method
+            title_modal = METHODS[method]
+            #heatmapHTML = os.path.join(settings.MEDIA_URL,jobID,"graphs","heatmap_"+method+".html")
+
+            # heatmap.append([pngHeatmap,heatmapHTML,id_modal,title_modal])
+            heatmap.append([pngHeatmap,id_modal,title_modal])
+            
+
+            pngPCA = os.path.join(settings.MEDIA_URL,jobID,"graphs","pca_"+method+".png")
+            id_modal = "pca_"+method
+            title_modal = METHODS[method]
+            pcaHTML = os.path.join(settings.MEDIA_URL,jobID,"graphs","pca_"+method+".html")
+
+            pca.append([pngPCA,pcaHTML,id_modal,title_modal])
+
+            #Summary
+            #Distribution
+            distribution[method] = {}
+            distributionHTML = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","distribution_"+method+".html")
+            distributionPNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","distribution_"+method+".png")
+            distribution[method]['HTML'] = distributionHTML
+            distribution[method]['PNG'] = distributionPNG
+            distribution[method]['name'] = METHODS[method]
+            if i==0:
+                distribution[method]['active'] = "block;"
+            else:
+                distribution[method]['active'] = "none;"
+               
+
+            #Top miRNAS
+            top10[method] = {}
+            top = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","top10_"+method+".html")
+            topPNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","top10_"+method+".png")
+            top10[method]['HTML'] = top
+            top10[method]['PNG'] = topPNG
+            top10[method]['name'] = METHODS[method]
+            if i==0:
+                top10[method]['active'] = "block;"
+            else:
+                top10[method]['active'] = "none;"
+
+            #Downloads
+            downloadLink = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","top10_"+method+".txt")
+            try:
+                values = downloads['top10'][METHODS[method]]
+            except:
+                downloads['top10'][METHODS[method]] = []
+            downloads['top10'][METHODS[method]] = [downloadLink,method+".txt"]
+
+            #Top miRNAS FC
+            top10FC[method] = {}
+
+            if FC_groups:
+
+                top10FC[method]['name'] = METHODS[method]
+                top10FC[method]["comparisons"] = FC_groups
+                top10FC[method]["data"] = {}
+
+                for element in FC_groups:
+                    topFC = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","top10FC_"+method+"_"+element+".html")
+                    topFCPNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","top10FC_"+method+"_"+element+".png")
+                    try:
+                        value = top10FC[method]["data"][element]
+                    except:
+                        top10FC[method]["data"][element] = {}
+                    top10FC[method]["data"][element]['HTML'] = topFC
+                    top10FC[method]["data"][element]['PNG'] = topFCPNG
+                    top10FC[method]["data"][element]['name'] = METHODS[method]
+                    if j==0:
+                        top10FC[method]["data"][element]['active'] = "block;"
+                    else:
+                        top10FC[method]["data"][element]['active'] = "none;"
+
+                    #Downloads
+                    downloadLink = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","top10FC_"+method+"_"+element+".txt")
+                    try:
+                        values = downloads['top10FC'][METHODS[method]]
+                    except:
+                        downloads['top10FC'][METHODS[method]] = {}
+                    downloads['top10FC'][METHODS[method]][element] = [downloadLink,method+"_"+element+".txt"]
+
+                    j = 1
+            if config['batchEffect'] == 'True':
+                #Batch effect Plots
+                batchEffect = {}
+                before = os.path.join(settings.MEDIA_URL,jobID,"graphs","batchEffect","pca_old.html")
+                beforePNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","batchEffect","pca_old.png")
+                after = os.path.join(settings.MEDIA_URL,jobID,"graphs","batchEffect","pca_corrected.html")
+                afterPNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","batchEffect","pca_corrected.png")
+            
+                batchEffect['before'] = before
+                batchEffect['beforePNG'] = beforePNG
+                batchEffect['after'] = after
+                batchEffect['afterPNG'] = afterPNG
+            else:
+                batchEffect=False
+
+
+            ##Downloads Normalized
+            downloadLink = os.path.join(settings.MEDIA_URL,jobID,"normalized","matrix_"+method+".txt")
+            downloads['normalized'][METHODS[method]] = [downloadLink,"matrix_"+method+".txt"]
+
+            i = i + 1 
+
+        summary = {'distribution':distribution,'top10':top10,'top10FC':top10FC,'FC_groups':FC_groups,'info':infoGain,'infoPairwise':infoGainPairwise}
+
+        if heatmap or pca:
+            visualization=True
+
+        de_software = ["edgeR","DESeq2","NOISeq","TTest"]
+        return render(request, self.template, {"jobID":jobID,"typeJob":typeJob,"visualization":visualization,"heatmapPlots":heatmap,
+        "pcaPlots":pca,"batchEffect":batchEffect,"downloads":downloads,"summary":summary,"de":diffExpr,"de_groups":de_groups,'date':end_date,
+        'consensus':consensus,'de_software':de_software, 'topDEPerMethod':topDEPerMethod,'features':features})

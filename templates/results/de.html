@@ -3,11 +3,11 @@
     <button class="nav-link border-0 active btn-lg" id="pills-summaryDE-tab" data-toggle="pill" data-target="#pills-summaryDE" type="button" role="tab" aria-controls="pills-summaryDE" aria-selected="true">Summary</button>
   </li>
   <li class="nav-item" role="presentation">
-    <button class="nav-link tabs-plots border-0 btn-lg" id="pills-method-tab" data-toggle="pill" data-target="#pills-method" type="button" role="tab" aria-controls="pills-method" aria-selected="false">Results per method</button>
+    <button class="nav-link tabs-plots border-0 btn-lg" id="pills-method-tab" data-toggle="pill" data-target="#pills-methodDE" type="button" role="tab" aria-controls="pills-method" aria-selected="false">Results per method</button>
   </li>
   {% if consensus %}
   <li class="nav-item" role="presentation">
-    <button class="nav-link tabs-plots border-0 btn-lg" id="pills-consensus-tab" data-toggle="pill" data-target="#pills-consensus" type="button" role="tab" aria-controls="pills-consensus" aria-selected="false">Consensus Differential Expression</button>
+    <button class="nav-link tabs-plots border-0 btn-lg" id="pills-consensus-tab" data-toggle="pill" data-target="#pills-consensusDE" type="button" role="tab" aria-controls="pills-consensus" aria-selected="false">Consensus Differential Expression</button>
   </li>
   {% endif %}
 </ul>
@@ -17,11 +17,11 @@
       {% include "results/de/summary.html" %}
 
   </div>
-  <div class="tab-pane fade" id="pills-method" role="tabpanel" aria-labelledby="pills-method-tab">
+  <div class="tab-pane fade" id="pills-methodDE" role="tabpanel" aria-labelledby="pills-method-tab">
     {% include "results/de/permethod.html" %}
   </div>
   {% if consensus %}
-  <div class="tab-pane fade" id="pills-consensus" role="tabpanel" aria-labelledby="pills-consensus-tab">
+  <div class="tab-pane fade" id="pills-consensusDE" role="tabpanel" aria-labelledby="pills-consensus-tab">
     {% include "results/de/consensus.html" %}
   </div>
   {% endif %}
