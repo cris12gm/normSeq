@@ -189,13 +189,10 @@
         ],
         showStepNumbers:false,
         hideNext:false,
-        disableInteraction:true,
         tooltipClass:true,
         doneLabel:"Try it yourself!",
         scrollTo:"tooltip",
         hidePrev:true,
-        exitOnEsc:false,
-        exitOnOverlayClick:false,
     };
     intro.setOptions(options_before);
     intro.onbeforechange(function () {
@@ -258,6 +255,9 @@
 
     intro.oncomplete(function() {
         window.location.href = "{% url 'query' %}";
+    });
+    intro.onexit(function() {
+        window.location.href = "{% url 'home' %}";
     });
     
     intro.start();
