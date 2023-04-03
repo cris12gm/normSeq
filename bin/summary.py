@@ -10,8 +10,6 @@ import numpy as np
 from plotly.subplots import make_subplots
 from config import METHODS,R_PATH,R_SCRIPTS_PATH
 import plotly.figure_factory as ff
-import seaborn as sns
-import matplotlib.pyplot as plt
 
 def createsummary(infile,df,method,jobDir,annotation_df,combinations):
     outDir = os.path.join(jobDir,"graphs","summary")
