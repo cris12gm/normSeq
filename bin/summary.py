@@ -10,6 +10,8 @@ import numpy as np
 from plotly.subplots import make_subplots
 from config import METHODS,R_PATH,R_SCRIPTS_PATH
 import plotly.figure_factory as ff
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 def createsummary(infile,df,method,jobDir,annotation_df,combinations):
     outDir = os.path.join(jobDir,"graphs","summary")
@@ -43,11 +45,31 @@ def distribution(df,annotation_df,outfile,outfileImage,title):
     fig = make_subplots(rows=1, cols=1)
     hist_data = []
     group_labels = []
+    colors_labels = []
+    dfResults = pd.merge(df.T,annotation_df,left_index=True,right_index=True).T
+    groups = dfResults.T['group']
+    colors = {}
+    named_colorscales = px.colors.qualitative.Plotly
+    i = 0
+    for element in groups:
+        try:
+            value = colors[element]
+        except:
+            colors[element] = named_colorscales[i]
+            i = i + 1
     for col in df.columns:
         hist_data_this = np.log10(df[col]+1).values.tolist()
         hist_data.append(hist_data_this)
-        group_labels.append(col)
-    fig = ff.create_distplot(hist_data,group_labels,show_hist=False,show_rug=False)
+        name = dfResults[col]['group']
+        group_labels.append(name)
+        colors_labels.append(colors[name])
+
+    fig = ff.create_distplot(hist_data,group_labels,colors=colors_labels,show_hist=False,show_rug=False)
+    names = set()
+    fig.for_each_trace(
+    lambda trace:
+        trace.update(showlegend=False)
+        if (trace.name in names) else names.add(trace.name))
     fig.update_layout(title_text=title,xaxis_title="Log10(Expression)",
     yaxis_title="Density",
     font=dict(

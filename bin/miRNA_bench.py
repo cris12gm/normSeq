@@ -258,7 +258,6 @@ for method in normalized:
 #Summary
     createsummary(normfile,normdf,method,jobDir,annotation_df,combinations)
     log.write("5. Visualization\n")
-
 #Plots
     cmd_plots = createplots(normfile,normdf,method,jobDir,annotation,annotation_df,cmd_plots)
 
