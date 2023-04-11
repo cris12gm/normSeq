@@ -47,7 +47,7 @@ def distribution(df,annotation_df,outfile,outfileImage,title):
     dfResults = pd.merge(df.T,annotation_df,left_index=True,right_index=True).T
     groups = dfResults.T['group']
     colors = {}
-    named_colorscales = px.colors.qualitative.Plotly
+    named_colorscales = px.colors.qualitative.Dark24
     i = 0
     for element in groups:
         try:
