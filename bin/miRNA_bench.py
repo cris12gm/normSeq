@@ -51,7 +51,7 @@ except:
 
 #Get df
 try:
-    df,dfOriginal = processInputInit(os.path.join(jobDir,"matrix.txt"),samples,config['minRC'])
+    df,dfOriginal = processInputInit(os.path.join(jobDir,"matrix.txt"),samples,config['minRC'],annotation_df)
 except:
     error = open(errorFile, 'a')
     error.write("<p>Normalized file couldn't be safe. Please, check the format guidelines <a href='https://arn.ugr.es/normseq_doc/annotation/'>here</a></p>")

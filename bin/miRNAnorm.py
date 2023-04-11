@@ -7,7 +7,7 @@ from config import R_PATH
 from config import R_SCRIPTS_PATH
 
 
-def processInputInit(infile,samples,minRC):
+def processInputInit(infile,samples,minRC,annotation_df):
     cabecera = open(infile).readline().split("\t")[0]
     df = pd.read_table(infile)
     df = df.rename(columns=lambda s: s.replace("_", ""))
@@ -24,6 +24,8 @@ def processInputInit(infile,samples,minRC):
     dfF = dfF.loc[~(dfF==0).all(axis=1)]
     dfF = dfF[dfF>=minRC]
     dfF=dfF.dropna(axis=0)
+    samples = annotation_df.index.values
+    dfF=dfF[samples]
     return(dfF,dfOriginal)
 
 
