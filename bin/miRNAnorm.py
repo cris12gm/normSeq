@@ -19,13 +19,31 @@ def processInputInit(infile,samples,minRC,annotation_df):
     df = df.set_index('name')
     df = df.dropna()
     dfF = df[samples]
+    try:
+        dfF = dfF[dfF>=0]
+    except:
+        df = pd.read_table(infile,decimal=",")
+        df = df.rename(columns=lambda s: s.replace("_", ""))
+        df = df.rename(columns=lambda s: s.replace(" ", ""))
+        if cabecera!="":
+            df.rename(columns = {cabecera:'name'}, inplace = True)
+        else:
+            df.rename(columns = {list(df)[0]:'name'}, inplace=True)
+        df = df.set_index('name')
+        df = df.dropna()
+        dfF = df[samples]
+
     dfOriginal = dfF
     minRC = int(minRC)
     dfF = dfF.loc[~(dfF==0).all(axis=1)]
     dfF = dfF[dfF>=minRC]
     dfF=dfF.dropna(axis=0)
+
     samples = annotation_df.index.values
     dfF=dfF[samples]
+
+    print(dfF)
+    print (dfOriginal)
     return(dfF,dfOriginal)
 
 
