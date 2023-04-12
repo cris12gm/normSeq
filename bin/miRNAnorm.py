@@ -42,12 +42,10 @@ def processInputInit(infile,samples,minRC,annotation_df):
     samples = annotation_df.index.values
     dfF=dfF[samples]
 
-    print(dfF)
-    print (dfOriginal)
     return(dfF,dfOriginal)
 
 
-def processInput(infile,minRC):
+def processInput(infile,minRC,annotation_df):
     cabecera = open(infile).readline().split("\t")[0]
     df = pd.read_table(infile)
     if cabecera!="":
@@ -57,6 +55,9 @@ def processInput(infile,minRC):
     df = df.set_index('name')
     dfF = df.dropna()
 
+    samples = annotation_df.index.values
+    dfF=dfF[samples]
+    
     return(dfF)
 
 def processAnnotation(infile):
