@@ -6,8 +6,8 @@ from plots import pca
 from config import R_PATH
 from config import R_SCRIPTS_PATH
 
-def combat(infile,annotation,outfile):
-    subprocess.call (R_PATH+" --vanilla "+R_SCRIPTS_PATH+"combat.R "+infile+" "+annotation+" "+outfile,shell=True)
+def combat(infile,annotation_batch,annotation,outfile):
+    subprocess.call (R_PATH+" --vanilla "+R_SCRIPTS_PATH+"combat.R "+infile+" "+annotation_batch+" "+annotation+" "+outfile,shell=True)
 
 def plotsBatch(dfCorrected,dfOld,annotation_df,jobDir):
     

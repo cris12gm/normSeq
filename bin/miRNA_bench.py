@@ -87,7 +87,7 @@ infile = os.path.join(jobDir,"normalized","matrix_NN.txt")
 if config['batchEffect'] == 'True':
     batchAnnotation = os.path.join(jobDir,"batchFile.txt")
     outfile = os.path.join(jobDir,"matrix_corrected.txt")
-    combat(infile,batchAnnotation,outfile)
+    combat(infile,batchAnnotation,annotation,outfile)
     oldMatrix = os.path.join(jobDir,"matrix_old.txt")
     os.rename(infile, oldMatrix)
     os.rename(outfile, infile)

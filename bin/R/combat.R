@@ -15,21 +15,28 @@ matrix = subset(matrix, select = -c(name) )
 keep <- rowSums(matrix>0) > 0
 df <- matrix[keep, ]
 
-
 batchSheet <- read.table(args[2],header=T,sep="\t",check.names=FALSE)
 batchSheet$Sample <- make.names(batchSheet$sample)
 row.names(batchSheet) <- batchSheet$sample
 batchSheet$sample <- NULL
 
+annotationSheet <- read.table(args[3],header=T,sep="\t",check.names=FALSE)
+row.names(annotationSheet) <- annotationSheet$sample
+annotationSheet$sample <- NULL
 
-batchSheet <- batchSheet[order(batchSheet$Sample),]
+merged <- merge(batchSheet, annotationSheet, by.x = 0, by.y = 0)
+row.names(merged) <- merged$Row.names
+merged$Row.names <- NULL
+
+batchSheet <- merged[order(merged$Sample),]
 df <- t(t(df)[order(row.names(t(df))), ])
 
-output <- args[3]
+output <- args[4]
 
 batch <- batchSheet$batchEffect
+groups <- batchSheet$group
 
-adjusted <- ComBat_seq(df, batch=batch, group=NULL)
+adjusted <- ComBat_seq(df, batch=batch, group=groups)
 adjusted <- tibble::rownames_to_column(as.data.frame(adjusted), "name")
 
 write.table(adjusted,output,sep="\t",row.names=FALSE, quote=FALSE,col.names=TRUE)
