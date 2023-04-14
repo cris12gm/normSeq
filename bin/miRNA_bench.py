@@ -101,7 +101,8 @@ if config['batchEffect'] == 'True':
         error.close()
         sys.exit(0)
     
-    plotsBatch(dfCorrected,dfOld,annotation_df,jobDir)
+    batch_df,samples = processAnnotation(batchAnnotation)
+    plotsBatch(dfCorrected,dfOld,batch_df,jobDir)
     df = dfCorrected
 
     os.system("rm "+outfile_NN)
