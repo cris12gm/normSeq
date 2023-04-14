@@ -2,7 +2,7 @@ import os,sys
 import pandas as pd
 import numpy as np
 import subprocess
-from plots import pca
+from plots import pca_batch
 from config import R_PATH
 from config import R_SCRIPTS_PATH
 
@@ -20,7 +20,7 @@ def plotsBatch(dfCorrected,dfOld,annotation_df,jobDir):
 
     outfile = os.path.join(outDir,"pca_corrected.html")
     outfileImage = os.path.join(outDir,"pca_corrected.png")
-    pca(dfCorrected,annotation_df,outfile,outfileImage)
+    pca_batch(dfCorrected,annotation_df,outfile,outfileImage)
     outfile = os.path.join(outDir,"pca_old.html")
     outfileImage = os.path.join(outDir,"pca_old.png")
-    pca(dfOld,annotation_df,outfile,outfileImage)
+    pca_batch(dfOld,annotation_df,outfile,outfileImage)
