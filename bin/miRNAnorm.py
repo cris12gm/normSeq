@@ -17,8 +17,9 @@ def processInputInit(infile,samples,minRC,annotation_df):
     else:
         df.rename(columns = {list(df)[0]:'name'}, inplace=True)
     df = df.set_index('name')
+    samples_df = list(set(samples) & set(df.columns))
     df = df.dropna()
-    dfF = df[samples]
+    dfF = df[samples_df]
     try:
         dfF = dfF[dfF>=0]
     except:
@@ -41,7 +42,6 @@ def processInputInit(infile,samples,minRC,annotation_df):
 
     samples = annotation_df.index.values
     dfF=dfF[samples]
-
     return(dfF,dfOriginal)
 
 
