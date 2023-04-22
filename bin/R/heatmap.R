@@ -1,8 +1,8 @@
 args = commandArgs(trailingOnly=TRUE)
-library(pheatmap)
-library(stringr)
-library(RColorBrewer)
-library(ggplot2)
+suppressMessages(library(pheatmap))
+suppressMessages(library(stringr))
+suppressMessages(library(RColorBrewer))
+suppressMessages(library(ggplot2))
 
 matrix <- read.table(args[1],header=TRUE,sep="\t",check.names=FALSE,row.names=1)
 

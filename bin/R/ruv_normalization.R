@@ -1,6 +1,7 @@
 args = commandArgs(trailingOnly=TRUE)
 
-library(RUVSeq)
+suppressMessages(library(RUVSeq))
+suppressMessages(library(EDASeq))
 
 matrix <- read.table(args[1],header=TRUE,sep="\t")
 
@@ -13,19 +14,21 @@ matrix = subset(matrix, select = -c(name) )
 keep <- rowSums(matrix>0) > 0
 df <- matrix[keep, ]
 
-design <- model.matrix(~x, data=df)
-y <- DGEList(counts=counts(set), group=x)
-y <- calcNormFactors(y, method="upperquartile")
-y <- estimateGLMCommonDisp(y, design)
-y <- estimateGLMTagwiseDisp(y, design)
-
-fit <- glmFit(y, design)
-res <- residuals(fit, type="deviance")
+annotationSheet <- read.table(args[2],header=T,sep="\t",check.names=FALSE)
+row.names(annotationSheet) <- annotationSheet$sample
+annotationSheet$sample <- NULL
 
 
-normalized <- normalizeQuantiles(df, ties=TRUE)
+x<-as.factor(annotationSheet$replicate)
+set<-newSeqExpressionSet(as.matrix(df), phenoData=data.frame(x,row.names=colnames(df)))
 
-outfile <- args[2]
+genes<-rownames(df)
+differences<-makeGroups(x)
+
+set2<-RUVs(set,genes,k=1,differences)
+
+normalized <- as.data.frame(normCounts(set2))
+outfile <- args[3]
 
 normalized <- tibble::rownames_to_column(normalized, "name") # Apply rownames_to_column
 

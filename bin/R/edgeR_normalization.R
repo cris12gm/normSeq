@@ -1,7 +1,7 @@
 args = commandArgs(trailingOnly=TRUE)
 
-library(edgeR)
-library(dplyr)
+suppressMessages(library(edgeR))
+suppressMessages(library(dplyr))
 
 matrix <- read.table(args[1],header=TRUE,sep="\t",check.names=FALSE)
 

@@ -140,8 +140,8 @@ def qn(infile,outfile,jobDir):
     cmd_qn = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"quantile_normalization.R "+infile+" "+outfile+" >"+jobDir+"/Log.txt"
     return cmd_qn
 
-def ruv(infile,outfile,jobDir):
-    cmd_ruv = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"ruv_normalization.R "+infile+" "+outfile+" >"+jobDir+"/Log.txt"
+def ruv(infile,outfile,annotation,jobDir):
+    cmd_ruv = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"ruv_normalization.R "+infile+" "+annotation+" "+outfile+" >"+jobDir+"/Log.txt"
     return cmd_ruv
 
 def norm(infile,df,method,jobDir):
@@ -168,7 +168,7 @@ def norm(infile,df,method,jobDir):
     return outdf,outfile
 
 
-def norm_r(infile,method,jobDir,cmds):
+def norm_r(infile,method,jobDir,annotation,cmds):
     outDir = os.path.join(jobDir,"normalized")
     if not os.path.exists(outDir):
         os.mkdir(outDir)
@@ -187,7 +187,16 @@ def norm_r(infile,method,jobDir,cmds):
     elif method == "QN":
         outfile = os.path.join(outDir,"matrix_QN.txt")
         cmd = qn(infile,outfile,jobDir)
+    elif method == "RUV":
+        outfile = os.path.join(outDir,"matrix_RUV.txt")
+        cmd = ruv(infile,outfile,annotation,jobDir)
     if cmd!="":
         cmds.append(cmd)
 
     return cmds,outfile
+
+
+def rleplot(infile,annotation,jobDir,method):
+    outfile = os.path.join(jobDir,"normalized","RLEplot_"+method+".png")
+    cmd_rle = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"plotRLE.R "+infile+" "+annotation+" "+outfile+" >"+jobDir+"/Log.txt"
+    return cmd_rle

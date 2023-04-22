@@ -1,7 +1,7 @@
 args = commandArgs(trailingOnly=TRUE)
 
-library(DESeq2)
-library(dplyr)
+suppressMessages(library(DESeq2))
+suppressMessages(library(dplyr))
 
 matrix <- read.table(args[1],header=TRUE,sep="\t")
 

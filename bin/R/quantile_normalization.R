@@ -1,6 +1,6 @@
 args = commandArgs(trailingOnly=TRUE)
 
-library(limma)
+suppressMessages(library(limma))
 
 matrix <- read.table(args[1],header=TRUE,sep="\t",check.names=FALSE)
 

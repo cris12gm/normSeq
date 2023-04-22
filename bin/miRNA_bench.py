@@ -3,7 +3,7 @@
 import os,sys
 import json
 from plots import createplots
-from miRNAnorm import processInput,norm,norm_r,processAnnotation,processInputInit
+from miRNAnorm import processInput,norm,norm_r,processAnnotation,processInputInit,rleplot
 from summary import createsummary
 from correctBatch import combat,plotsBatch
 from de import de_R,createGroupFile,ttest,consensus,plotDE
@@ -148,7 +148,7 @@ status.flush()
 for method in methods:
     #Normalization of non R + save R norms in cmds_r
     if method in methods_r:
-        cmds_r,outfile = norm_r(infile,method,jobDir,cmds_r)
+        cmds_r,outfile = norm_r(infile,method,jobDir,annotation,cmds_r)
         r_files.append([outfile,method])
     else:
         outdf,normfile = norm(infile,df,method,jobDir)
@@ -164,6 +164,18 @@ for file,method in r_files:
     normfile = file
     outdf = processInput(normfile,config['minRC'],annotation_df)
     normalized[method] = [outdf,normfile]
+
+
+#RLE plots
+
+cmds_rle = []
+for method in methods:
+    cmd_method = rleplot(normalized[method][1],annotation,jobDir,method)
+    cmds_rle.append(cmd_method)
+
+procs = [ Popen(i,shell=True) for i in cmds_rle ]
+for p in procs:
+    p.wait()
 
 ##################################################################
 ##################### GRAPHS DIR CREATION ########################
