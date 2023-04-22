@@ -16,7 +16,7 @@ class Query(forms.Form):
         ('Med',' Median'),
         ('TMM',' TMM'),
         ('QN',' Quantile'),
-#        ('RUV',' Remove Unwanted Variation'),
+        ('RUV',' Remove Unwanted Variation - RUVs'),
         ('RLE','Relative Log Expression')
     )
 
