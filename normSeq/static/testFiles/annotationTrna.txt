@@ -1,4 +1,4 @@
-sample	group   replicate
+sample	group	replicate
 Cerebellum1	CNS	Cerebellum
 Cerebellum2	CNS	Cerebellum
 Cerebellum3	CNS	Cerebellum
