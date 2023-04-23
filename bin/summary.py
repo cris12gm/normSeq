@@ -12,7 +12,10 @@ from config import METHODS,R_PATH,R_SCRIPTS_PATH
 import plotly.figure_factory as ff
 
 def createsummary(infile,df,method,jobDir,annotation_df,combinations):
-    annotation_df = annotation_df.drop("replicate",axis=1)
+    try:
+        annotation_df = annotation_df.drop("replicate",axis=1)
+    except:
+        pass
     outDir = os.path.join(jobDir,"graphs","summary")
     plotDir = os.path.join(jobDir,"graphs")
     if not os.path.exists(plotDir):
