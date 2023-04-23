@@ -18,6 +18,10 @@ def calc_information_gain(data, target):
 
 def calculate_infoGain_group(df,annotation_df,group):
 
+    try:
+        annotation_df.drop("replicate")
+    except:
+        pass
     annotation_group = annotation_df[(annotation_df['group'] == group)]
     samplesGroup = list(annotation_group.index)
     dfGroup = df[samplesGroup]
