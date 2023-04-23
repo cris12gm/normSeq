@@ -3,9 +3,10 @@
     <li class="nav-item" role="presentation">
       <button class="nav-link border-0 active btn-lg" id="pills-norm-tab" data-toggle="pill" data-target="#pills-norm" type="button" role="tab" aria-controls="pills-norm" aria-selected="true">Normalization selection</button>
     </li>
-    <!-- <li class="nav-item" role="presentation">
-      <button class="nav-link border-0 btn-lg" id="pills-info-tab" data-toggle="pill" data-target="#pills-info" type="button" role="tab" aria-controls="pills-info" aria-selected="true">Top Information Gain {{typeJob}}s</button>
-    </li> -->
+    <li class="nav-item" role="presentation">
+      <button class="nav-link tabs-plots border-0 btn-lg" id="pills-rle-tab" data-toggle="pill" data-target="#pills-rle" type="button" role="tab" aria-controls="pills-rle" aria-selected="false">RLE plots</button>
+    </li>
+
     <li class="nav-item" role="presentation">
       <button class="nav-link tabs-plots border-0 btn-lg" id="pills-top-tab" data-toggle="pill" data-target="#pills-top" type="button" role="tab" aria-controls="pills-top" aria-selected="false">Top {{typeJob}}s</button>
     </li>
@@ -22,13 +23,13 @@
         </div>
       </div>
     </div>
-    <!-- <div class="tab-pane fade" id="pills-info" role="tabpanel" aria-labelledby="pills-info-tab">
+    <div class="tab-pane fade" id="pills-rle" role="tabpanel" aria-labelledby="pills-rle-tab">
       <div class="row">
         <div class="col-12">
-          {% include "results/infoGainTop.html" %}
+          {% include "results/rleplots.html" %}
         </div>
       </div>
-    </div> -->
+    </div>
     <div class="tab-pane fade" id="pills-top" role="tabpanel" aria-labelledby="pills-top-tab">
       <div class="row">
         <div class="col-12">

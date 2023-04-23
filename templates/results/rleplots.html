@@ -1,0 +1,60 @@
+{% if summary.rleplots %}
+    <div class="row">
+        <div class="col-6">
+            <div class="card" style="width: 100%; height:80%; ">
+                <div class="card-header">
+                    <h5>
+                        No normalized
+                    </h5>
+                    <br>    
+                </div>
+                <div id='topCard' class='collapse show'>
+                    <div class="card-body" style="height:100%; " >
+                        <div id="rle_NN" class="rleplot" style="height:80%; " onmouseover="this.style.cursor='pointer';this.style.border = '1px solid #041C34';" onmouseout="this.style.border = '0px solid'">
+                            <div class="d-flex justify-content-center">
+                                <a title="{{ summary.rleplotNN.name }}" name="{{ summary.rleplotNN.PNG }}" class="modalRLE" data-toggle="modal" data-target="#modalTargetRLE">
+                                    <img class="img" style="height:80%; " src="{{ summary.rleplotNN.PNG }}">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card"  style="width: 100%; height:80%; ">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-3">
+                            <h5>
+                                Normalization method:
+                            </h5>
+                        </div>
+                        <div class="col-9">
+                            <div class="form-group">
+                                <select class="form-control" id="selectTop">
+                                    {% for key,value in summary.rleplots.items %}
+                                        <option value="{{ key }}"><b>{{ value.name }}</b></option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id='RLEcard' class='collapse show'>
+                    <div class="card-body"  style="height:100%; ">
+                        {% for key,value in summary.rleplots.items %}
+                        <div id="RLE_{{key}}" class="rleplot" style="display:{{value.active}}" style="height:80%; " onmouseover="this.style.cursor='pointer';this.style.border = '1px solid #041C34';" onmouseout="this.style.border = '0px solid'">
+                            <div class="d-flex justify-content-center">
+                                <a title="{{ value.name }}" name="{{ value.PNG }}" class="modalRLE" data-toggle="modal" data-target="#modalTargetRLE">
+                                    <img class="img" style="height:80%; " src="{{ value.PNG }}">
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}    
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
