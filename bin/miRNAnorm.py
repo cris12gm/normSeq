@@ -68,16 +68,19 @@ def processAnnotation(infile):
     df = df.replace('_','', regex=True)
     if numbercolumns == 3:
         df.rename(columns = {cabecera[0]:'sample',cabecera[1]:'group',cabecera[2]:'replicate'}, inplace = True)
+        replicates = True
     elif numbercolumns == 2:
         df.rename(columns = {cabecera[0]:'sample',cabecera[1]:'group'}, inplace = True)
+        replicates = False
     else:
         df = df.iloc[:, 0:2]
         df.rename(columns = {cabecera[0]:'sample',cabecera[1]:'group'}, inplace = True)
-        
+        replicates = False
+
     df = df.set_index('sample')
     df.dropna(how='all', axis=1, inplace=True)
     samples = df.index.tolist()
-    return(df,samples)
+    return(df,samples,replicates)
 
 def cpm(df,outfile):
     df = df.loc[~(df==0).all(axis=1)]

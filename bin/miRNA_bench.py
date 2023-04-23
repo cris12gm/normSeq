@@ -33,7 +33,7 @@ status = open(statusFile, 'a')
 
 annotation = os.path.join(jobDir,"annotation.txt")
 try:
-    annotation_df,samples=processAnnotation(annotation)
+    annotation_df,samples,replicates=processAnnotation(annotation)
     os.system("mv "+annotation+" "+jobDir+"/annotation_old.txt")
     annotation_df.to_csv(annotation,sep="\t")
     log.write("1. Annotation processed\n")
@@ -146,6 +146,8 @@ status.write("<p>3. Normalization</p>")
 status.flush()
 
 for method in methods:
+    if method=="RUV" and replicates==False:
+        pass
     #Normalization of non R + save R norms in cmds_r
     if method in methods_r:
         cmds_r,outfile = norm_r(infile,method,jobDir,annotation,cmds_r)
