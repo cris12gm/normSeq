@@ -21,7 +21,7 @@ def calculate_infoGain_group(df,annotation_df,group):
         annotation_df = annotation_df.drop("replicate",axis=1)
     except:
         pass
-    
+
     annotation_group = annotation_df[(annotation_df['group'] == group)]
     samplesGroup = list(annotation_group.index)
     dfGroup = df[samplesGroup]
@@ -46,7 +46,10 @@ def calculate_infoGain_group(df,annotation_df,group):
 
 def calculate_infoGain_pairwise(df,annotation_df,combination):
 
-    annotation_df = annotation_df.drop("replicate",axis=1)
+    try:
+        annotation_df = annotation_df.drop("replicate",axis=1)
+    except:
+        pass
     group1 = combination[0]
     group2 = combination[1]
 
