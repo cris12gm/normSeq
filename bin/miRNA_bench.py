@@ -256,7 +256,6 @@ for combination in combinations:
     titleaxis = "Information Gain per "+config["typeJob"]
     plotInfo(information_gain_groups,outfileImage,outfile,title,titleaxis)
 
-sys.exit(1)
 ##################################################################
 ####################### SUMMARY + PLOTS ##########################
 ##################################################################
