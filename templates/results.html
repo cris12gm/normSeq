@@ -499,6 +499,15 @@
         }
         newDiv.style.display="block";
     });
+    $('#selectRLE').change(function(){ 
+        valor = this.value;
+        newDiv = document.getElementById("RLE_"+valor);
+        const allDivs = document.getElementsByClassName('rleplot');
+        for (const div of allDivs) {
+        // 👇️ Remove element from DOM
+            div.style.display = 'none';
+        }
+        newDiv.style.display="block";
 </script>
 <script>
     $(function () {
