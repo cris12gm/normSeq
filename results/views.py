@@ -501,7 +501,7 @@ class Results_tutorial(TemplateView):
 
     def get(self, request):
         
-        jobID = 'SB0KGI8YDCG6PU5'
+        jobID = 'M353XWU1N37BMNP'
 
         #Get config file
 
@@ -526,6 +526,7 @@ class Results_tutorial(TemplateView):
         top10FC = {}
         de_groups={}
         features = {}
+        rleplots = {}
 
         i = 0
         j = 0
@@ -729,6 +730,22 @@ class Results_tutorial(TemplateView):
             else:
                 batchEffect=False
 
+                        #RLE plots
+            
+            if method=="NN":
+                rleplotNN = {}
+                NN_PNG = os.path.join(settings.MEDIA_URL,jobID,"normalized","RLEplot_NN.png")
+                rleplotNN['PNG'] = NN_PNG
+                rleplotNN['name'] = METHODS[method]
+            else:
+                rleplots[method] = {}
+                rlePNG = os.path.join(settings.MEDIA_URL,jobID,"normalized","RLEplot_"+method+".png")
+                rleplots[method]['PNG'] = rlePNG
+                rleplots[method]['name'] = METHODS[method]
+                if i==1:
+                    rleplots[method]['active'] = "block;"
+                else:
+                    rleplots[method]['active'] = "none;"
 
             ##Downloads Normalized
             downloadLink = os.path.join(settings.MEDIA_URL,jobID,"normalized","matrix_"+method+".txt")
@@ -736,7 +753,7 @@ class Results_tutorial(TemplateView):
 
             i = i + 1 
 
-        summary = {'distribution':distribution,'top10':top10,'top10FC':top10FC,'FC_groups':FC_groups,'info':infoGain,'infoPairwise':infoGainPairwise}
+        summary = {'distribution':distribution,'top10':top10,'top10FC':top10FC,'FC_groups':FC_groups,'info':infoGain,'infoPairwise':infoGainPairwise,'rleplotNN':rleplotNN,'rleplots':rleplots}
 
         if heatmap or pca:
             visualization=True
