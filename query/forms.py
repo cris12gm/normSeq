@@ -99,6 +99,7 @@ class Query(forms.Form):
                         Field('methods'),
                         HTML("<a class='btn btn-secondary btn-sm select-all mr-2'>Select All</a>"),
                         HTML("<a class='btn btn-secondary btn-sm deselect-all'>Reset</a>"),
+                        HTML("<div id='alertRUV' class='alert alert-danger mt-2' style='display:none;'><strong>Important!</strong> If you have not included as third column in the annotation file a replicate annotation, RUVs normalization will not be computed.</div>"),
                         css_class='col-4',
                     ),
                     Div(

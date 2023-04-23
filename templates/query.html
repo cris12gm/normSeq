@@ -158,6 +158,28 @@
 </script>
 
 <script>
+    $('#div_id_methods').change(function(){ 
+        var ddl = document.getElementById("div_id_methods");
+        var ele=document.getElementsByName('methods');
+        for(var i=0; i<ele.length; i++){  
+            if(ele[i].type=='checkbox'){
+                if (ele[i].value=="RUV"){
+                    if (ele[i].checked==true){
+                        document.getElementById("alertRUV").style.display="block";
+                    }
+                    else{
+                        document.getElementById("alertRUV").style.display="none";
+                    }
+                }
+            }
+                    
+        }     
+    });        
+</script>
+
+
+
+<script>
     $('#id_batchEffect').change(function(){ 
             valor = this.value;
             if (valor == 'True'){
