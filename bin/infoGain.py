@@ -18,14 +18,11 @@ def calc_information_gain(data, target):
 
 def calculate_infoGain_group(df,annotation_df,group):
 
-    try:
-        annotation_df.drop("replicate")
-    except:
-        pass
+    annotation_df = annotation_df.drop("replicate",axis=1)
     annotation_group = annotation_df[(annotation_df['group'] == group)]
     samplesGroup = list(annotation_group.index)
     dfGroup = df[samplesGroup]
-  
+
     annotation_other = annotation_df[(annotation_df['group'] != group)]
     annotation_other = annotation_other.drop('group',axis=1)
     annotation_other['group']="Other"
@@ -34,9 +31,10 @@ def calculate_infoGain_group(df,annotation_df,group):
     annotationC = pd.concat([annotation_group,annotation_other])
     dfC = pd.merge(dfGroup,dfOther,left_index=True,right_index=True)
     merged = (pd.merge(dfC.T,annotationC,left_index=True,right_index=True)).T
-    labels = np.asarray((merged.loc['group']).values)
-    merged = np.asarray(merged.drop("group").T)
-
+    labels = ((merged.loc['group']).values)
+    merged = merged.drop("group",axis=0).T
+    merged = (merged).to_numpy()
+    
     # Calculate information gain for each feature in parallel using joblib
     results = Parallel(n_jobs=12)(delayed(calc_information_gain)(merged[:, i], labels) for i in range(merged.shape[1]))
 
@@ -45,6 +43,7 @@ def calculate_infoGain_group(df,annotation_df,group):
 
 def calculate_infoGain_pairwise(df,annotation_df,combination):
 
+    annotation_df = annotation_df.drop("replicate",axis=1)
     group1 = combination[0]
     group2 = combination[1]
 

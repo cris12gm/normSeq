@@ -93,8 +93,8 @@ if config['batchEffect'] == 'True':
     os.rename(outfile, infile)
 
     try:
-        dfCorrected = processInput(os.path.join(jobDir,"matrix.txt"),config['minRC'],annotation_df)
-        dfOld = processInput(os.path.join(jobDir,"matrix_old.txt"),config['minRC'],annotation_df)
+        dfCorrected = processInput(os.path.join(jobDir,"matrix.txt"),annotation_df)
+        dfOld = processInput(os.path.join(jobDir,"matrix_old.txt"),annotation_df)
     except:
         error = open(errorFile, 'a')
         error.write("<p>Batch effect correction was not possible, please check the input files. Please, check the format guidelines <a href='https://arn.ugr.es/normseq_doc/annotation/'>https://arn.ugr.es/normseq_doc/annotation/>here</a></p>")
@@ -162,7 +162,7 @@ for p in procs:
 #Create the matrix from the Rs
 for file,method in r_files:
     normfile = file
-    outdf = processInput(normfile,config['minRC'],annotation_df)
+    outdf = processInput(normfile,annotation_df)
     normalized[method] = [outdf,normfile]
 
 
@@ -256,6 +256,7 @@ for combination in combinations:
     titleaxis = "Information Gain per "+config["typeJob"]
     plotInfo(information_gain_groups,outfileImage,outfile,title,titleaxis)
 
+sys.exit(1)
 ##################################################################
 ####################### SUMMARY + PLOTS ##########################
 ##################################################################

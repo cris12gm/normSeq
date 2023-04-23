@@ -45,7 +45,7 @@ def processInputInit(infile,samples,minRC,annotation_df):
     return(dfF,dfOriginal)
 
 
-def processInput(infile,minRC,annotation_df):
+def processInput(infile,annotation_df):
     cabecera = open(infile).readline().split("\t")[0]
     df = pd.read_table(infile)
     if cabecera!="":
@@ -61,11 +61,19 @@ def processInput(infile,minRC,annotation_df):
     return(dfF)
 
 def processAnnotation(infile):
-    cabecera = open(infile).readline().split("\t")[0]
+    cabecera = open(infile).readline().split("\t")
     df = pd.read_table(infile)
+    numbercolumns = len(df.columns)
     df = df.replace(' ','', regex=True)
     df = df.replace('_','', regex=True)
-    df.rename(columns = {cabecera:'sample'}, inplace = True)
+    if numbercolumns == 3:
+        df.rename(columns = {cabecera[0]:'sample',cabecera[1]:'group',cabecera[2]:'replicate'}, inplace = True)
+    elif numbercolumns == 2:
+        df.rename(columns = {cabecera[0]:'sample',cabecera[1]:'group'}, inplace = True)
+    else:
+        df = df.iloc[:, 0:2]
+        df.rename(columns = {cabecera[0]:'sample',cabecera[1]:'group'}, inplace = True)
+        
     df = df.set_index('sample')
     df.dropna(how='all', axis=1, inplace=True)
     samples = df.index.tolist()
@@ -111,12 +119,12 @@ def uq(df,outfile):
 
 def tmm(infile,outfile,jobDir):
     #Execute in R
-    cmd_tmm = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"edgeR_normalization.R "+infile+" TMM "+outfile+" >"+jobDir+"/Log.txt"
+    cmd_tmm = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"edgeR_normalization.R "+infile+" TMM "+outfile+" >"+jobDir+"/Log.txt 2>"+jobDir+"/Log.txt"
     return cmd_tmm
 
 def rle(infile,outfile,jobDir):
     #Execute in R
-    cmd_rle = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"edgeR_normalization.R "+infile+" RLE "+outfile+" >"+jobDir+"/Log.txt"
+    cmd_rle = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"edgeR_normalization.R "+infile+" RLE "+outfile+" >"+jobDir+"/Log.txt 2>"+jobDir+"/Log.txt"
     return cmd_rle
 
 def med(df,outfile):
@@ -131,17 +139,17 @@ def med(df,outfile):
 
 def deseq(infile,outfile,jobDir):
     #Execute in R
-    cmd_deseq = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"deseq_normalization.R "+infile+" "+outfile+" >"+jobDir+"/Log.txt"
+    cmd_deseq = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"deseq_normalization.R "+infile+" "+outfile+" >"+jobDir+"/Log.txt 2>"+jobDir+"/Log.txt"
     return cmd_deseq
 
 
 def qn(infile,outfile,jobDir):
     #Execute in R
-    cmd_qn = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"quantile_normalization.R "+infile+" "+outfile+" >"+jobDir+"/Log.txt"
+    cmd_qn = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"quantile_normalization.R "+infile+" "+outfile+" >"+jobDir+"/Log.txt 2>"+jobDir+"/Log.txt"
     return cmd_qn
 
 def ruv(infile,outfile,annotation,jobDir):
-    cmd_ruv = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"ruv_normalization.R "+infile+" "+annotation+" "+outfile+" >"+jobDir+"/Log.txt"
+    cmd_ruv = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"ruv_normalization.R "+infile+" "+annotation+" "+outfile+" >"+jobDir+"/Log.txt 2>"+jobDir+"/Log.txt"
     return cmd_ruv
 
 def norm(infile,df,method,jobDir):
