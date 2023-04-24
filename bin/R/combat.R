@@ -16,6 +16,8 @@ keep <- rowSums(matrix>0) > 0
 df <- matrix[keep, ]
 
 batchSheet <- read.table(args[2],header=T,sep="\t",check.names=FALSE)
+batchSheet$sample <- str_replace(batchSheet$sample, "_", "")
+batchSheet$sample <- str_replace(batchSheet$sample, " ", "")
 batchSheet$Sample <- make.names(batchSheet$sample)
 row.names(batchSheet) <- batchSheet$sample
 batchSheet$sample <- NULL
