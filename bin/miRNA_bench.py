@@ -152,7 +152,7 @@ status.flush()
 
 for method in methods:
     if method=="RUV" and replicates==False:
-        methods.remove["RUV"]
+        methods.remove("RUV")
         continue
     #Normalization of non R + save R norms in cmds_r
     if method in methods_r:
@@ -180,8 +180,6 @@ for file,method in r_files:
 
 cmds_rle = []
 for method in methods:
-    if method=='RUV' and replicates==False:
-        continue
     cmd_method = rleplot(normalized[method][1],annotation,jobDir,method)
     cmds_rle.append(cmd_method)
 
