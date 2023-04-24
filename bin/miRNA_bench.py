@@ -105,7 +105,7 @@ if config['batchEffect'] == 'True':
         error.close()
         sys.exit(0)
     
-    batch_df,samples = processAnnotation(batchAnnotation)
+    batch_df,samples,discard = processAnnotation(batchAnnotation)
     plotsBatch(dfCorrected,dfOld,batch_df,jobDir)
     df = dfCorrected
 
@@ -169,6 +169,8 @@ for p in procs:
 #Create the matrix from the Rs
 for file,method in r_files:
     normfile = file
+    if method=='RUV' and replicates==False:
+        pass
     outdf = processInput(normfile,annotation_df)
     normalized[method] = [outdf,normfile]
 
