@@ -48,6 +48,8 @@ def processInputInit(infile,samples,minRC,annotation_df):
 def processInput(infile,annotation_df):
     cabecera = open(infile).readline().split("\t")[0]
     df = pd.read_table(infile)
+    df = df.rename(columns=lambda s: s.replace("_", ""))
+    df = df.rename(columns=lambda s: s.replace(" ", ""))
     if cabecera!="":
         df.rename(columns = {cabecera:'name'}, inplace = True)
     else:
