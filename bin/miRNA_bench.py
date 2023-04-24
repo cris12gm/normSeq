@@ -152,7 +152,8 @@ status.flush()
 
 for method in methods:
     if method=="RUV" and replicates==False:
-        methods.remove("RUV")
+        methods_new = methods
+        methods_new.remove("RUV")
         continue
     #Normalization of non R + save R norms in cmds_r
     if method in methods_r:
@@ -162,6 +163,7 @@ for method in methods:
         outdf,normfile = norm(infile,df,method,jobDir)
         normalized[method] = [outdf,normfile]
 
+methods = methods_new
 #Launch the normalization of Rs
 procs = [ Popen(i,shell=True) for i in cmds_r ]
 for p in procs:
