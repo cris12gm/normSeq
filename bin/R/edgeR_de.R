@@ -25,19 +25,23 @@ methodology <- args[7]
 sampleSheet <- read.table(annotation,header=T,sep="\t",check.names=FALSE)
 selected <- sampleSheet[sampleSheet$group %in% c(group1,group2), ]
 row.names(selected) <- selected$sample
-selected$sample <- NULL
 
 merged <- merge(t(matrix), selected, by.x = 0, by.y = 0)
 row.names(merged) <- merged$Row.names
+merged <- (merged[order(merged$Row.names),])
 merged$Row.names <- NULL
+merged$sample <- NULL
+merged$replicate <- NULL
+merged$group <- NULL
 
 merged <- t(merged)
 
+selected <- (selected[order(selected$sample),])
 groups <- selected$group
 sampletypevalues <- groups[!duplicated(groups)]  # Getting the group levels
 
 # #create DGEList object
-d <- DGEList(counts=df,group=factor(groups))
+d <- DGEList(counts=merged,group=factor(groups))
 d <- estimateCommonDisp(d)
 
 if (method == "UQ") {
