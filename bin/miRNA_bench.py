@@ -152,6 +152,7 @@ status.flush()
 
 for method in methods:
     if method=="RUV" and replicates==False:
+        methods.remove["RUV"]
         continue
     #Normalization of non R + save R norms in cmds_r
     if method in methods_r:
