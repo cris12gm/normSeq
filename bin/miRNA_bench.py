@@ -93,12 +93,11 @@ if config['batchEffect'] == 'True':
     os.rename(matrixFile, oldMatrix)
     os.rename(outfile, infile)
     os.system("cp "+infile+" "+matrixFile)
+    os.system("cp "+matrixFile+" "+infile)
     try:
         dfCorrected = processInput(os.path.join(jobDir,"matrix.txt"),annotation_df)
         outfile_NN_Original = os.path.join(jobDir,"normalized","matrix_NN_toDE.txt") 
         dfCorrected.to_csv(outfile_NN_Original,sep="\t")
-        outfile_NN = os.path.join(jobDir,"normalized","matrix_NN.txt") 
-        dfOriginal.to_csv(outfile_NN,sep="\t")
         dfOld = processInput(os.path.join(jobDir,"matrix_old.txt"),annotation_df)
     except:
         error = open(errorFile, 'a')
