@@ -151,8 +151,11 @@ status.write("<p>3. Normalization</p>")
 status.flush()
 
 if replicates==False:
-    methods.remove("RUV")
-
+    try:
+        methods.remove("RUV")
+    except:
+        pass
+    
 for method in methods:
 
     #Normalization of non R + save R norms in cmds_r
