@@ -150,11 +150,11 @@ log.write("3. Normalization\n")
 status.write("<p>3. Normalization</p>")
 status.flush()
 
+if replicates==False:
+    methods.remove("RUV")
+
 for method in methods:
-    if method=="RUV" and replicates==False:
-        methods_new = methods
-        methods_new.remove("RUV")
-        continue
+
     #Normalization of non R + save R norms in cmds_r
     if method in methods_r:
         cmds_r,outfile = norm_r(infile,method,jobDir,annotation,cmds_r)
@@ -163,7 +163,6 @@ for method in methods:
         outdf,normfile = norm(infile,df,method,jobDir)
         normalized[method] = [outdf,normfile]
 
-methods = methods_new
 #Launch the normalization of Rs
 procs = [ Popen(i,shell=True) for i in cmds_r ]
 for p in procs:
@@ -172,8 +171,6 @@ for p in procs:
 #Create the matrix from the Rs
 for file,method in r_files:
     normfile = file
-    if method=='RUV' and replicates==False:
-        continue
     outdf = processInput(normfile,annotation_df)
     normalized[method] = [outdf,normfile]
 
