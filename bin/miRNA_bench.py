@@ -116,11 +116,12 @@ if config['diffExpr']=="True":
     FDR = config['pval']
     min_t = str(0)
     methodDE = "TMM" #Change in input
+    methodologyEdgeR = config['edgeR']
     if not os.path.exists(os.path.join(jobDir,"DE")):
         os.mkdir(os.path.join(jobDir,"DE"))
     combinations = createGroupFile(annotation_df,jobDir)
 
-    output_de = de_R(outfile_NN_Original,annotation,combinations,methodDE,FDR,min_t,jobDir,log,status)
+    output_de = de_R(outfile_NN_Original,annotation,combinations,methodDE,FDR,min_t,methodologyEdgeR,jobDir,log,status)
     output_de = ttest(df,combinations,annotation_df,FDR,output_de,jobDir,log,status)
     consensus(output_de,df,annotation_df,jobDir)
     plotDE(df,output_de,annotation_df,jobDir)

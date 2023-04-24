@@ -31,7 +31,7 @@ def createGroupFile(annotation_df,jobDir):
     return combinations
 
 
-def de_R(infile,annotation,combinations,method,FDR,min_t,jobDir,log,status):
+def de_R(infile,annotation,combinations,method,FDR,min_t,methodology_edgeR,jobDir,log,status):
     commands = []
     for subset in combinations:
         group1 = subset[0]
@@ -41,7 +41,7 @@ def de_R(infile,annotation,combinations,method,FDR,min_t,jobDir,log,status):
         output_edgeR = os.path.join(jobDir,"DE","edgeR_"+group1+"_"+group2+".txt")
         cmd_edgeR = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"edgeR_de.R "+infile+" "+method+" "+annotation+" "+FDR+" "+group1+" "+group2+" "+output_edgeR+" 2>"+jobDir+"/Log.txt"
         commands.append(cmd_edgeR)
-
+        
         #deseq
         output_deseq = os.path.join(jobDir,"DE","deseq_"+group1+"_"+group2+".txt")
         cmd_deseq = R_PATH+" --vanilla "+R_SCRIPTS_PATH+"deseq_de.R "+infile+" "+annotation+" "+FDR+" "+min_t+" "+group1+" "+group2+" "+output_deseq+" >"+jobDir+"/Log.txt"

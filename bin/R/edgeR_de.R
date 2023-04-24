@@ -20,9 +20,20 @@ annotation <- args[3]
 pvalue <- args[4]
 group1 <- args[5]
 group2 <- args[6]
+methodology <- args[7]
 
 sampleSheet <- read.table(annotation,header=T,sep="\t",check.names=FALSE)
-groups <- sampleSheet$group
+selected <- sampleSheet[sampleSheet$group %in% c(group1,group2), ]
+row.names(selected) <- selected$sample
+selected$sample <- NULL
+
+merged <- merge(t(matrix), selected, by.x = 0, by.y = 0)
+row.names(merged) <- merged$Row.names
+merged$Row.names <- NULL
+
+merged <- t(merged)
+
+groups <- selected$group
 sampletypevalues <- groups[!duplicated(groups)]  # Getting the group levels
 
 # #create DGEList object
@@ -43,10 +54,19 @@ if (method == "RLE") {
 edgeR_table <- estimateCommonDisp(edgeR_table)
   
 edgeR_table <- estimateTagwiseDisp(edgeR_table)
-selected <- NULL
-dgeTest <- exactTest(edgeR_table, pair=c(group1,group2))
 
-tt <- topTags(dgeTest, n=Inf)
+selected <- NULL
+
+if (methodology=='LRT') {
+  fit <- glmFit(edgeR_table)
+  tested<- glmLRT(fit,coef=2)
+}else{
+  fit <- glmQLFit(edgeR_table)
+  tested <- glmQLFTest(fit, coef=2)
+}
+
+tt <- topTags(tested, n=Inf)
+
 selected_samples <- (which(groups==group1 | groups==group2))
 
 group1Element <- (which(groups==group1))
@@ -75,7 +95,7 @@ selected <- which(data$FDR<=pvalue)
   # Obtaining the final matrix of selected features
 result <- data[selected, ]
 
-output <- args[7]
+output <- args[8]
 result <- tibble::rownames_to_column(as.data.frame(result), "name")
 
 write.table(result,output,sep="\t",row.names=FALSE, quote=FALSE,col.names=TRUE)

@@ -183,6 +183,7 @@ class QueryElement(TemplateView):
             parameters['diffExpr'] = request.POST['diffExpr']
             parameters['pval'] = request.POST['pval']
             parameters['minRC'] = request.POST['minrc']
+            parameters['edgeR'] = request.POST['edgeR']
 
             # Save parameters and Launch
 
