@@ -88,9 +88,11 @@ if config['batchEffect'] == 'True':
     batchAnnotation = os.path.join(jobDir,"batchFile.txt")
     outfile = os.path.join(jobDir,"matrix_corrected.txt")
     combat(infile,batchAnnotation,annotation,outfile)
+    matrixFile = os.path.join(jobDir,"matrix.txt")
     oldMatrix = os.path.join(jobDir,"matrix_old.txt")
-    os.rename(infile, oldMatrix)
+    os.rename(matrixFile, oldMatrix)
     os.rename(outfile, infile)
+    os.system("cp "+infile+" "+matrixFile)
     try:
         dfCorrected = processInput(os.path.join(jobDir,"matrix.txt"),annotation_df)
         outfile_NN_Original = os.path.join(jobDir,"normalized","matrix_NN_toDE.txt") 
