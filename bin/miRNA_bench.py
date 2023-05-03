@@ -262,6 +262,11 @@ for combination in combinations:
         normdf = normalized[method][0]
         info = calculate_infoGain_pairwise(normdf,annotation_df,combination)
         information_gain_groups[method] = info
+    infoDf = pd.DataFrame(dict([ (k,pd.Series(v)) for k,v in information_gain_groups.items() ]))
+    infoDf['name'] = list(normdf.index)
+    infoDf = infoDf.set_index('name')
+    outfileInfo = os.path.join(jobDir,"graphs","summary","infoGain_"+combination[0]+"-"+combination[1]+".txt")
+    infoDf.to_csv(outfileInfo,sep="\t")
     outfileImage = os.path.join(jobDir,"graphs","summary","infoGain_"+combination[0]+"-"+combination[1]+".png")
     outfile = os.path.join(jobDir,"graphs","summary","infoGain_"+combination[0]+"-"+combination[1]+".html")
     title = combination[0]+"-"+combination[1]
