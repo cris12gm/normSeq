@@ -6,17 +6,29 @@ import subprocess
 from config import R_PATH
 from config import R_SCRIPTS_PATH
 
-
 def processInputInit(infile,samples,minRC,annotation_df):
     cabecera = open(infile).readline().split("\t")[0]
     df = pd.read_table(infile)
+    df=df.dropna(axis=1,how='all')
+    test = df.select_dtypes(include=[float])
+
+    if test.empty:
+        df = pd.read_table(infile,decimal=",")
+        df=df.dropna(axis=1,how='all')
+
+    secondtest = df.select_dtypes(include=[float])
+    if secondtest.empty:
+        sys.exit(0)
+
     df = df.rename(columns=lambda s: s.replace("_", ""))
     df = df.rename(columns=lambda s: s.replace(" ", ""))
+
     if cabecera!="":
         df.rename(columns = {cabecera:'name'}, inplace = True)
     else:
         df.rename(columns = {list(df)[0]:'name'}, inplace=True)
     df = df.set_index('name')
+    
     samples_df = list(set(samples) & set(df.columns))
     df = df.dropna()
     dfF = df[samples_df]
@@ -40,8 +52,12 @@ def processInputInit(infile,samples,minRC,annotation_df):
     dfF = dfF[dfF>=minRC]
     dfF=dfF.dropna(axis=0)
 
-    samples = annotation_df.index.values
-    dfF=dfF[samples]
+    try:
+        samples = annotation_df.index.values
+        dfF=dfF[samples]
+    except:
+        pass
+
     return(dfF,dfOriginal)
 
 
@@ -64,21 +80,25 @@ def processInput(infile,annotation_df):
 
 def processAnnotation(infile):
     cabecera = open(infile).readline().split("\t")
-    df = pd.read_table(infile)
+    df = pd.read_table(infile,index_col=False)
     numbercolumns = len(df.columns)
     df = df.replace(' ','', regex=True)
     df = df.replace('_','', regex=True)
+    
+    
     if numbercolumns == 3:
         df.rename(columns = {cabecera[0]:'sample',cabecera[1]:'group',cabecera[2]:'replicate'}, inplace = True)
+        df.columns = ['sample','group','replicate']
         replicates = True
     elif numbercolumns == 2:
         df.rename(columns = {cabecera[0]:'sample',cabecera[1]:'group'}, inplace = True)
+        df.columns = ['sample','group']
         replicates = False
     else:
         df = df.iloc[:, 0:2]
         df.rename(columns = {cabecera[0]:'sample',cabecera[1]:'group'}, inplace = True)
+        df.columns = ['sample','group']
         replicates = False
-
     df = df.set_index('sample')
     df.dropna(how='all', axis=1, inplace=True)
     samples = df.index.tolist()
