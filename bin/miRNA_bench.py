@@ -178,7 +178,7 @@ for file,method in r_files:
         outdf = processInput(normfile,annotation_df)
         normalized[method] = [outdf,normfile]
     except:
-        methods.pop(method)
+        methods.remove(method)
 
 #RLE plots
 
