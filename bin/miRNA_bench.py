@@ -174,9 +174,11 @@ for p in procs:
 #Create the matrix from the Rs
 for file,method in r_files:
     normfile = file
-    outdf = processInput(normfile,annotation_df)
-    normalized[method] = [outdf,normfile]
-
+    try:
+        outdf = processInput(normfile,annotation_df)
+        normalized[method] = [outdf,normfile]
+    except:
+        methods.pop(method)
 
 #RLE plots
 
