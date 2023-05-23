@@ -10,15 +10,17 @@ def processInputInit(infile,samples,minRC,annotation_df):
     cabecera = open(infile).readline().split("\t")[0]
     df = pd.read_table(infile)
     df=df.dropna(axis=1,how='all')
-    test = df.select_dtypes(include=[float])
+    testInteger = df.select_dtypes(include=[int])
+    if testInteger.empty:
+        test = df.select_dtypes(include=[float])
 
-    if test.empty:
-        df = pd.read_table(infile,decimal=",")
-        df=df.dropna(axis=1,how='all')
+        if test.empty:
+            df = pd.read_table(infile,decimal=",")
+            df=df.dropna(axis=1,how='all')
 
-    secondtest = df.select_dtypes(include=[float])
-    if secondtest.empty:
-        sys.exit(0)
+        secondtest = df.select_dtypes(include=[float])
+        if secondtest.empty:
+            sys.exit(0)
 
     df = df.rename(columns=lambda s: s.replace("_", ""))
     df = df.rename(columns=lambda s: s.replace(" ", ""))
