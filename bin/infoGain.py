@@ -39,7 +39,7 @@ def calculate_infoGain_group(df,annotation_df,group):
     merged = (merged).to_numpy()
     
     # Calculate information gain for each feature in parallel using joblib
-    results = Parallel(n_jobs=12)(delayed(calc_information_gain)(merged[:, i], labels) for i in range(merged.shape[1]))
+    results = Parallel(n_jobs=2)(delayed(calc_information_gain)(merged[:, i], labels) for i in range(merged.shape[1]))
 
     return(results)
 
