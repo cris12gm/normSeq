@@ -16,6 +16,7 @@ import subprocess
 import psutil
 import json
 import requests
+import csv
 
 ALLOWED_FORMATS = ["txt","xlsx","tsv","csv"]
 
@@ -80,7 +81,10 @@ class QueryElement(TemplateView):
                 filename = fs.save(jobID+"/"+"matrix."+extension, matrixFile)
 
                 if extension == "csv":
-                    df = pd.read_csv(os.path.join(settings.MEDIA_ROOT,jobID,"matrix.csv"),sep=";")
+                    fileCSV = open(os.path.join(settings.MEDIA_ROOT,jobID,"matrix.csv"),'r').readline()
+                    sniffer = csv.Sniffer()
+                    dialect = sniffer.sniff(fileCSV)
+                    df = pd.read_csv(os.path.join(settings.MEDIA_ROOT,jobID,"matrix.csv"),sep=dialect.delimiter)
                     df2=df.dropna(how='all')
                     df2.to_csv(os.path.join(settings.MEDIA_ROOT,jobID,"matrix.txt"),sep="\t",index=None)
                 elif extension == "tsv":
@@ -122,10 +126,28 @@ class QueryElement(TemplateView):
             try:
                 try:
                     annotationFile = request.FILES['annotation']
+                    extension = annotationFile.name.split(".")[1]
+
                     annotation = annotationFile.name
                     fs = FileSystemStorage()
-                    filename = fs.save(jobID+"/"+"annotation.txt", annotationFile)
+                    filename = fs.save(jobID+"/"+"annotation."+extension, annotationFile)                
+
+                    if extension == "csv":
+                        fileCSV = open(os.path.join(settings.MEDIA_ROOT,jobID,"annotation.csv"),'r').readline()
+                        sniffer = csv.Sniffer()
+                        dialect = sniffer.sniff(fileCSV)
+                        df = pd.read_csv(os.path.join(settings.MEDIA_ROOT,jobID,"annotation.csv"),sep=dialect.delimiter)
+                        df2=df.dropna(how='all')
+                        df2.to_csv(os.path.join(settings.MEDIA_ROOT,jobID,"annotation.txt"),sep="\t",index=None)
+                    elif extension == "tsv":
+                        filename = fs.save(jobID+"/"+"annotation.txt", annotationFile)
+                    elif extension == "xlsx":
+                        df = pd.read_excel(os.path.join(settings.MEDIA_ROOT,jobID,"annotation.xlsx"))
+                        df2=df.dropna(how='all')
+                        df2.to_csv(os.path.join(settings.MEDIA_ROOT,jobID,"annotation.txt"),sep="\t",index=None)
+
                     annotation=True
+
                 except:
                     annotationURL = request.POST['annotationURL']
                     filename = annotationURL.split("/")[-1]
