@@ -215,10 +215,12 @@ def consensus(df_output,df,annotation_df,jobDir):
         upset.style_subsets(present=["NOISeq", "T-test"],
                     facecolor="#184b7e")
 
-        upset.plot()
+        try:
+            upset.plot()
 
-        plt.savefig(os.path.join(jobDir,"DE","consensus_upset_"+sample1+"-"+sample2+".png"))
-
+            plt.savefig(os.path.join(jobDir,"DE","consensus_upset_"+sample1+"-"+sample2+".png"))
+        except:
+            pass
 
         edgeR = df_output[comparison]["edgeR"]
         deseq = df_output[comparison]["deseq"]
