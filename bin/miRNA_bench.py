@@ -88,29 +88,32 @@ if config['batchEffect'] == 'True':
     batchAnnotation = os.path.join(jobDir,"batchFile.txt")
     outfile = os.path.join(jobDir,"matrix_corrected.txt")
     combat(infile,batchAnnotation,annotation,outfile)
-    matrixFile = os.path.join(jobDir,"matrix.txt")
-    oldMatrix = os.path.join(jobDir,"matrix_old.txt")
-    os.rename(matrixFile, oldMatrix)
-    os.rename(outfile, infile)
-    os.system("cp "+infile+" "+matrixFile)
-    os.system("cp "+matrixFile+" "+infile)
-    try:
-        dfCorrected = processInput(os.path.join(jobDir,"matrix.txt"),annotation_df)
-        outfile_NN_Original = os.path.join(jobDir,"normalized","matrix_NN_toDE.txt") 
-        dfCorrected.to_csv(outfile_NN_Original,sep="\t")
-        dfOld = processInput(os.path.join(jobDir,"matrix_old.txt"),annotation_df)
-    except:
-        error = open(errorFile, 'a')
-        error.write("<p>Batch effect correction was not possible, please check the input files. Please, check the format guidelines <a href='https://arn.ugr.es/normseq_doc/annotation/'>https://arn.ugr.es/normseq_doc/annotation/>here</a></p>")
-        error.close()
-        sys.exit(0)
-    
-    batch_df,samples,discard = processAnnotation(batchAnnotation)
-    plotsBatch(dfCorrected,dfOld,batch_df,jobDir)
-    df = dfCorrected
+    if os.path.isfile(outfile):
+        matrixFile = os.path.join(jobDir,"matrix.txt")
+        oldMatrix = os.path.join(jobDir,"matrix_old.txt")
+        os.rename(matrixFile, oldMatrix)
+        os.rename(outfile, infile)
+        os.system("cp "+infile+" "+matrixFile)
+        os.system("cp "+matrixFile+" "+infile)
+        try:
+            dfCorrected = processInput(os.path.join(jobDir,"matrix.txt"),annotation_df)
+            outfile_NN_Original = os.path.join(jobDir,"normalized","matrix_NN_toDE.txt") 
+            dfCorrected.to_csv(outfile_NN_Original,sep="\t")
+            dfOld = processInput(os.path.join(jobDir,"matrix_old.txt"),annotation_df)
+        except:
+            error = open(errorFile, 'a')
+            error.write("<p>Batch effect correction was not possible, please check the input files. Please, check the format guidelines <a href='https://arn.ugr.es/normseq_doc/annotation/'>https://arn.ugr.es/normseq_doc/annotation/>here</a></p>")
+            error.close()
+            sys.exit(0)
+        
+        batch_df,samples,discard = processAnnotation(batchAnnotation)
+        plotsBatch(dfCorrected,dfOld,batch_df,jobDir)
+        df = dfCorrected
 
-    os.system("rm "+outfile_NN)
-    df.to_csv(outfile_NN,sep="\t")
+        os.system("rm "+outfile_NN)
+        df.to_csv(outfile_NN,sep="\t")
+    else:
+        pass
 
 ##################################################################
 ################## DIFFERENTIAL EXPRESSION #######################
