@@ -23,6 +23,7 @@ jobDir = config['jobDir']
 logFile = os.path.join(jobDir,"Log.txt")
 errorFile = os.path.join(jobDir,"Error.txt")
 statusFile = os.path.join(jobDir,"status.txt")
+warningFile = os.path.join(jobDir,"warnings.txt")
 
 log = open(logFile, 'a')
 status = open(statusFile, 'a')
@@ -41,7 +42,7 @@ try:
     status.flush()
 except:
     error = open(errorFile, 'a')
-    error.write("<p>There is an error in the annotation file format. Please, check the format guidelines <a href='https://arn.ugr.es/normseq_doc/annotation/'>here</a></p>")
+    error.write("<p>There is an error in the annotation file format. Please, check the format guidelines <a href='https://arn.ugr.es/normseq_doc/annotation/'>here</a></p><p>If the problem can not be solved, please write us indicating the jobID <a href='https://github.com/cris12gm/normSeq/issues'>here</a>.</p>")
     error.close()
     sys.exit(0)
 
@@ -54,7 +55,7 @@ try:
     df,dfOriginal = processInputInit(os.path.join(jobDir,"matrix.txt"),samples,config['minRC'],annotation_df)
 except:
     error = open(errorFile, 'a')
-    error.write("<p>Normalized file couldn't be safe. Please, check the format guidelines <a href='https://arn.ugr.es/normseq_doc/annotation/'>here</a></p>")
+    error.write("<p>Normalized file couldn't be safe. Please, check the format guidelines <a href='https://arn.ugr.es/normseq_doc/annotation/'>here</a></p><p>If the problem can not be solved, please write us indicating the jobID <a href='https://github.com/cris12gm/normSeq/issues'>here</a>.</p>")
     error.close()
     sys.exit(0)
 
@@ -73,7 +74,7 @@ if os.path.isfile(outfile_NN):
     log.write("0. No normalized file saved\n")
 else:
     error = open(errorFile, 'a')
-    error.write("<p>Normalized file couldn't be safe. Please, check the format guidelines <a href='https://arn.ugr.es/normseq_doc/annotation/'>https://arn.ugr.es/normseq_doc/annotation/>here</a></p>")
+    error.write("<p>Normalized file couldn't be safe. Please, check the format guidelines <a href='https://arn.ugr.es/normseq_doc/annotation/'>https://arn.ugr.es/normseq_doc/annotation/>here</a></p><p>If the problem can not be solved, please write us indicating the jobID <a href='https://github.com/cris12gm/normSeq/issues'>here</a>.</p>")
     error.close()
     sys.exit(0)
 
@@ -83,6 +84,7 @@ infile = os.path.join(jobDir,"normalized","matrix_NN.txt")
 ##################################################################
 ######################## BATCH EFFECT ############################
 ##################################################################
+
 
 if config['batchEffect'] == 'True':
     batchAnnotation = os.path.join(jobDir,"batchFile.txt")
@@ -101,17 +103,21 @@ if config['batchEffect'] == 'True':
             dfCorrected.to_csv(outfile_NN_Original,sep="\t")
             dfOld = processInput(os.path.join(jobDir,"matrix_old.txt"),annotation_df)
         except:
-            error = open(errorFile, 'a')
-            error.write("<p>Batch effect correction was not possible, please check the input files. Please, check the format guidelines <a href='https://arn.ugr.es/normseq_doc/annotation/'>https://arn.ugr.es/normseq_doc/annotation/>here</a></p>")
-            error.close()
-            sys.exit(0)
+            warning = open(warningFile, 'a')
+            warning.write("<p>Batch effect correction was not possible, please check the input files. Please, check the format guidelines <a href='https://arn.ugr.es/normseq_doc/annotation/'>https://arn.ugr.es/normseq_doc/annotation/>here</a></p>")
+            warning.close()
         
-        batch_df,samples,discard = processAnnotation(batchAnnotation)
-        plotsBatch(dfCorrected,dfOld,batch_df,jobDir)
-        df = dfCorrected
+        try:
+            batch_df,samples,discard = processAnnotation(batchAnnotation)
+            plotsBatch(dfCorrected,dfOld,batch_df,jobDir)
+            df = dfCorrected
 
-        os.system("rm "+outfile_NN)
-        df.to_csv(outfile_NN,sep="\t")
+            os.system("rm "+outfile_NN)
+            df.to_csv(outfile_NN,sep="\t")
+        except:
+            warning = open(warningFile, 'a')
+            warning.write("<p>Batch effect correction was not possible, please check the input files. Please, check the format guidelines <a href='https://arn.ugr.es/normseq_doc/annotation/'>https://arn.ugr.es/normseq_doc/annotation/>here</a></p>")
+            warning.close()
     else:
         pass
 
