@@ -81,13 +81,19 @@ def processInput(infile,annotation_df):
     return(dfF)
 
 def processAnnotation(infile):
-    cabecera = open(infile).readline().split("\t")
+    cabecera = open(infile).readline().strip().split("\t")
     df = pd.read_table(infile,index_col=False)
     numbercolumns = len(df.columns)
     df = df.replace(' ','', regex=True)
     df = df.replace('_','', regex=True)
-    
-    
+    types = df.dtypes
+    i = 0
+    for ty in types:
+        if ty=="int64":
+            df[cabecera[i]] = df[cabecera[i]].astype(str)
+            print(df[cabecera[i]])
+        i = i + 1
+
     if numbercolumns == 3:
         df.rename(columns = {cabecera[0]:'sample',cabecera[1]:'group',cabecera[2]:'replicate'}, inplace = True)
         df.columns = ['sample','group','replicate']
