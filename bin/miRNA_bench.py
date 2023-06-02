@@ -134,9 +134,9 @@ if config['diffExpr']=="True":
         os.mkdir(os.path.join(jobDir,"DE"))
     combinations = createGroupFile(annotation_df,jobDir)
 
-    if combinations>15:
+    if combinations>45:
         error = open(errorFile, 'a')
-        error.write("<p>Your annotation file has more than 6 groups, which is the maximum of NormSeq. Please relaunch with less groups.</p><p>If the problem can not be solved, please write us indicating the jobID <a href='https://github.com/cris12gm/normSeq/issues'>here</a>.</p>")
+        error.write("<p>Your annotation file has more than 10 groups, which is the maximum of NormSeq. Please relaunch with less groups.</p><p>If the problem can not be solved, please write us indicating the jobID <a href='https://github.com/cris12gm/normSeq/issues'>here</a>.</p>")
         error.close()
         sys.exit(0)
 
@@ -228,9 +228,9 @@ for group in diffGroups:
     output.write(group+"\n")
 output.close()
 
-if groups>6:
+if groups>10:
     error = open(errorFile, 'a')
-    error.write("<p>Your annotation file has more than 6 groups, which is the maximum of NormSeq. Please relaunch with less groups.</p><p>If the problem can not be solved, please write us indicating the jobID <a href='https://github.com/cris12gm/normSeq/issues'>here</a>.</p>")
+    error.write("<p>Your annotation file has more than 10 groups, which is the maximum of NormSeq. Please relaunch with less groups.</p><p>If the problem can not be solved, please write us indicating the jobID <a href='https://github.com/cris12gm/normSeq/issues'>here</a>.</p>")
     error.close()
     sys.exit(0)
 
