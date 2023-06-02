@@ -228,7 +228,7 @@ for group in diffGroups:
     output.write(group+"\n")
 output.close()
 
-if len(groups)>10:
+if len(diffGroups)>10:
     error = open(errorFile, 'a')
     error.write("<p>Your annotation file has more than 6 groups, which is the maximum of NormSeq. Please relaunch with less groups.</p><p>If the problem can not be solved, please write us indicating the jobID <a href='https://github.com/cris12gm/normSeq/issues'>here</a>.</p>")
     error.close()
