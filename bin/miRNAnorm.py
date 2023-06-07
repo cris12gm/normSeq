@@ -7,7 +7,7 @@ from config import R_PATH
 from config import R_SCRIPTS_PATH
 
 def processInputInit(infile,samples,minRC,annotation_df):
-    cabecera = open(infile).readline().split("\t")[0]
+    cabecera = open(infile).readline().split("\t")[0].replace("_","").replace(" ","")
     df = pd.read_table(infile)
     df=df.dropna(axis=1,how='all')
     testInteger = df.select_dtypes(include=[int])
