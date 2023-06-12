@@ -273,6 +273,7 @@ class Results(TemplateView):
             #RLE plots
             if method=="NN":
                 NN_PNG = os.path.join(settings.MEDIA_URL,jobID,"normalized","RLEplot_NN.png")
+                rleplotNN={}
                 rleplotNN['PNG'] = NN_PNG
                 rleplotNN['name'] = METHODS[method]
             else:
