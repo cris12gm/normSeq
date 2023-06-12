@@ -271,9 +271,8 @@ class Results(TemplateView):
                 batchEffect=False
 
             #RLE plots
-            
+            rleplotNN = {}
             if method=="NN":
-                rleplotNN = {}
                 NN_PNG = os.path.join(settings.MEDIA_URL,jobID,"normalized","RLEplot_NN.png")
                 rleplotNN['PNG'] = NN_PNG
                 rleplotNN['name'] = METHODS[method]
