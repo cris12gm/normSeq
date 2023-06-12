@@ -286,9 +286,10 @@ class Results(TemplateView):
                 else:
                     rleplots[method]['active'] = "none;"
 
-            if rleplotNN not in locals():
+            try:
+                value = rleplotNN
+            except:
                 rleplotNN = {}
-
             ##Downloads Normalized
             downloadLink = os.path.join(settings.MEDIA_URL,jobID,"normalized","matrix_"+method+".txt")
             downloads['normalized'][METHODS[method]] = [downloadLink,"matrix_"+method+".txt"]
