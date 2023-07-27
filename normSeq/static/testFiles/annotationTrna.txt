@@ -8,9 +8,9 @@ Cortex_3	CNS	Cortex
 Medulla_oblongata_1	CNS	Medulla
 Medulla_oblongata_2	CNS	Medulla
 Medulla_oblongata_3	CNS	Medulla
-Spinalcord_1	CNS	Spinal
-Spinalcord_2	CNS	Spinal
-Spinalcord_3	CNS	Spinal
+Spinal_cord_1	CNS	Spinal
+Spinal_cord_2	CNS	Spinal
+Spinal_cord_3	CNS	Spinal
 Tibialis_1	Tibia	Tibia
 Tibialis_2	Tibia	Tibia
 Tibialis_3	Tibia	Tibia
