@@ -1,4 +1,4 @@
-from django.shortcuts import reverse, redirect
+from django.shortcuts import reverse, redirect,render
 from django.conf import settings
 
 
@@ -10,8 +10,7 @@ class MaintenanceModeMiddleware:
         path = request.META.get('PATH_INFO', "")
 
         if settings.MAINTENANCE_MODE and path!= reverse("maintenance"):
-            response = redirect(reverse("maintenance"))
-            return response
+            return render(request, 'maintenance.html')
 
         response = self.get_response(request)
 
