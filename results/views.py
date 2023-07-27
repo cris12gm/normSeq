@@ -202,7 +202,7 @@ class Results(TemplateView):
             pca.append([pngPCA,pcaHTML,id_modal,title_modal])
 
             #Check if 3D plot
-            pngPCA3D = os.path.exists(os.path.join(settings.MEDIA_ROOT,jobID,"graphs","pca_"+method+"_3D.png"))
+            pngPCA3D = os.path.exists(os.path.join(settings.MEDIA_ROOT,jobID,"graphs","pca_"+method+"_3D.html"))
 
             #Summary
             #Distribution
