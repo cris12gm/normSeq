@@ -2,6 +2,6 @@ sample	group
 sample1	Healthy
 sample2	Healthy
 sample3	Healthy
-sample4	Desease
-sample5	Desease
-sample6	Desease
+sample4	Disease
+sample5	Disease
+sample6	Disease

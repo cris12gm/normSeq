@@ -5,9 +5,9 @@ Cerebellum_3	CNS	Cerebellum
 Cortex_1	CNS	Cortex
 Cortex_2	CNS	Cortex
 Cortex_3	CNS	Cortex
-Medullaoblongata_1	CNS	Medulla
-Medullaoblongata_2	CNS	Medulla
-Medullaoblongata_3	CNS	Medulla
+Medulla_oblongata_1	CNS	Medulla
+Medulla_oblongata_2	CNS	Medulla
+Medulla_oblongata_3	CNS	Medulla
 Spinalcord_1	CNS	Spinal
 Spinalcord_2	CNS	Spinal
 Spinalcord_3	CNS	Spinal
