@@ -28,6 +28,19 @@
                 <h2>Results for Job ID <a href="{% url 'status' %}/?jobID={{ jobID }}">{{ jobID }}</a></h2>
                 <p> You can <a id="bookmarkt" href="{% url 'status' %}/?jobID={{ jobID }}"><i class="fas fa-fw fa-bookmark"></i>bookmark this page</a> to access the results later.</p>
                 <p><i>Results will be stored for 15 days, until {{date}}</i></p>
+                {% if warning %}
+                    <button class="btn btn-warning mb-3" type="button" data-toggle="collapse" data-target="#collapseWarning" aria-expanded="false" aria-controls="collapseWarning">
+                        There were some errors in your job, click here to get more details
+                    </button>
+                    <div class="collapse" id="collapseWarning">
+                        <div class="card card-body">
+                            <div class="alert alert-warning" role="alert">
+                                {{warning |safe }}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
                 <div class="menu-hide" id="menu-hide">
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                         <li class="nav-item">

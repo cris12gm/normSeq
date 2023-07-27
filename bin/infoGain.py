@@ -11,10 +11,14 @@ import plotly.graph_objects as go
 
 def calc_information_gain(data, target):
     # Calculate information gain for a single feature using mutual_info_classif
-    infoGain = mutual_info_classif(data.reshape(-1, 1), target,discrete_features=False,random_state=1,n_neighbors=3)[0]
+    errorInfo = False
+    try:
+        infoGain = mutual_info_classif(data.reshape(-1, 1), target,discrete_features=False,random_state=1,n_neighbors=3)[0]
+    except:
+        errorInfo = True
     if infoGain>1:
         infoGain = 1
-    return infoGain
+    return infoGain,errorInfo
 
 def calculate_infoGain_group(df,annotation_df,group):
     try:
@@ -30,17 +34,20 @@ def calculate_infoGain_group(df,annotation_df,group):
     annotation_other = annotation_other.drop('group',axis=1)
     annotation_other['group']="Other"
     samplesOther = list(annotation_other.index)
-    dfOther = df[samplesOther]
-    annotationC = pd.concat([annotation_group,annotation_other])
-    dfC = pd.merge(dfGroup,dfOther,left_index=True,right_index=True)
-    merged = (pd.merge(dfC.T,annotationC,left_index=True,right_index=True)).T
-    labels = ((merged.loc['group']).values)
-    merged = merged.drop("group",axis=0).T
-    merged = (merged).to_numpy()
-    
-    # Calculate information gain for each feature in parallel using joblib
-    results = Parallel(n_jobs=2)(delayed(calc_information_gain)(merged[:, i], labels) for i in range(merged.shape[1]))
-
+    if (len(samplesGroup) + len(samplesOther)) <3:
+        results=False
+    else:
+        dfOther = df[samplesOther]
+        annotationC = pd.concat([annotation_group,annotation_other])
+        dfC = pd.merge(dfGroup,dfOther,left_index=True,right_index=True)
+        merged = (pd.merge(dfC.T,annotationC,left_index=True,right_index=True)).T
+        labels = ((merged.loc['group']).values)
+        merged = merged.drop("group",axis=0).T
+        merged = (merged).to_numpy()
+        # Calculate information gain for each feature in parallel using joblib
+        results,errorInfo = Parallel(n_jobs=2)(delayed(calc_information_gain)(merged[:, i], labels) for i in range(merged.shape[1]))
+        if errorInfo:
+            results="Error"
     return(results)
 
 
@@ -55,15 +62,17 @@ def calculate_infoGain_pairwise(df,annotation_df,combination):
 
     filtered_Annotation = annotation_df[(annotation_df['group'] == group1) | (annotation_df['group'] == group2)]
     selectedSamples = list(filtered_Annotation.index)
-    df2 = df[selectedSamples]
-
-    merged = (pd.merge(df2.T,filtered_Annotation,left_index=True,right_index=True)).T
-    labels = np.asarray((merged.loc['group']).values)
-    merged = np.asarray(merged.drop("group").T)
-
-    # Calculate information gain for each feature in parallel using joblib
-    results = Parallel(n_jobs=12)(delayed(calc_information_gain)(merged[:, i], labels) for i in range(merged.shape[1]))
-
+    if len(selectedSamples)>2:
+        df2 = df[selectedSamples]
+        merged = (pd.merge(df2.T,filtered_Annotation,left_index=True,right_index=True)).T
+        labels = np.asarray((merged.loc['group']).values)
+        merged = np.asarray(merged.drop("group").T)
+        # Calculate information gain for each feature in parallel using joblib
+        results,errorInfo = Parallel(n_jobs=12)(delayed(calc_information_gain)(merged[:, i], labels) for i in range(merged.shape[1]))
+        if errorInfo:
+            results="Error"
+    else:
+        results = False
     return(results)
 
 

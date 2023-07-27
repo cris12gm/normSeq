@@ -18,6 +18,7 @@ configFile = open(sys.argv[1])
 config = json.load(configFile)
 
 jobDir = config['jobDir']
+jobID = config['jobID']
 
 #Error, status and log Files
 logFile = os.path.join(jobDir,"Log.txt")
@@ -134,16 +135,21 @@ if config['diffExpr']=="True":
         os.mkdir(os.path.join(jobDir,"DE"))
     combinations = createGroupFile(annotation_df,jobDir)
 
-    if len(combinations)>45:
-        error = open(errorFile, 'a')
-        error.write("<p>Your annotation file has more than 10 groups, which is the maximum of NormSeq. Please relaunch with less groups.</p><p>If the problem can not be solved, please write us indicating the jobID <a href='https://github.com/cris12gm/normSeq/issues'>here</a>.</p>")
-        error.close()
-        sys.exit(0)
+    if combinations:
+        if len(combinations)>45:
+            error = open(errorFile, 'a')
+            error.write("<p>Your annotation file has more than 10 groups, which is the maximum of NormSeq. Please relaunch with less groups.</p><p>If the problem can not be solved, please write us indicating the jobID <a href='https://github.com/cris12gm/normSeq/issues'>here</a>.</p>")
+            error.close()
+            sys.exit(0)
 
-    output_de = de_R(outfile_NN_Original,annotation,combinations,methodDE,FDR,min_t,methodologyEdgeR,jobDir,log,status)
-    output_de = ttest(df,combinations,annotation_df,FDR,output_de,jobDir,log,status)
-    consensus(output_de,df,annotation_df,jobDir)
-    plotDE(df,output_de,annotation_df,jobDir)
+        output_de = de_R(outfile_NN_Original,annotation,combinations,methodDE,FDR,min_t,methodologyEdgeR,jobDir,log,status)
+        output_de = ttest(df,combinations,annotation_df,FDR,output_de,jobDir,log,status)
+        consensus(output_de,df,annotation_df,jobDir)
+        plotDE(df,output_de,annotation_df,jobDir)
+    else:
+        warning = open(warningFile, 'a')
+        warning.write("<p>Differential expression was not possible because there is no replicates in at least two groups.</p>")
+        warning.close()
 
 ##################################################################
 ####################### NORMALIZATION ############################
@@ -258,43 +264,59 @@ for group in diffGroups:
     for method in methods:
         normdf = normalized[method][0]
         info = calculate_infoGain_group(normdf,annotation_df,group)
+        if info == False:
+            warning = open(warningFile, 'a')
+            warning.write("<p>Information gain can not be calculated with only two samples without replicates, the way it is implemented in normSeq requires at least 2 replicates from one of the samples.</p>")
+            warning.close()
+        elif info == "Error":
+            warning = open(warningFile, 'a')
+            warning.write("<p>Information gain can not be calculated, please report it <a href='https://github.com/cris12gm/normSeq/issues'>here</a> with the following ID:"+jobID+".</p>")
+            warning.close()
         information_gain[method] = info
-    # infoDf = pd.DataFrame(information_gain)
-    infoDf = pd.DataFrame(dict([ (k,pd.Series(v)) for k,v in information_gain.items() ]))
-    infoDf['name'] = list(normdf.index)
-    infoDf = infoDf.set_index('name')
+    if info!= "Error" and info!=False:
+        infoDf = pd.DataFrame(dict([ (k,pd.Series(v,dtype='float64')) for k,v in information_gain.items() ]))
+        infoDf['name'] = list(normdf.index)
+        infoDf = infoDf.set_index('name')
 
     # # #Get Top 10
     # # outfileImage = os.path.join(jobDir,"graphs","summary","infoGainTop10_"+group+".txt")
     # # outfile = os.path.join(jobDir,"graphs","summary","infoGainTop10_"+group+".html")
     # # top10Info(infoDf,normalized,methods,annotation_df,outfileImage,outfile)
     # # sys.exit(1)
-    outfileInfo = os.path.join(jobDir,"graphs","summary","infoGain_"+group+".txt")
-    infoDf.to_csv(outfileInfo,sep="\t")
-    outfileImage = os.path.join(jobDir,"graphs","summary","infoGain_"+group+".png")
-    outfile = os.path.join(jobDir,"graphs","summary","infoGain_"+group+".html")
-    title = group
-    titleaxis = "Information Gain per "+config["typeJob"]
-    plotInfo(information_gain,outfileImage,outfile,title,titleaxis)
+        outfileInfo = os.path.join(jobDir,"graphs","summary","infoGain_"+group+".txt")
+        infoDf.to_csv(outfileInfo,sep="\t")
+        outfileImage = os.path.join(jobDir,"graphs","summary","infoGain_"+group+".png")
+        outfile = os.path.join(jobDir,"graphs","summary","infoGain_"+group+".html")
+        title = group
+        titleaxis = "Information Gain per "+config["typeJob"]
+        plotInfo(information_gain,outfileImage,outfile,title,titleaxis)
 
 #Pairwise
-
 for combination in combinations:
     information_gain_groups = {}
     for method in methods:
         normdf = normalized[method][0]
         info = calculate_infoGain_pairwise(normdf,annotation_df,combination)
+        if info == False:
+            warning = open(warningFile, 'a')
+            warning.write("<p>Information gain can not be calculated with only two samples without replicates, the way it is implemented in normSeq requires at least 2 replicates from one of the samples.</p>")
+            warning.close()
+        elif info == "Error":
+            warning = open(warningFile, 'a')
+            warning.write("<p>Information gain can not be calculated, please report it <a href='https://github.com/cris12gm/normSeq/issues'>here</a> with the following ID:"+jobID+".</p>")
+            warning.close()
         information_gain_groups[method] = info
-    infoDf = pd.DataFrame(dict([ (k,pd.Series(v)) for k,v in information_gain_groups.items() ]))
-    infoDf['name'] = list(normdf.index)
-    infoDf = infoDf.set_index('name')
-    outfileInfo = os.path.join(jobDir,"graphs","summary","infoGain_"+combination[0]+"-"+combination[1]+".txt")
-    infoDf.to_csv(outfileInfo,sep="\t")
-    outfileImage = os.path.join(jobDir,"graphs","summary","infoGain_"+combination[0]+"-"+combination[1]+".png")
-    outfile = os.path.join(jobDir,"graphs","summary","infoGain_"+combination[0]+"-"+combination[1]+".html")
-    title = combination[0]+"-"+combination[1]
-    titleaxis = "Information Gain per "+config["typeJob"]
-    plotInfo(information_gain_groups,outfileImage,outfile,title,titleaxis)
+    if info!= "Error" and info!=False:
+        infoDf = pd.DataFrame(dict([ (k,pd.Series(v,dtype='float64')) for k,v in information_gain_groups.items() ]))
+        infoDf['name'] = list(normdf.index)
+        infoDf = infoDf.set_index('name')
+        outfileInfo = os.path.join(jobDir,"graphs","summary","infoGain_"+combination[0]+"-"+combination[1]+".txt")
+        infoDf.to_csv(outfileInfo,sep="\t")
+        outfileImage = os.path.join(jobDir,"graphs","summary","infoGain_"+combination[0]+"-"+combination[1]+".png")
+        outfile = os.path.join(jobDir,"graphs","summary","infoGain_"+combination[0]+"-"+combination[1]+".html")
+        title = combination[0]+"-"+combination[1]
+        titleaxis = "Information Gain per "+config["typeJob"]
+        plotInfo(information_gain_groups,outfileImage,outfile,title,titleaxis)
 
 ##################################################################
 ####################### SUMMARY + PLOTS ##########################

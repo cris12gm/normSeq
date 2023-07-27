@@ -12,7 +12,9 @@
                     <label for="selectDimensions">Select the number of dimensions to plot:</label>
                     <select class="form-control" id="selectDimensions">
                       <option value="2">Two dimensions (2D)</option>
-                      <option value="3">Three dimensions (3D)</option>
+                      {% if pngPCA3D %}
+                          <option value="3">Three dimensions (3D)</option>
+                      {% endif %}
                     </select>
                   </div>
             </div>

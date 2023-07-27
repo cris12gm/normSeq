@@ -57,6 +57,11 @@ class Results(TemplateView):
         typeJob = jobDB.getType()
         start_date = jobDB.getDate()
         end_date = start_date + datetime.timedelta(days=15)
+
+
+        #Get warning file
+
+        warningFileContent = open(settings.MEDIA_ROOT+jobID+'/warnings.txt','r').readlines()[0]
         
         ##All visualizations
         visualization = False
@@ -97,27 +102,28 @@ class Results(TemplateView):
         downloads['info'] = {}
         for group in Info_Groups:
             info = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".html")
-            infoPNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".png")
-            infoGain[group] = {'HTML':info,'PNG':infoPNG,'name':"Information Gain "}
-            downloadLink = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".txt")
-            try:
-                values = downloads['info'][group]
-            except:
-                downloads['info'][group] = {}
-            downloads['info'][group] = [downloadLink,"infoGain_"+group+".txt"]
-
+            if os.path.exists(info):
+                infoPNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".png")
+                infoGain[group] = {'HTML':info,'PNG':infoPNG,'name':"Information Gain "}
+                downloadLink = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".txt")
+                try:
+                    values = downloads['info'][group]
+                except:
+                    downloads['info'][group] = {}
+                downloads['info'][group] = [downloadLink,"infoGain_"+group+".txt"]
         infoGainPairwise = {}
         for group in FC_groups:
             info = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".html")
-            infoPNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".png")
-            infoGainPairwise[group] = {'HTML':info,'PNG':infoPNG,'name':"Information Gain "}
+            if os.path.exists(info):
+                infoPNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".png")
+                infoGainPairwise[group] = {'HTML':info,'PNG':infoPNG,'name':"Information Gain "}
 
-            downloadLink = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".txt")
-            try:
-                values = downloads['info'][group]
-            except:
-                downloads['info'][group] = {}
-            downloads['info'][group] = [downloadLink,"infoGain_"+group+".txt"]
+                downloadLink = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".txt")
+                try:
+                    values = downloads['info'][group]
+                except:
+                    downloads['info'][group] = {}
+                downloads['info'][group] = [downloadLink,"infoGain_"+group+".txt"]
         
 
         ## Features
@@ -190,6 +196,9 @@ class Results(TemplateView):
             pcaHTML = os.path.join(settings.MEDIA_URL,jobID,"graphs","pca_"+method+".html")
 
             pca.append([pngPCA,pcaHTML,id_modal,title_modal])
+
+            #Check if 3D plot
+            pngPCA3D = os.path.exists(os.path.join(settings.MEDIA_URL,jobID,"graphs","pca_"+method+"_3D.png"))
 
             #Summary
             #Distribution
@@ -277,22 +286,20 @@ class Results(TemplateView):
             if method=="NN":
                 NN_PNG = os.path.join(settings.MEDIA_URL,jobID,"normalized","RLEplot_NN.png")
                 rleplotNN={}
-                rleplotNN['PNG'] = NN_PNG
-                rleplotNN['name'] = METHODS[method]
+                if os.path.exists(NN_PNG):
+                    rleplotNN['PNG'] = NN_PNG
+                    rleplotNN['name'] = METHODS[method]
             else:
-                rleplots[method] = {}
                 rlePNG = os.path.join(settings.MEDIA_URL,jobID,"normalized","RLEplot_"+method+".png")
-                rleplots[method]['PNG'] = rlePNG
-                rleplots[method]['name'] = METHODS[method]
-                if i==1:
-                    rleplots[method]['active'] = "block;"
-                else:
-                    rleplots[method]['active'] = "none;"
-
-            try:
-                value = rleplotNN
-            except:
-                rleplotNN = {}
+                if os.path.exists(rlePNG):
+                    rleplots[method] = {}
+                    rleplots[method]['PNG'] = rlePNG
+                    rleplots[method]['name'] = METHODS[method]
+                    if i==1:
+                        rleplots[method]['active'] = "block;"
+                    else:
+                        rleplots[method]['active'] = "none;"
+                    
             ##Downloads Normalized
             downloadLink = os.path.join(settings.MEDIA_URL,jobID,"normalized","matrix_"+method+".txt")
             downloads['normalized'][METHODS[method]] = [downloadLink,"matrix_"+method+".txt"]
@@ -306,8 +313,8 @@ class Results(TemplateView):
 
         de_software = ["edgeR","DESeq2","NOISeq","TTest"]
         return render(request, self.template, {"jobID":jobID,"typeJob":typeJob,"visualization":visualization,"heatmapPlots":heatmap,
-        "pcaPlots":pca,"batchEffect":batchEffect,"downloads":downloads,"summary":summary,"de":diffExpr,"de_groups":de_groups,'date':end_date,
-        'consensus':consensus,'de_software':de_software, 'topDEPerMethod':topDEPerMethod,'features':features})
+        "pcaPlots":pca,"pngPCA3D":pngPCA3D,"batchEffect":batchEffect,"downloads":downloads,"summary":summary,"de":diffExpr,"de_groups":de_groups,'date':end_date,
+        'consensus':consensus,'de_software':de_software, 'topDEPerMethod':topDEPerMethod,'features':features,'warning':warningFileContent})
 
 
 def queryPlotHTML(request):
@@ -569,6 +576,7 @@ class Results_tutorial(TemplateView):
                 downloads['info'][group] = {}
             downloads['info'][group] = [downloadLink,"infoGain_"+group+".txt"]
 
+
         infoGainPairwise = {}
         for group in FC_groups:
             info = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".html")
@@ -651,7 +659,7 @@ class Results_tutorial(TemplateView):
             id_modal = "pca_"+method
             title_modal = METHODS[method]
             pcaHTML = os.path.join(settings.MEDIA_URL,jobID,"graphs","pca_"+method+".html")
-
+           
             pca.append([pngPCA,pcaHTML,id_modal,title_modal])
 
             #Summary
@@ -766,5 +774,5 @@ class Results_tutorial(TemplateView):
 
         de_software = ["edgeR","DESeq2","NOISeq","TTest"]
         return render(request, self.template, {"jobID":jobID,"typeJob":typeJob,"visualization":visualization,"heatmapPlots":heatmap,
-        "pcaPlots":pca,"batchEffect":batchEffect,"downloads":downloads,"summary":summary,"de":diffExpr,"de_groups":de_groups,'date':end_date,
+        "pcaPlots":pca,"pngPCA3D":pngPCA3D,"batchEffect":batchEffect,"downloads":downloads,"summary":summary,"de":diffExpr,"de_groups":de_groups,'date':end_date,
         'consensus':consensus,'de_software':de_software, 'topDEPerMethod':topDEPerMethod,'features':features})

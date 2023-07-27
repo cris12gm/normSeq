@@ -19,8 +19,10 @@ def createplots(infile,df,method,jobDir,annotation,annotation_df,cmds):
     # PCA
     outfile = os.path.join(outDir,"pca_"+method+".html")
     outfileImage = os.path.join(outDir,"pca_"+method+".png")
-    pca(df,annotation_df,outfile,outfileImage)
-
+    try:
+        pca(df,annotation_df,outfile,outfileImage)
+    except:
+        pass
     # Heatmap
     outfile = os.path.join(outDir,"heatmap_"+method+".png")
     outfileImage = os.path.join(outDir,"heatmap_"+method+".png")
@@ -65,27 +67,25 @@ def pca(df,annotation_df,outfile,outfileImage):
     outfile_W.write(plotCode)
     outfile_W.close()
 
+    if (len(annotation_df.group))>2:
+        pca = PCA(n_components=3)
+        components = pca.fit_transform(norm_X)
 
-    df = px.data.iris()
+        total_var = pca.explained_variance_ratio_.sum() * 100
 
-    pca = PCA(n_components=3)
-    components = pca.fit_transform(norm_X)
-
-    total_var = pca.explained_variance_ratio_.sum() * 100
-
-    fig3D = px.scatter_3d(
-        components, x=0, y=1, z=2, color=list(annotation_df.group),
-        title=f'Total Explained Variance: {total_var:.2f}%',
-        labels={'0': 'PC 1', '1': 'PC 2', '2': 'PC 3'}
-    )
-    fig3D.update_layout(
-    legend_title="Group"
-    )
-    
-    plotCode = plot(fig3D, show_link=False, auto_open=False, output_type = 'div')
-    outfile_W = open(outfile.replace(".html","_3D.html"),'a')
-    outfile_W.write(plotCode)
-    outfile_W.close()
+        fig3D = px.scatter_3d(
+            components, x=0, y=1, z=2, color=list(annotation_df.group),
+            title=f'Total Explained Variance: {total_var:.2f}%',
+            labels={'0': 'PC 1', '1': 'PC 2', '2': 'PC 3'}
+        )
+        fig3D.update_layout(
+        legend_title="Group"
+        )
+        
+        plotCode = plot(fig3D, show_link=False, auto_open=False, output_type = 'div')
+        outfile_W = open(outfile.replace(".html","_3D.html"),'a')
+        outfile_W.write(plotCode)
+        outfile_W.close()
 
 
 
@@ -119,25 +119,23 @@ def pca_batch(df,annotation_df,outfile,outfileImage):
     outfile_W.write(plotCode)
     outfile_W.close()
 
+    if (len(annotation_df.group))>2:
+        pca = PCA(n_components=3)
+        components = pca.fit_transform(norm_X)
 
-    df = px.data.iris()
+        total_var = pca.explained_variance_ratio_.sum() * 100
 
-    pca = PCA(n_components=3)
-    components = pca.fit_transform(norm_X)
-
-    total_var = pca.explained_variance_ratio_.sum() * 100
-
-    fig3D = px.scatter_3d(
-        components, x=0, y=1, z=2, color=list(annotation_df.batchEffect),
-        title=f'Total Explained Variance: {total_var:.2f}%',
-        labels={'0': 'PC 1', '1': 'PC 2', '2': 'PC 3'}
-    )
-    fig3D.update_layout(
-    legend_title="Group"
-    )
-    
-    plotCode = plot(fig3D, show_link=False, auto_open=False, output_type = 'div')
-    outfile_W = open(outfile.replace(".html","_3D.html"),'a')
-    outfile_W.write(plotCode)
-    outfile_W.close()
+        fig3D = px.scatter_3d(
+            components, x=0, y=1, z=2, color=list(annotation_df.batchEffect),
+            title=f'Total Explained Variance: {total_var:.2f}%',
+            labels={'0': 'PC 1', '1': 'PC 2', '2': 'PC 3'}
+        )
+        fig3D.update_layout(
+        legend_title="Group"
+        )
+        
+        plotCode = plot(fig3D, show_link=False, auto_open=False, output_type = 'div')
+        outfile_W = open(outfile.replace(".html","_3D.html"),'a')
+        outfile_W.write(plotCode)
+        outfile_W.close()
 

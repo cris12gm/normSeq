@@ -17,17 +17,30 @@ import plotly.graph_objects as go
 import plotly.express as px
 
 def createGroupFile(annotation_df,jobDir):
-    groups = annotation_df["group"].values.tolist()
+    warningFile = os.path.join(jobDir,"warnings.txt")
+    groupsRaw = annotation_df["group"].values.tolist()
+    groups = []
+    for element in groupsRaw:
+        numberOccurrence = groupsRaw.count(element)
+        if numberOccurrence > 1:
+            groups.append(element)
     diffGroups = list(set(groups))
-    combinations = []
-    for subset in itertools.combinations(diffGroups, 2):
-        combination = subset[0]+"-"+subset[1]
-        combinations.append([subset[0],subset[1]])
-    output = open(os.path.join(jobDir,"DE","groups.txt"),'a')
-    for element in combinations:
-        element = "-".join(element)
-        output.write(element+"\n")
-    output.close()
+    if len(diffGroups)>1:
+        if len(diffGroups) != list(set(groupsRaw)):
+            warning = open(warningFile, 'a')
+            warning.write("<p>Differential expression was not performed between all groups because some of them has no replicates, and that is mandatory for the analysis.</p>")
+            warning.close()
+        combinations = []
+        for subset in itertools.combinations(diffGroups, 2):
+            combination = subset[0]+"-"+subset[1]
+            combinations.append([subset[0],subset[1]])
+        output = open(os.path.join(jobDir,"DE","groups.txt"),'a')
+        for element in combinations:
+            element = "-".join(element)
+            output.write(element+"\n")
+        output.close()
+    else:
+        combinations=False
     return combinations
 
 
