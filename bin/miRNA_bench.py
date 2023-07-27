@@ -174,6 +174,9 @@ status.flush()
 if replicates==False:
     try:
         methods.remove("RUV")
+        warning = open(warningFile, 'a')
+        warning.write("<p>RUV normalization was not performed due to the absence of replicates indicated in the annotation file.</p>")
+        warning.close()
     except:
         pass
     
