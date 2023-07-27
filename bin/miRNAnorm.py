@@ -7,7 +7,7 @@ from config import R_PATH
 from config import R_SCRIPTS_PATH
 
 def processInputInit(infile,samples,minRC,annotation_df):
-    cabecera = open(infile).readline().split("\t")[0].replace("_","").replace(" ","")
+    cabecera = open(infile).readline().split("\t")[0].replace("_",".").replace(" ",".")
     df = pd.read_table(infile)
     df=df.dropna(axis=1,how='all')
     testInteger = df.select_dtypes(include=[int])
@@ -22,8 +22,8 @@ def processInputInit(infile,samples,minRC,annotation_df):
         if secondtest.empty:
             sys.exit(0)
 
-    df = df.rename(columns=lambda s: s.replace("_", ""))
-    df = df.rename(columns=lambda s: s.replace(" ", ""))
+    df = df.rename(columns=lambda s: s.replace("_", "."))
+    df = df.rename(columns=lambda s: s.replace(" ", "."))
 
     if cabecera!="":
         df.rename(columns = {cabecera:'name'}, inplace = True)
@@ -38,8 +38,8 @@ def processInputInit(infile,samples,minRC,annotation_df):
         dfF = dfF[dfF>=0]
     except:
         df = pd.read_table(infile,decimal=",")
-        df = df.rename(columns=lambda s: s.replace("_", ""))
-        df = df.rename(columns=lambda s: s.replace(" ", ""))
+        df = df.rename(columns=lambda s: s.replace("_", "."))
+        df = df.rename(columns=lambda s: s.replace(" ", "."))
         if cabecera!="":
             df.rename(columns = {cabecera:'name'}, inplace = True)
         else:
@@ -66,8 +66,8 @@ def processInputInit(infile,samples,minRC,annotation_df):
 def processInput(infile,annotation_df):
     cabecera = open(infile).readline().split("\t")[0]
     df = pd.read_table(infile)
-    df = df.rename(columns=lambda s: s.replace("_", ""))
-    df = df.rename(columns=lambda s: s.replace(" ", ""))
+    df = df.rename(columns=lambda s: s.replace("_", "."))
+    df = df.rename(columns=lambda s: s.replace(" ", "."))
     if cabecera!="":
         df.rename(columns = {cabecera:'name'}, inplace = True)
     else:
@@ -84,8 +84,8 @@ def processAnnotation(infile):
     cabecera = open(infile).readline().strip().split("\t")
     df = pd.read_table(infile,index_col=False)
     numbercolumns = len(df.columns)
-    df = df.replace(' ','', regex=True)
-    df = df.replace('_','', regex=True)
+    df = df.replace(' ','.', regex=True)
+    df = df.replace('_','.', regex=True)
     types = df.dtypes
     i = 0
     for ty in types:
