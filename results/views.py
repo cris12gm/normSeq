@@ -186,23 +186,25 @@ class Results(TemplateView):
         for method in methods:
 
             pngHeatmap = os.path.join(settings.MEDIA_URL,jobID,"graphs","heatmap_"+method+".png")
-            id_modal = "heatmap_"+method
-            title_modal = METHODS[method]
-            #heatmapHTML = os.path.join(settings.MEDIA_URL,jobID,"graphs","heatmap_"+method+".html")
+            if os.path.exists(os.path.join(settings.MEDIA_ROOT,jobID,"graphs","heatmap_"+method+".png")):
+                id_modal = "heatmap_"+method
+                title_modal = METHODS[method]
+                #heatmapHTML = os.path.join(settings.MEDIA_URL,jobID,"graphs","heatmap_"+method+".html")
 
-            # heatmap.append([pngHeatmap,heatmapHTML,id_modal,title_modal])
-            heatmap.append([pngHeatmap,id_modal,title_modal])
+                # heatmap.append([pngHeatmap,heatmapHTML,id_modal,title_modal])
+                heatmap.append([pngHeatmap,id_modal,title_modal])
             
 
             pngPCA = os.path.join(settings.MEDIA_URL,jobID,"graphs","pca_"+method+".png")
-            id_modal = "pca_"+method
-            title_modal = METHODS[method]
-            pcaHTML = os.path.join(settings.MEDIA_URL,jobID,"graphs","pca_"+method+".html")
+            if os.path.exists(os.path.join(settings.MEDIA_URL,jobID,"graphs","pca_"+method+".png")):
+                id_modal = "pca_"+method
+                title_modal = METHODS[method]
+                pcaHTML = os.path.join(settings.MEDIA_URL,jobID,"graphs","pca_"+method+".html")
 
-            pca.append([pngPCA,pcaHTML,id_modal,title_modal])
+                pca.append([pngPCA,pcaHTML,id_modal,title_modal])
 
-            #Check if 3D plot
-            pngPCA3D = os.path.exists(os.path.join(settings.MEDIA_ROOT,jobID,"graphs","pca_"+method+"_3D.html"))
+                #Check if 3D plot
+                pngPCA3D = os.path.exists(os.path.join(settings.MEDIA_ROOT,jobID,"graphs","pca_"+method+"_3D.html"))
 
             #Summary
             #Distribution
