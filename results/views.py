@@ -206,8 +206,8 @@ class Results(TemplateView):
 
             #Summary
             #Distribution
-            distribution[method] = {}
             if os.path.exists(os.path.join(settings.MEDIA_ROOT,jobID,"graphs","summary","distribution_"+method+".html")):
+                distribution[method] = {}
                 distributionHTML = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","distribution_"+method+".html")
                 distributionPNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","distribution_"+method+".png")
                 distribution[method]['HTML'] = distributionHTML
