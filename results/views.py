@@ -105,7 +105,7 @@ class Results(TemplateView):
         downloads['info'] = {}
         for group in Info_Groups:
             info = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".html")
-            if os.path.exists(info):
+            if os.path.exists(os.path.join(settings.MEDIA_ROOT,jobID,"graphs","summary","infoGain_"+group+".html")):
                 infoPNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".png")
                 infoGain[group] = {'HTML':info,'PNG':infoPNG,'name':"Information Gain "}
                 downloadLink = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".txt")
@@ -114,10 +114,11 @@ class Results(TemplateView):
                 except:
                     downloads['info'][group] = {}
                 downloads['info'][group] = [downloadLink,"infoGain_"+group+".txt"]
+        print(infoGain)
         infoGainPairwise = {}
         for group in FC_groups:
             info = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".html")
-            if os.path.exists(info):
+            if os.path.exists(os.path.join(settings.MEDIA_ROOT,jobID,"graphs","summary","infoGain_"+group+".html")):
                 infoPNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".png")
                 infoGainPairwise[group] = {'HTML':info,'PNG':infoPNG,'name':"Information Gain "}
 
@@ -290,12 +291,12 @@ class Results(TemplateView):
             if method=="NN":
                 NN_PNG = os.path.join(settings.MEDIA_URL,jobID,"normalized","RLEplot_NN.png")
                 rleplotNN={}
-                if os.path.exists(NN_PNG):
+                if os.path.exists(os.path.join(settings.MEDIA_ROOT,jobID,"normalized","RLEplot_NN.png")):
                     rleplotNN['PNG'] = NN_PNG
                     rleplotNN['name'] = METHODS[method]
             else:
                 rlePNG = os.path.join(settings.MEDIA_URL,jobID,"normalized","RLEplot_"+method+".png")
-                if os.path.exists(rlePNG):
+                if os.path.exists(os.path.join(settings.MEDIA_ROOT,jobID,"normalized","RLEplot_"+method+".png")):
                     rleplots[method] = {}
                     rleplots[method]['PNG'] = rlePNG
                     rleplots[method]['name'] = METHODS[method]
