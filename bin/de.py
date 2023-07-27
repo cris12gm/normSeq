@@ -74,8 +74,7 @@ def de_R(infile,annotation,combinations,method,FDR,min_t,methodology_edgeR,jobDi
 
     
     procs = [ Popen(i,shell=True) for i in commands ]
-    print(commands)
-    sys.exit(1)
+
     for p in procs:
         p.wait()
         
