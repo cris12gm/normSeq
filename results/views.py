@@ -196,8 +196,8 @@ class Results(TemplateView):
             
 
             pngPCA = os.path.join(settings.MEDIA_URL,jobID,"graphs","pca_"+method+".png")
-            pngPCA3D = False
-            if os.path.exists(os.path.join(settings.MEDIA_URL,jobID,"graphs","pca_"+method+".png")):
+            pngPCA3D = True
+            if os.path.exists(os.path.join(settings.MEDIA_ROOT,jobID,"graphs","pca_"+method+".png")):
                 id_modal = "pca_"+method
                 title_modal = METHODS[method]
                 pcaHTML = os.path.join(settings.MEDIA_URL,jobID,"graphs","pca_"+method+".html")
@@ -205,7 +205,7 @@ class Results(TemplateView):
                 pca.append([pngPCA,pcaHTML,id_modal,title_modal])
 
                 #Check if 3D plot
-                pngPCA3D = os.path.exists(os.path.join(settings.MEDIA_ROOT,jobID,"graphs","pca_"+method+"_3D.html"))
+            pngPCA3D = os.path.exists(os.path.join(settings.MEDIA_ROOT,jobID,"graphs","pca_"+method+"_3D.html"))
 
             #Summary
             #Distribution
