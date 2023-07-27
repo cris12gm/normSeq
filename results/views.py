@@ -196,6 +196,7 @@ class Results(TemplateView):
             
 
             pngPCA = os.path.join(settings.MEDIA_URL,jobID,"graphs","pca_"+method+".png")
+            pngPCA3D = False
             if os.path.exists(os.path.join(settings.MEDIA_URL,jobID,"graphs","pca_"+method+".png")):
                 id_modal = "pca_"+method
                 title_modal = METHODS[method]
