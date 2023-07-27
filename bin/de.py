@@ -26,7 +26,7 @@ def createGroupFile(annotation_df,jobDir):
             groups.append(element)
     diffGroups = list(set(groups))
     if len(diffGroups)>1:
-        if len(diffGroups) != list(set(groupsRaw)):
+        if len(diffGroups) != len(list(set(groupsRaw))):
             warning = open(warningFile, 'a')
             warning.write("<p>Differential expression was not performed between all groups because some of them has no replicates, and that is mandatory for the analysis.</p>")
             warning.close()
@@ -74,6 +74,8 @@ def de_R(infile,annotation,combinations,method,FDR,min_t,methodology_edgeR,jobDi
 
     
     procs = [ Popen(i,shell=True) for i in commands ]
+    print(commands)
+    sys.exit(1)
     for p in procs:
         p.wait()
         
