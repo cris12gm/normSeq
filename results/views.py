@@ -61,8 +61,11 @@ class Results(TemplateView):
 
         #Get warning file
 
-        warningFileContent = open(settings.MEDIA_ROOT+jobID+'/warnings.txt','r').readlines()[0]
         
+        if os.path.exists (settings.MEDIA_ROOT+jobID+'/warnings.txt'):
+            warningFileContent = open(settings.MEDIA_ROOT+jobID+'/warnings.txt','r').readlines()[0]
+        else:
+            warningFileContent=False
         ##All visualizations
         visualization = False
 
