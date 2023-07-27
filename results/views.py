@@ -1,5 +1,4 @@
 from django.conf import settings
-import random,string
 from enum import Enum
 from functools import reduce
 from django.shortcuts import render, redirect
@@ -15,6 +14,8 @@ import datetime
 import plotly.express as px
 from plotly.offline import plot
 import plotly.graph_objects as go
+from query.models import Job
+
 
 METHODS = {
         'NN' :' No normalization',
@@ -52,7 +53,9 @@ class Results(TemplateView):
         jobDir = config['jobDir']
         typeJob = config['typeJob']
 
-        start_date = datetime.date.today()
+        jobDB = Job.objects.get(JobID=jobID)
+        typeJob = jobDB.getType()
+        start_date = jobDB.getDate()
         end_date = start_date + datetime.timedelta(days=15)
         
         ##All visualizations

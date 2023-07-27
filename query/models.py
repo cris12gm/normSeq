@@ -27,6 +27,9 @@ class Job(models.Model):
     
     def getConfig(self):
         return self.configFile
+    
+    def getDate(self):
+        return self.created_date
 
     def alterType(self,typeJobForm):
         self.typeJob = typeJobForm
