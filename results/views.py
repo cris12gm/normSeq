@@ -207,15 +207,16 @@ class Results(TemplateView):
             #Summary
             #Distribution
             distribution[method] = {}
-            distributionHTML = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","distribution_"+method+".html")
-            distributionPNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","distribution_"+method+".png")
-            distribution[method]['HTML'] = distributionHTML
-            distribution[method]['PNG'] = distributionPNG
-            distribution[method]['name'] = METHODS[method]
-            if i==0:
-                distribution[method]['active'] = "block;"
-            else:
-                distribution[method]['active'] = "none;"
+            if os.path.exists(os.path.join(settings.MEDIA_ROOT,jobID,"graphs","summary","distribution_"+method+".html")):
+                distributionHTML = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","distribution_"+method+".html")
+                distributionPNG = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","distribution_"+method+".png")
+                distribution[method]['HTML'] = distributionHTML
+                distribution[method]['PNG'] = distributionPNG
+                distribution[method]['name'] = METHODS[method]
+                if i==0:
+                    distribution[method]['active'] = "block;"
+                else:
+                    distribution[method]['active'] = "none;"
                
 
             #Top miRNAS
