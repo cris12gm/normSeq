@@ -287,7 +287,6 @@ class Results(TemplateView):
                 batchEffect=False
 
             #RLE plots
-            rleplotNN={}
             if method=="NN":
                 NN_PNG = os.path.join(settings.MEDIA_URL,jobID,"normalized","RLEplot_NN.png")
                 rleplotNN={}
@@ -304,7 +303,10 @@ class Results(TemplateView):
                         rleplots[method]['active'] = "block;"
                     else:
                         rleplots[method]['active'] = "none;"
-                    
+            try:
+                value = rleplotNN
+            except:
+                rleplotNN={}
             ##Downloads Normalized
             downloadLink = os.path.join(settings.MEDIA_URL,jobID,"normalized","matrix_"+method+".txt")
             downloads['normalized'][METHODS[method]] = [downloadLink,"matrix_"+method+".txt"]
