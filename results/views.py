@@ -202,7 +202,7 @@ class Results(TemplateView):
             pca.append([pngPCA,pcaHTML,id_modal,title_modal])
 
             #Check if 3D plot
-            pngPCA3D = os.path.exists(os.path.join(settings.MEDIA_URL,jobID,"graphs","pca_"+method+"_3D.png"))
+            pngPCA3D = os.path.exists(os.path.join(settings.MEDIA_ROOT,jobID,"graphs","pca_"+method+"_3D.png"))
 
             #Summary
             #Distribution
@@ -781,5 +781,5 @@ class Results_tutorial(TemplateView):
 
         de_software = ["edgeR","DESeq2","NOISeq","TTest"]
         return render(request, self.template, {"jobID":jobID,"typeJob":typeJob,"visualization":visualization,"heatmapPlots":heatmap,
-        "pcaPlots":pca,"pngPCA3D":pngPCA3D,"batchEffect":batchEffect,"downloads":downloads,"summary":summary,"de":diffExpr,"de_groups":de_groups,'date':end_date,
+        "pcaPlots":pca,"batchEffect":batchEffect,"downloads":downloads,"summary":summary,"de":diffExpr,"de_groups":de_groups,'date':end_date,
         'consensus':consensus,'de_software':de_software, 'topDEPerMethod':topDEPerMethod,'features':features})
