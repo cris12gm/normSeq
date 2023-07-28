@@ -114,7 +114,6 @@ class Results(TemplateView):
                 except:
                     downloads['info'][group] = {}
                 downloads['info'][group] = [downloadLink,"infoGain_"+group+".txt"]
-        print(infoGain)
         infoGainPairwise = {}
         for group in FC_groups:
             info = os.path.join(settings.MEDIA_URL,jobID,"graphs","summary","infoGain_"+group+".html")
@@ -434,14 +433,13 @@ def de_prepare(jobID,group,group1,group2):
         edgeR = edgeR.set_index("name")
         edgeR = edgeR.round(decimals=3)
         summary['edgeR'] = getInfraOver(edgeR)
-
         edgeR_header = list(edgeR.columns)
         edgeR = edgeR.T.to_dict()
         resultsGroup['edgeR_header'] = edgeR_header
         resultsGroup['edgeR'] = edgeR
     except:
         pass
-        
+
     #deseq
     deseqFile = os.path.join(settings.MEDIA_ROOT,jobID,"DE","deseq_"+group+".txt")
     try:
@@ -508,15 +506,13 @@ def getInfraOver(df):
     overExpressed = df.query("logFC <= 0")
     overExpressed_number = overExpressed.shape[0]
     overExpressed_names = overExpressed.index.tolist()
-    overExpressed_names = ','.join(overExpressed_names)
-
+    overExpressed_names = ','.join(str(e) for e in overExpressed_names)
     infraExpressed = df.query("logFC > 0")
     infraExpressed_number = infraExpressed.shape[0]
     infraExpressed_names = infraExpressed.index.tolist()
-    infraExpressed_names = ','.join(infraExpressed_names)
+    infraExpressed_names = ','.join(str(e) for e in infraExpressed_names)
 
     output = {"over":overExpressed_names,"infra":infraExpressed_names,"numOver":overExpressed_number,"numInfra":infraExpressed_number}
-
     return output
 
 
