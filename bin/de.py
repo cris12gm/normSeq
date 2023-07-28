@@ -153,7 +153,7 @@ def ttest(df,combinations,annotation_df,FDR,output_de,jobDir,log,status):
                 mean_group2 = round(sum(group2_values) / len(group2_values),2)
                 log2 = math.log((mean_group1+1)/(mean_group2+1),2)
                 ttest = str(round(ttest.pvalue,2))
-                escribir = mirna+"\t"+str(mean_group1)+"\t"+str(mean_group2)+"\t"+str(log2)+"\t"+ttest+"\n"
+                escribir = str(mirna)+"\t"+str(mean_group1)+"\t"+str(mean_group2)+"\t"+str(log2)+"\t"+ttest+"\n"
                 output.write(escribir)
                 output_this['name'].append(mirna)
                 output_this['logFC'].append(log2)
