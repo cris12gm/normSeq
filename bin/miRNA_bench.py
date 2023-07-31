@@ -105,7 +105,7 @@ if config['batchEffect'] == 'True':
             dfOld = processInput(os.path.join(jobDir,"matrix_old.txt"),annotation_df)
         except:
             warning = open(warningFile, 'a')
-            warning.write("<p>Batch effect correction was not possible, please check the input files. Please, check the format guidelines <a href='https://arn.ugr.es/normseq_doc/annotation/'>https://arn.ugr.es/normseq_doc/annotation/>here</a></p>")
+            warning.write("<p>Batch effect correction was not possible, please check the input files. Please, check the format guidelines <a href='https://arn.ugr.es/normseq_doc/annotation/'>https://arn.ugr.es/normseq_doc/annotation/'>here</a></p>")
             warning.close()
         
         try:
@@ -117,7 +117,7 @@ if config['batchEffect'] == 'True':
             df.to_csv(outfile_NN,sep="\t")
         except:
             warning = open(warningFile, 'a')
-            warning.write("<p>Batch effect correction was not possible, please check the input files. Please, check the format guidelines <a href='https://arn.ugr.es/normseq_doc/annotation/'>https://arn.ugr.es/normseq_doc/annotation/>here</a></p>")
+            warning.write("<p>Batch effect correction was not possible, please check the input files. Please, check the format guidelines <a href='https://arn.ugr.es/normseq_doc/annotation/'>https://arn.ugr.es/normseq_doc/annotation/'>here</a></p>")
             warning.close()
     else:
         pass
