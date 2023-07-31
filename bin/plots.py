@@ -99,7 +99,7 @@ def pca_batch(df,annotation_df,outfile,outfileImage):
     total_var = pca.explained_variance_ratio_.sum() * 100
 
 
-    fig = px.scatter(components, x=0, y=1, hover_name=list(annotation_df.index), color=list(annotation_df.batchEffect),
+    fig = px.scatter(components, x=0, y=1, hover_name=list(annotation_df.index), color=list(annotation_df.group),
         title=f'Total Explained Variance: {total_var:.2f}%')
 
     fig.update_layout(
@@ -126,7 +126,7 @@ def pca_batch(df,annotation_df,outfile,outfileImage):
         total_var = pca.explained_variance_ratio_.sum() * 100
 
         fig3D = px.scatter_3d(
-            components, x=0, y=1, z=2, color=list(annotation_df.batchEffect),
+            components, x=0, y=1, z=2, color=list(annotation_df.group),
             title=f'Total Explained Variance: {total_var:.2f}%',
             labels={'0': 'PC 1', '1': 'PC 2', '2': 'PC 3'}
         )
