@@ -48,6 +48,8 @@ def processInputInit(infile,samples,minRC,annotation_df):
         df = df.dropna()
         dfF = df[samples]
 
+    dfF = dfF.drop_duplicates(subset=["name"], keep=False)
+
     dfOriginal = dfF
     minRC = int(minRC)
     dfF = dfF.loc[~(dfF==0).all(axis=1)]
@@ -64,7 +66,7 @@ def processInputInit(infile,samples,minRC,annotation_df):
 
 
 def processInput(infile,annotation_df):
-    cabecera = open(infile).readline().split("\t")[0]
+    cabecera = open(infile).readline().split("\t")[0].replace("_",".").replace(" ",".")
     df = pd.read_table(infile)
     df = df.rename(columns=lambda s: s.replace("_", "."))
     df = df.rename(columns=lambda s: s.replace(" ", "."))
