@@ -1,4 +1,4 @@
-import os,sys
+nimport os,sys
 import pandas as pd
 import numpy as np
 import subprocess
@@ -8,7 +8,7 @@ from config import R_SCRIPTS_PATH
 
 def processInputInit(infile,samples,minRC,annotation_df):
     cabecera = open(infile).readline().split("\t")[0].replace("_",".").replace(" ",".")
-    df = pd.read_table(infile)
+    df = pd.read_table(infile,index_col=False)
     df=df.dropna(axis=1,how='all')
     testInteger = df.select_dtypes(include=[int])
     if testInteger.empty:
@@ -48,7 +48,7 @@ def processInputInit(infile,samples,minRC,annotation_df):
         df = df.dropna()
         dfF = df[samples]
 
-    dfF = dfF.drop_duplicates(subset=["name"], keep=False)
+    dfF = (dfF.reset_index().drop_duplicates(subset='name', keep=False).set_index('name').sort_index())
 
     dfOriginal = dfF
     minRC = int(minRC)
