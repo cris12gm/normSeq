@@ -18,7 +18,7 @@ class statisticsDB(TemplateView):
         
         success,error = Job.stats()
         
-        return render(request, self.template, {'success':success,'error':error})
+        return render(request, self.template, {'success':success})
             
 
         
