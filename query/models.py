@@ -42,3 +42,15 @@ class Job(models.Model):
     def alterPid(self,newPID):
         self.pid = newPID
         self.save()
+
+    def stats():
+        success = {}
+        success['miRNA'] = Job.objects.filter(status='Finished',typeJob='miRNA').count()
+        success['mRNA'] =  Job.objects.filter(status='Finished',typeJob='mRNA').count()
+        success['tRNA'] =  Job.objects.filter(status='Finished',typeJob='tRNA').count()
+        success['other'] = Job.objects.filter(status='Finished',typeJob='Feature').count()
+        success['total'] = Job.objects.filter(status='Finished').count()
+
+        error = Job.objects.filter(status='Error').count()
+
+        return success,error

@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block css %}
+<link href="{% static 'css/customStyles/stylesResults.css'%}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+    <div id="page-wrapper" class="resultsPage">
+        <br>
+        <div class="row">
+            <div class="col-md-11"style="float:none;margin:auto;">
+                <h2>Statistics of NormSeq</h2>
+                <div class="row">
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">RNA class</th>
+                                    <th scope="col">Number of Successful Jobs</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td>mRNA</td>
+                                    <td>{{success.mRNA}}</td>
+                                  </tr>
+                                  <tr>
+                                    <td>miRNA</td>
+                                    <td>{{success.miRNA}}</td>
+                                  </tr>
+                                  <tr>
+                                    <td>tRNA</td>
+                                    <td>{{success.tRNA}}</td>
+                                  </tr>
+                                  <tr>
+                                    <td>Other</td>
+                                    <td>{{success.other}}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><b>Total</b></td>
+                                    <td>{{success.total}}</td>
+                                  </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                      </div>
+                </div>
+                
+        </div>
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+
+
+<script>
+    // Refresh every 3 seconds to see if there is results
+
+    $(document).ready(
+        function() {
+            setTimeout(function(){
+            window.location.reload(1);
+            }, 3000);
+        });
+
+</script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+    <!-- To save bookmarks -->
+<script>
+    $("#bookmarkt").click(function () {
+    var url = 'https://' + location.host; // i'm in a sub-page and bookmarking the home page
+    var name = "normSeq results {{ jobID }}";
+
+    if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1){ //chrome
+        alert("Please to bookmark press " 
+            + (navigator.userAgent.toLowerCase().indexOf('mac') != -1 ? 
+                'Command/Cmd' : 'CTRL') + "+D.")
+    } 
+    else if (window.sidebar) { // Mozilla Firefox Bookmark
+        //important for firefox to add bookmarks - remember to check out the checkbox on the popup
+        $(this).attr('rel', 'sidebar');
+        //set the appropriate attributes
+        $(this).attr('href', url);
+        $(this).attr('title', name);
+
+        window.sidebar.addPanel('', '', '');
+    } 
+    else if (window.external) { // IE Favorite
+            window.external.addFavorite(url, name);
+    } 
+    return;
+});
+
+</script>
+
+{% endblock %}
+
