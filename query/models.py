@@ -48,7 +48,7 @@ class Job(models.Model):
         success['miRNA'] = Job.objects.filter(status='Finished',typeJob='miRNA').count()
         success['mRNA'] =  Job.objects.filter(status='Finished',typeJob='mRNA').count()
         success['tRNA'] =  Job.objects.filter(status='Finished',typeJob='tRNA').count()
-        success['other'] = Job.objects.filter(status='Finished',typeJob='Feature').count()
+        success['other'] = Job.objects.filter(status='Finished',typeJob='feature').count()
         success['total'] = Job.objects.filter(status='Finished').count()
 
         error = Job.objects.filter(status='Error').count()
